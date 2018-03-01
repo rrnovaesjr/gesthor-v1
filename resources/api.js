@@ -3,6 +3,8 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql2');
 var app = express();
 
+var clientesResources = require('./clientes-resources');
+
 /**
  * Registra todas as chamadas para a API da aplicação.
  * 
@@ -15,17 +17,20 @@ var app = express();
  * *Requisição DELETE*: deleção de entidades.
  */
 function register(connection) {
-    app.post('/cliente', function(req, res, next) {
-        var cope = req.body;
-        console.log('request received:', req.body);
-        var query = connection.execute('insert into cope set ?', cope, function(err, result) {
-            if(err) {
-                console.error(err);
-                return res.send(err);
-            } 
-            else {
-                return res.send('Ok');
-            }
+    var restAPI = [
+        clientesResources.clientesAPI
+    ];
+    restAPI.forEach(function(funcMap) {
+        funcMap.post.forEach(function([uri, callback]) {
+            app.post(uri, function(req, res, next) {
+                callback(req, res, next, connection);
+            });
+        });
+        funcMap.get.forEach(function([uri, callback]) {
+            console.log(uri);
+            app.get(uri, function(req, res, next) {
+                callback(req, res, next, connection);
+            });
         });
     });
 }
@@ -48,7 +53,7 @@ let api = {
 
     /**
      * Configura a API para a aplicação *Gesthor*. Recebe, como parâmero, o modo de conexão ao
-     * banco de dados. Se nenhum for fornecido, então o padrão é `api.mode`.
+     * banco de dados. Se nenhum for fornecido, então o padrão é `api.mode = 'dev'`.
      */
     config: function(mode = null) {
         let connection;
@@ -87,6 +92,9 @@ let api = {
     }
 }
 
+/** 
+ * Exporta a API para módulos interessados.
+*/
 module.exports = {
     api
 }
