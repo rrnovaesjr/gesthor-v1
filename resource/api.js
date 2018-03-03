@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mysql = require('mysql2');
+var cors = require('cors');
 var app = express();
 
 var resourceCliente = require('./cliente.resource');
@@ -96,6 +97,7 @@ let api = {
         app.use(bodyParser.json({limit: '50mb'}));
         app.use(bodyParser.urlencoded({extended: true}));
         app.use(express.static('public'));
+        app.use(cors());
         register(connection);
         app.listen(8080);
     }

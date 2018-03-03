@@ -8,9 +8,8 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavbarRoutingModule } from './navbar-routing.module';
 import { NavbarComponent } from './navbar.component';
-import { navbarRoutes } from './navbar.routes';
 
 @NgModule({
   imports: [
@@ -21,7 +20,7 @@ import { navbarRoutes } from './navbar.routes';
     MatListModule,
     MatSidenavModule,
     MatToolbarModule,
-    RouterModule.forRoot(navbarRoutes)
+    NavbarRoutingModule
   ],
   declarations: [
     NavbarComponent
