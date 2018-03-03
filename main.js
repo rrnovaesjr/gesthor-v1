@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require('electron')
-const { api } = require('./resources/api');
+const { api } = require('./resource/api');
 
 /** 
  * Referência para a janela principal.

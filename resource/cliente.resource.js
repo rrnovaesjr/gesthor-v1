@@ -1,28 +1,27 @@
-const mysql = require('mysql2');
+const {
+    mapperCliente
+} = require('../service/cliente.service');
 
 /** 
  * Mapa que relaciona a URI para requisição da API de clientes com sua respectiva *callback*.
  * 
- * Este mapa será iterado pelo módulo da API com a finalidade de registrar as URIs em escuta.
+ * Este mapa será iterado pelo módulo da API com a finalidade de registrar as URIs para escuta.
 */
-let clientesAPI = {post: [], get: [], put: [], delete: []};
+let apiCliente = {post: [], get: [], put: [], delete: []};
 
 /**
  * Cria um novo cliente.
  */
-clientesAPI.post.push([
+apiCliente.post.push([
     '/cliente',
     function(req, res, next, mysqlConnection) {
-        console.log(req);
-        var insertClientRequest = {
-            'nome_razaosocial': req.body.nomeRazaoSocial
-        }
+        var insertClientRequest = mapperCliente.objectToSql(req.body);
         mysqlConnection.query('insert into cliente set ?', insertClientRequest, function(err, result){
             if(err) {
                 return res.send(err);
             }
             else {
-                return res.send(result);
+                return res.send(mapperCliente.sqlToObject(result));
             }
         });
     }
@@ -31,16 +30,23 @@ clientesAPI.post.push([
 /**
  * Obtém todos os clientes.
  */
-clientesAPI.get.push([
+apiCliente.get.push([
     '/cliente',
     function(req, res, next, mysqlConnection) {
-        let query = 'select * from cliente';
+        const size = req.query.size ? req.query.size : 10;
+        const page = req.query.page ? req.query.page : 0;
+        const sort = req.query.sort ? req.query.sort.split(',', 2) : 'id,ASC';
+        let query = 'select * from `cliente`';
+        query += ' order by ' + mysqlConnection.escapeId(sort[0]);
+        query += ' ' + sort[1].toUpperCase(); 
+        query += ' limit ' + (page * size);
+        query += ', ' + size;
         mysqlConnection.execute(query, function(err, result) {
             if(err) {
                 return res.send(err);
             }
             else {
-                return res.send(result);
+                return res.send(mapperCliente.manySqlToObjects(result));
             }
         });
     }
@@ -49,19 +55,18 @@ clientesAPI.get.push([
 /**
  * Obtém um cliente a partir de um identificador.
  */
-clientesAPI.get.push([
+apiCliente.get.push([
     '/cliente/:id',
     function(req, res, next, mysqlConnection) {
-        console.log(req);
         var queryRequest = {
             'id': req.params.id
         }
-        mysqlConnection.query('select * from cliente where ?', queryRequest, function(err, result) {
+        mysqlConnection.query('select * from `cliente` where ?', queryRequest, function(err, result) {
             if(err) {
                 return res.send(err);
             }
             else {
-                return res.send(result[0]);
+                return res.send(mapperCliente.sqlToObject(result[0]));
             }
         });
     }
@@ -71,5 +76,5 @@ clientesAPI.get.push([
  * Exporta os métodos para assinatura da API.
 */
 module.exports = {
-    clientesAPI
+    apiCliente
 }

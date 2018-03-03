@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql2');
 var app = express();
 
-var clientesResources = require('./clientes-resources');
+var resourceCliente = require('./cliente.resource');
 
 /**
  * Registra todas as chamadas para a API da aplicação.
@@ -18,7 +18,7 @@ var clientesResources = require('./clientes-resources');
  */
 function register(connection) {
     var restAPI = [
-        clientesResources.clientesAPI
+        resourceCliente.apiCliente
     ];
     restAPI.forEach(function(funcMap) {
         funcMap.post.forEach(function([uri, callback]) {
