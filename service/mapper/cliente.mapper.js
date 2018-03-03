@@ -13,6 +13,7 @@ var mapperCliente =  {
     sqlToObject: function(sqlResult) {
         return {
             id: sqlResult.id,
+            usuarioId: sqlResult.usuario_id,
             nomeRazaoSocial: sqlResult.nome_razaosocial,
             cpfOuCnpj: sqlResult.cpf_cnpj,
             endereco: sqlResult.endereco,
@@ -38,6 +39,7 @@ var mapperCliente =  {
     objectToSql: function(object) {
         return {
             id: object.id,
+            usuario_id: sqlResult.usuarioId,
             nome_razaosocial: object.nomeRazaoSocial,
             cpf_cnpj: object.cpfOuCnpj,
             endereco: object.endereco,

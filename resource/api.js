@@ -27,8 +27,17 @@ function register(connection) {
             });
         });
         funcMap.get.forEach(function([uri, callback]) {
-            console.log(uri);
             app.get(uri, function(req, res, next) {
+                callback(req, res, next, connection);
+            });
+        });
+        funcMap.put.forEach(function([uri, callback]) {
+            app.put(uri, function(req, res, next) {
+                callback(req, res, next, connection);
+            });
+        });
+        funcMap.delete.forEach(function([uri, callback]) {
+            app.delete(uri, function(req, res, next) {
                 callback(req, res, next, connection);
             });
         });
