@@ -1,157 +1,84 @@
 import { Injectable } from '@angular/core';
+import * as auth0 from 'auth0-js';
+import { environment } from './../../environments/environment';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { AngularFireDatabase } from 'angularfire2/database';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Observable';
-import { User, UserInfo, AuthProvider, AuthCredential, GoogleAuthProvider } from '@firebase/auth-types'
-import * as firebase from 'firebase';
-import { HttpClient } from '@angular/common/http';
 
-/** 
- * Service that controls the user's authority throughout the app.
- * 
- * @author rrnovaesjr
-*/
 @Injectable()
 export class AuthService {
 
-  /**
-   * Default session's expiration time.
-   */
-  public static readonly DEFAULT_EXPIRATION_TIME: number = 99999999;
+  auth0 = new auth0.WebAuth({
+    clientID: environment.auth.clientID,
+    domain: environment.auth.domain,
+    responseType: 'token',
+    redirectUri: environment.auth.redirect,
+    audience: environment.auth.audience,
+    scope: environment.auth.scope
+  });
 
-  /**
-   * A public stream to check user's state.
-   */
-  public userState: Observable<User>;
+  userProfile: any;
 
-  /**
-   * The app reference to the current logged user.
-   */
-  private user: User;
+  accessToken: string;
 
-  /**
-   * Checks if user is authenticated.
-   */
-  private authenticated: boolean;
+  authenticated: boolean;
 
-  /**
-   * User token's identifier.
-   */
-  private idToken: string;
-
-  /**
-   * The Google auth provider.
-   */
-  private googleProvider: firebase.auth.GoogleAuthProvider;
-
-  /**
-   * Constructor that injects the necessary services to the app.
-   * 
-   * @param afAuth Angular Firebase auth API.
-   * @param router Router service.
-   */
-  public constructor(private afAuth: AngularFireAuth, private router: Router) {
-    this.googleProvider = new firebase.auth.GoogleAuthProvider();
+  constructor(private router: Router) {
+    this.getAccessToken();
   }
 
-  /** 
-   * Sign in when current session's still active.
-  */
-  public getAccessToken(): void {
-    this.idToken = localStorage.getItem('id-token');
-    const expirationTime: number = Number.parseInt(localStorage.getItem('expiration-date'));
-    if(this.idToken && expirationTime) {
-      const credential: firebase.auth.AuthCredential = firebase.auth.GoogleAuthProvider.credential(this.idToken);
-      firebase.auth().signInWithCredential(credential).then(
-        (result: any) => this.handleLogin(result),
-        (error: any) => this.handleError(error)
-      );
-    }
+  login() {
+    this.auth0.authorize();
   }
 
-  /** 
-   * Log in by Google auth provider.
-  */
-  public loginGoogle(): void {
-    this.oAuthLoginByPopup(this.googleProvider).then((result: any) => this.handleLogin(result));
-  }
-
-  /**
-   * Handles login results.
-   * 
-   * @param result Login result object.
-   */
-  private handleLogin(result): void {
-    if(result.user && result.credential) {
-      this.user = result.user;
-      this.idToken = result.credential.idToken;
-    }
-    this.setSession();
-    this.authenticated = true;
-  }
-
-  /**
-   * Handle login errors.
-   * 
-   * @param error Login error object.
-   */
-  private handleError(error): void {
-
-  }
-
-  /**
-   * Sets current user's session.
-   */
-  private setSession(): void {
-    localStorage.setItem('id-token', this.idToken);
-    localStorage.setItem('expiration-date', (Date.now() + AuthService.DEFAULT_EXPIRATION_TIME).toString());
-  }
-
-  /** 
-   * Unsets the current user's session.
-  */
-  private unsetSession(): void {
-    localStorage.removeItem('id-token');
-    localStorage.removeItem('expiration-date');
-  }
-
-  /**
-   * Log in the app using a specific provider. The authentication on the auth provider is made
-   * into a popup.
-   * 
-   * @param provider Auth provider.
-   */
-  private oAuthLoginByPopup<T extends firebase.auth.AuthProvider>(provider: T): Promise<any> {
-    return firebase.auth().signInWithPopup(provider);
-  }
-
-  /** 
-   * Sign current user out.
-   * 
-   * @param callback An optional function to be executed when logout is completed.
-  */
-  public signOut(): Promise<any> {
-    return this.afAuth.auth.signOut().then(() => this.unsetSession());
-  }
-
-  /** 
-   * Get the user information.
-  */
-  public getUser(): Observable<UserInfo> {
-    return this.afAuth.authState.map((user: User, index: number) => {
-      this.user = user;
-      return this.user;
+  handleLoginCallback() {
+    this.auth0.parseHash((err, authResult) => {
+      if (authResult && authResult.accessToken) {
+        window.location.hash = '';
+        this.getUserInfo(authResult);
+      } else if (err) {
+        console.error(`Error: ${err.error}`);
+      }
+      this.router.navigate(['/']);
     });
   }
 
-  /**
-   * Returns if an user is currently authenticated.
-   */
-  public get isAuthenticated(): boolean {
-    const expiresAt: number = Number.parseInt(localStorage.getItem('expiration-date'));
-    return (this.authenticated && Date.now() < expiresAt);
+  getAccessToken() {
+    this.auth0.checkSession({}, (err, authResult) => {
+      if (authResult && authResult.accessToken) {
+        this.getUserInfo(authResult);
+      } else if (err) {
+        console.log(err);
+        this.logout();
+        this.authenticated = false;
+      }
+    });
   }
 
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+  getUserInfo(authResult) {
+    this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
+      if (profile) {
+        this._setSession(authResult, profile);
+      }
+    });
+  }
+
+  private _setSession(authResult, profile) {
+    const expTime = authResult.expiresIn * 1000 + Date.now();
+    localStorage.setItem('expires_at', JSON.stringify(expTime));
+    this.accessToken = authResult.accessToken;
+    this.userProfile = profile;
+    this.authenticated = true;
+  }
+
+  logout() {
+    localStorage.removeItem('expires_at');
+    this.userProfile = undefined;
+    this.accessToken = undefined;
+    this.authenticated = false;
+  }
+
+  get isAuthenticated(): boolean {
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    return Date.now() < expiresAt && this.authenticated;
+  }
+
+}

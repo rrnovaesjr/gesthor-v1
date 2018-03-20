@@ -4,8 +4,31 @@ var mysql = require('mysql2');
 var cors = require('cors');
 var serveStatic = require('serve-static');
 var app = express();
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
+const path = require('path');
 
 var resourceCliente = require('./cliente.resource');
+
+/**
+ * JWT middleware for token validation.
+ */
+var jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: "https://rrnovaesjr.auth0.com/.well-known/jwks.json"
+    }),
+    audience: 'http://localhost:8080',
+    issuer: "https://rrnovaesjr.auth0.com/",
+    algorithms: ['RS256']
+}).unless({
+    path: [
+        '/callback'
+    ]
+});
+  
 
 /**
  * Registra todas as chamadas para a API da aplicação.
@@ -100,6 +123,7 @@ let api = {
         app.use(express.static('public'));
         app.use(serveStatic(dirname));
         app.use(cors());
+        app.use(jwtCheck)
         register(connection);
         app.listen(port);
         return app;

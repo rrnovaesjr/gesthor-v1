@@ -1,27 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { MatCardModule } from '@angular/material';
 import { AuthService } from './auth.service';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth'; 
 import { environment } from '../../environments/environment';
+import { AuthCallbackComponent } from './auth-callback.component';
+import { AuthRoutingModule } from './auth-routing.module';
 
 @NgModule({
   imports: [
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
+    AuthRoutingModule,
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    MatCardModule
   ],
   providers: [
     AuthService
   ],
-  exports: [
-    AngularFireModule,
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
+  declarations: [
+    AuthCallbackComponent
   ]
 })
 export class AuthModule { }

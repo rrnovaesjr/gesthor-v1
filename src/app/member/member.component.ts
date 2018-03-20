@@ -28,8 +28,8 @@ import {
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-actions>
-        <button mat-button *ngIf="authService.isAuthenticated" (click)="authService.signOut()">Log out</button>
-        <button mat-button *ngIf="!authService.isAuthenticated" (click)="authService.loginGoogle()">Log in</button>
+        <button mat-button *ngIf="authService.isAuthenticated" (click)="authService.logout()">Log out</button>
+        <button mat-button *ngIf="!authService.isAuthenticated" (click)="authService.login()">Log in</button>
       </mat-card-actions>
     </mat-card>  
   </div>
@@ -96,9 +96,7 @@ export class MemberComponent implements OnInit {
    * Every mouse click in the window must switch the card to invisible state.
   */
   public ngOnInit(): void {
-    this.authService.getUser().subscribe((user: UserInfo) => {
-      this.user = user;
-    });
+
   }
 
   /** 
