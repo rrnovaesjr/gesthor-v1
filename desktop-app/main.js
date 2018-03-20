@@ -1,34 +1,35 @@
-const { app, BrowserWindow } = require('electron')
-const { api } = require('./resource/api');
+var { app, BrowserWindow } = require('electron')
+var { api } = require('./resource/api');
 
 /** 
  * Referência para a janela principal.
 */
-let win;
+var win;
 
 /**
  * Configura a API para a aplicação.
  */
-api.config(process.argv[2]);
+api.config(__dirname + '/../dist', process.argv[2]);
 
 /** 
  * Função que inicializa a janela principal. Atribui as dimensões, a cor de fundo e o ícone do programa.
  * Também estabelece qual o arquivo que deve ser instanciado como tela principal, além de ações de fechamento
  * e outros. Para esta aplicação, maximiza-se a janela e retira-se o menu padrão.
 */
-function createWindow () {
+function createWindow() {
   win = new BrowserWindow({
     width: 800, 
     height: 600,
     backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/assets/img/logo_32.ico`
-  })
-  win.loadURL(`file://${__dirname}/dist/index.html`)
+    icon: `http://localhost:8080/assets/logo_32.ico`
+  });
+  win.setMenu(null);
+  win.maximize();
+  win.loadURL(`http://localhost:8080`)
   win.on('closed', function() {
     win = null
   })
-  win.setMenu(null);
-  win.maximize();
+
 }
 
 /**
@@ -55,3 +56,7 @@ app.on('activate', function() {
     createWindow();
   }
 })
+
+module.exports = [
+  win
+]

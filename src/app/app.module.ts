@@ -6,10 +6,11 @@ import { MainModule } from './main';
 import { NavbarModule} from './navbar';
 import { EntitiesModule } from './entities';
 import { AppComponent } from './app.component';
-
+import { AuthModule } from './auth';
 
 @NgModule({
   imports: [
+    AuthModule,
     BrowserModule,
     BrowserAnimationsModule,
     MainModule,

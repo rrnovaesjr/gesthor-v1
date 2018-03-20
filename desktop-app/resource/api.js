@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mysql = require('mysql2');
 var cors = require('cors');
+var serveStatic = require('serve-static');
 var app = express();
 
 var resourceCliente = require('./cliente.resource');
@@ -23,22 +24,22 @@ function register(connection) {
     ];
     restAPI.forEach(function(funcMap) {
         funcMap.post.forEach(function([uri, callback]) {
-            app.post(uri, function(req, res, next) {
+            app.post('/api' + uri, function(req, res, next) {
                 callback(req, res, next, connection);
             });
         });
         funcMap.get.forEach(function([uri, callback]) {
-            app.get(uri, function(req, res, next) {
+            app.get('/api' + uri, function(req, res, next) {
                 callback(req, res, next, connection);
             });
         });
         funcMap.put.forEach(function([uri, callback]) {
-            app.put(uri, function(req, res, next) {
+            app.put('/api' + uri, function(req, res, next) {
                 callback(req, res, next, connection);
             });
         });
         funcMap.delete.forEach(function([uri, callback]) {
-            app.delete(uri, function(req, res, next) {
+            app.delete('/api' + uri, function(req, res, next) {
                 callback(req, res, next, connection);
             });
         });
@@ -65,7 +66,7 @@ let api = {
      * Configura a API para a aplicação *Gesthor*. Recebe, como parâmero, o modo de conexão ao
      * banco de dados. Se nenhum for fornecido, então o padrão é `api.mode = 'dev'`.
      */
-    config: function(mode = null) {
+    config: function(dirname, mode = null, port = 8080) {
         let connection;
         if(!mode) {
             mode = api.mode;
@@ -97,9 +98,11 @@ let api = {
         app.use(bodyParser.json({limit: '50mb'}));
         app.use(bodyParser.urlencoded({extended: true}));
         app.use(express.static('public'));
+        app.use(serveStatic(dirname));
         app.use(cors());
         register(connection);
-        app.listen(8080);
+        app.listen(port);
+        return app;
     }
 }
 

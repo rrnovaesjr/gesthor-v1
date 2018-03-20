@@ -30,4 +30,8 @@ h1.main-app-name
 {
     flex: 1 0 auto;
 }
-  
+
+.main-spacer
+{
+    flex: 1 1 auto;
+}
