@@ -64,7 +64,7 @@ class ClienteMapper {
      * @param clientes Clients as SQL rows.
      */
     public manySQLToClients(clientes: _Cliente[]): Cliente[] {
-        let result: Cliente[];
+        let result: Cliente[] = [];
         for(let cliente of clientes) {
             result.push(this.sQLToClient(cliente));
         }

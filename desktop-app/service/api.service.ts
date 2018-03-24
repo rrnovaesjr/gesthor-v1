@@ -51,7 +51,6 @@ export namespace ApiService {
      * @param port A port number.
      */
     function register(port: number): void {
-        console.log(restAPI);
         for(let api of restAPI) {
             if(api.post) {
 

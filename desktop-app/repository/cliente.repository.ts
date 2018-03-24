@@ -2,7 +2,6 @@ import { MySQLRepository } from './mysql-repository.interface';
 import { Cliente, _Cliente } from '../../commons/model/cliente';
 import { ApiService } from '../service/api.service';
 import { QueryError, RowDataPacket } from 'mysql';
-import { clienteMapper } from '../service/mapper/cliente.mapper';
 import { Query } from 'mysql';
 
 /**
