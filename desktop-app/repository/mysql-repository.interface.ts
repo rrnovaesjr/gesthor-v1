@@ -7,7 +7,7 @@ import { QueryError, RowDataPacket } from 'mysql2';
  * 
  * @author rodrigo-novaes
  */
-export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
+export interface MySQLRepository<_E extends RowDataPacket, PK> {
 
     /**
      * Creates an entity.
@@ -17,17 +17,17 @@ export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
      * @param entity Entity to be persisted.
      * @param callback A function to be executed when create is done.
      */
-    create(entity: E, callback: (err: QueryError, result: _E | _E[]) => any): void;
+    create(entity: _E, callback: (err: QueryError, result: _E[]) => any): void;
 
     /**
      * Updates an entity.
      * 
      * Can throw exceptions based on null identifiers.
      * 
-     * @param entities Entity to be updated.
+     * @param entity Entity to be updated.
      * @param callback A function to be executed when the update is completed.
      */
-    update(entity: E, callback: (err: QueryError, result: _E | _E[]) => any): void;
+    update(entity: _E, callback: (err: QueryError, result: _E[]) => any): void;
 
     /**
      * Reads an entity based on its primary key.
@@ -35,7 +35,7 @@ export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
      * @param id A unique identifier.
      * @param callback A function to be executed when the search is completed.
      */
-    findOne(id: PK, callback: (err: QueryError, result: _E | _E[]) => any): void;
+    findOne(id: PK, callback: (err: QueryError, result: _E[]) => any): void;
 
     /**
      * Find all objects from this entity.
@@ -43,9 +43,8 @@ export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
      * It's possible to insert query params to filter results as needed.
      * 
      * @param callback A function to be executed when the query is completed.
-     * @param params Optional query params.
      */
-    findAll(callback: (err: QueryError, result: _E | _E[]) => any, params?: any[]): void;
+    findAll(callback: (err: QueryError, result: _E[]) => any): void;
 
     /**
      * Deletes an entity based on its primary key.
@@ -53,7 +52,7 @@ export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
      * @param id A unique identifier.
      * @param callback A function to be executed when the deletion is completed.
      */
-    delete(id: PK, callback: (err: QueryError, result: _E | _E[]) => Query): void;
+    delete(id: PK, callback: (err: QueryError, result: _E[]) => void): void;
 
     /**
      * Finds objects based on optional search parameters.
@@ -62,5 +61,5 @@ export interface MySQLRepository<E, _E extends RowDataPacket, PK> {
      * @param params Optional query params.
      * @param searchOptions Optional search parameters.
      */
-    search(callback: (err: QueryError, result: _E | _E[]) => any, params?: any[], searchOptions?: any[]): void;
+    search(callback: (err: QueryError, result: _E[]) => any, params?: any[], searchOptions?: any[]): void;
 }

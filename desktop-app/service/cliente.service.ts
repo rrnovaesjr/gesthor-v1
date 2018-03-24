@@ -22,11 +22,25 @@ class ClienteService implements RestAPIService {
             callback: (req: Request, res: Response) => {
                 clienteRepository.findAll((err: QueryError, result: _Cliente[]) => {
                     if(err) {
-                        res.send(err);
-                        throw err;
+                        res.send(err.name);
                     }
                     let _result: Cliente[];
-                    _result = clienteMapper.manySQLToClients(result);
+                    _result = result && result.length ? clienteMapper.manySQLToClients(result) : [];
+                    res.send(_result);
+                });
+            }
+        },
+        {
+            url: '/api/cliente/:id',
+            callback: (req: Request, res: Response) => {
+                const clienteId: number = req.params.id;
+                clienteRepository.findOne(clienteId, (err: QueryError, result: _Cliente[]) => {
+                    if(err) {
+                        res.send(err.name);
+                    }
+
+                    let _result: Cliente;
+                    _result = result && result.length ? clienteMapper.sQLToClient(result[0]) : null;
                     res.send(_result);
                 });
             }

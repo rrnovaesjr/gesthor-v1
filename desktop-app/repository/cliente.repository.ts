@@ -9,15 +9,15 @@ import { Query } from 'mysql';
  * 
  * @author rodrigo-novaes
  */
-class ClienteRepository implements MySQLRepository<Cliente, _Cliente, number> {
+class ClienteRepository implements MySQLRepository<_Cliente, number> {
 
     /**
      * Creates a client.
      * 
-     * @param client Client with null identifier.
+     * @param cliente Client with null identifier.
      */
-    public create(client: Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
-        ApiService.connection.query('insert into `cliente` set ?', client, callback);
+    public create(cliente: _Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
+        ApiService.connection.query('insert into `cliente` set ?', cliente, callback);
     }
 
     /**
@@ -25,7 +25,7 @@ class ClienteRepository implements MySQLRepository<Cliente, _Cliente, number> {
      * 
      * @param client Client with an identifier.
      */
-    public update(client: Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
+    public update(client: _Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
         ApiService.connection.query('update `cliente` set ?', client, callback);
     }
 
@@ -35,7 +35,7 @@ class ClienteRepository implements MySQLRepository<Cliente, _Cliente, number> {
      * @param id A unique identifier.
      */
     public findOne(id: number, callback: (err: QueryError, result: _Cliente[]) => any): void {
-        return null;
+        ApiService.connection.query('select * from `cliente` where id = ' + id, callback);
     }
 
     /**
