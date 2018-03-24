@@ -10,12 +10,12 @@ export interface RestAPIService {
     /**
      * A set of pairs (`url`, `callback`) that maps a HTTP POST request urls to a specific URL.
      */
-    post?: Function[];
+    post?: { url: string, callback: (req: Request, res: Response) => void}[];
 
     /**
      * A set of pairs (`url`, `callback`) that maps a HTTP PUT request urls to a specific URL.
      */
-    put?: Function[];
+    put?: { url: string, callback: (req: Request, res: Response) => void}[];
     
     /**
      * A set of pairs (`url`, `callback`) that maps a HTTP GET request urls to a specific URL.
@@ -25,6 +25,6 @@ export interface RestAPIService {
     /**
      * A set of pairs (`url`, `callback`) that maps a HTTP DELETE request urls to a specific URL.
      */
-    delete?: Function[];
+    delete?: { url: string, callback: (req: Request, res: Response) => void}[];
 
 }

@@ -1,18 +1,20 @@
+import { SQLMapper } from './mapper.interface';
 import { Cliente, _Cliente } from '../../../commons/model/cliente';
+import { Table } from '../../repository/table.interface';
+import { OkPacket } from 'mysql';
 
 /**
  * A mapper for the Client entity.
  */
-class ClienteMapper {
+class ClienteMapper implements SQLMapper<Cliente, _Cliente> {
 
     /**
      * Maps a client entity to a SQL row.
      * 
      * @param cliente A client instance.
      */
-    public clientToSQL(cliente: Cliente): _Cliente {
+    public entityToSQL(cliente: Cliente): _Cliente {
         return {
-            constructor: null,
             id: cliente.id,
             usuario_id: cliente.usuarioId,
             bairro: cliente.bairro,
@@ -37,24 +39,25 @@ class ClienteMapper {
      * 
      * @param cliente A client's SQL row.
      */
-    public sQLToClient(cliente: _Cliente): Cliente {
+    public sQLToEntity(cliente: Table<_Cliente>): Cliente {
+        const _metamodelCliente: _Cliente = Object.assign<_Cliente, Table<_Cliente>>({}, cliente);
         return new Cliente(
-            cliente.id,
-            cliente.usuario_id,
-            cliente.nome_razaosocial,
-            cliente.cpf_cnpj,
-            cliente.endereco,
-            cliente.numero,
-            cliente.bairro,
-            cliente.cidade,
-            cliente.estado,
-            cliente.pais,
-            cliente.cep,
-            cliente.telefone_celular,
-            cliente.fax,
-            cliente.telefone_comercial,
-            cliente.email,
-            cliente.descricao
+            _metamodelCliente.id,
+            _metamodelCliente.usuario_id,
+            _metamodelCliente.nome_razaosocial,
+            _metamodelCliente.cpf_cnpj,
+            _metamodelCliente.endereco,
+            _metamodelCliente.numero,
+            _metamodelCliente.bairro,
+            _metamodelCliente.cidade,
+            _metamodelCliente.estado,
+            _metamodelCliente.pais,
+            _metamodelCliente.cep,
+            _metamodelCliente.telefone_celular,
+            _metamodelCliente.fax,
+            _metamodelCliente.telefone_comercial,
+            _metamodelCliente.email,
+            _metamodelCliente.descricao
         );
     }
 
@@ -63,10 +66,10 @@ class ClienteMapper {
      * 
      * @param clientes Clients as SQL rows.
      */
-    public manySQLToClients(clientes: _Cliente[]): Cliente[] {
+    public manySQLToEntities(clientes: Table<_Cliente>[]): Cliente[] {
         let result: Cliente[] = [];
         for(let cliente of clientes) {
-            result.push(this.sQLToClient(cliente));
+            result.push(this.sQLToEntity(cliente));
         }
         return result;
     }

@@ -1,12 +1,11 @@
-import {RowDataPacket} from 'mysql';
 
 /**
  * A metamodel that represents a SQL row of a client's entity.
  * 
  * @author rodrigo-novaes
  */
-export interface _Cliente extends RowDataPacket {
-    
+export interface _Cliente {
+
     id?: number;
 
     usuario_id?: string;
