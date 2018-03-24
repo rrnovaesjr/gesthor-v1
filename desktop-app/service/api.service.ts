@@ -9,9 +9,10 @@ import * as serveStatic from 'serve-static';
 import * as cors from 'cors';
 import { Constants } from './util/constants';
 import { environment } from '../environments';
-
-import { clientService } from './client.service';
 import { RestAPIService } from './rest-service.interface';
+import { Request, Response } from 'express';
+
+import { clienteService } from './cliente.service';
 
 /**
  * This namespace encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -25,8 +26,8 @@ export namespace ApiService {
     /**
      * All implemented API interfaces.
      */
-    var restAPI: RestAPIService[] = [
-        clientService
+    const restAPI: RestAPIService[] = [
+        clienteService
     ]
 
     /**
@@ -50,6 +51,7 @@ export namespace ApiService {
      * @param port A port number.
      */
     function register(port: number): void {
+        console.log(restAPI);
         for(let api of restAPI) {
             if(api.post) {
 
@@ -59,8 +61,8 @@ export namespace ApiService {
             }
             if(api.get) {
                 for(let get of api.get) {
-                    ServerService.getExpressByPort(port).get(get.url, (req, res, next) => {
-                        get.callback(req, res, next);
+                    ServerService.getExpressByPort(port).get(get.url, (req: Request, res: Response) => {
+                        get.callback(req, res);
                     });
                 }
             }

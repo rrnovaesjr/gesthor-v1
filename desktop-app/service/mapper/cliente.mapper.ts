@@ -58,6 +58,19 @@ class ClienteMapper {
         );
     }
 
+    /**
+     * Transform multiples SQL rows into clients.
+     * 
+     * @param clientes Clients as SQL rows.
+     */
+    public manySQLToClients(clientes: _Cliente[]): Cliente[] {
+        let result: Cliente[];
+        for(let cliente of clientes) {
+            result.push(this.sQLToClient(cliente));
+        }
+        return result;
+    }
+
 }
 
 /**

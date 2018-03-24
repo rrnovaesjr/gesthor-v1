@@ -2,25 +2,23 @@ import { MySQLRepository } from './mysql-repository.interface';
 import { Cliente, _Cliente } from '../../commons/model/cliente';
 import { ApiService } from '../service/api.service';
 import { QueryError, RowDataPacket } from 'mysql';
+import { clienteMapper } from '../service/mapper/cliente.mapper';
+import { Query } from 'mysql';
 
 /**
  * A private class that defines a repository for the Client entity.
  * 
  * @author rodrigo-novaes
  */
-class ClientRepository implements MySQLRepository<Cliente, number> {
+class ClienteRepository implements MySQLRepository<Cliente, _Cliente, number> {
 
     /**
      * Creates a client.
      * 
      * @param client Client with null identifier.
      */
-    public create(client: Cliente): Cliente {
-        let queryResult: Cliente;
-        ApiService.connection.query(`insert into cliente set ?`, client, (err: QueryError, result: _Cliente[]) => {
-            console.log(result);
-        });
-        return null;
+    public create(client: Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
+        ApiService.connection.query('insert into `cliente` set ?', client, callback);
     }
 
     /**
@@ -28,8 +26,8 @@ class ClientRepository implements MySQLRepository<Cliente, number> {
      * 
      * @param client Client with an identifier.
      */
-    public update(client: Cliente): Cliente {
-        return null;
+    public update(client: Cliente, callback: (err: QueryError, result: _Cliente[]) => any): void {
+        ApiService.connection.query('update `cliente` set ?', client, callback);
     }
 
     /**
@@ -37,7 +35,7 @@ class ClientRepository implements MySQLRepository<Cliente, number> {
      * 
      * @param id A unique identifier.
      */
-    public findOne(id: number): Cliente {
+    public findOne(id: number, callback: (err: QueryError, result: _Cliente[]) => any): void {
         return null;
     }
 
@@ -46,15 +44,18 @@ class ClientRepository implements MySQLRepository<Cliente, number> {
      * 
      * @param params Query parameters.
      */
-    public findAll(params?: any[]): Cliente[] {
-        let queryResult: Cliente[];
-        ApiService.connection.query(`select * from cliente`, (err: QueryError, result: _Cliente[]) => {
-            if(err) {
-                throw err;
-            }
-            queryResult = 
-        });
-        return [];
+    public findAll(callback: (err: QueryError, result: _Cliente[]) => any, params?: any[]): void {
+        ApiService.connection.query('select * from `cliente`', callback);
+    }
+
+    /**
+     * Deletes a client.
+     * 
+     * @param id Client's identifier.
+     * @param callback A callback to be executed when client is deleted.
+     */
+    public delete(id: number, callback: (err: QueryError, result: _Cliente[]) => any): void {
+
     }
 
     /**
@@ -63,7 +64,7 @@ class ClientRepository implements MySQLRepository<Cliente, number> {
      * @param params Query parameters.
      * @param options Search options.
      */
-    public search(params?: any[], options?: any[]): Cliente[] {
+    public search(callback: (err: QueryError, result: _Cliente[]) => any, params?: any[], options?: any[]): Query {
         return null;
     }
 
@@ -74,4 +75,4 @@ class ClientRepository implements MySQLRepository<Cliente, number> {
  * 
  * @author rodrigo-novaes
  */
-export const clientRepository: ClientRepository = new ClientRepository();
+export const clienteRepository: ClienteRepository = new ClienteRepository();
