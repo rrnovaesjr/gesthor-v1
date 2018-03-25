@@ -1,6 +1,5 @@
 import { SQLMapper } from './mapper.interface';
 import { Cliente, _Cliente } from '../../../commons/model/cliente';
-import { Table } from '../../repository/table.interface';
 import { OkPacket } from 'mysql';
 
 /**
@@ -39,8 +38,8 @@ class ClienteMapper implements SQLMapper<Cliente, _Cliente> {
      * 
      * @param cliente A client's SQL row.
      */
-    public sQLToEntity(cliente: Table<_Cliente>): Cliente {
-        const _metamodelCliente: _Cliente = Object.assign<_Cliente, Table<_Cliente>>({}, cliente);
+    public sQLToEntity(cliente: OkPacket): Cliente {
+        const _metamodelCliente: _Cliente = Object.assign<_Cliente, OkPacket>({}, cliente);
         return new Cliente(
             _metamodelCliente.id,
             _metamodelCliente.usuario_id,
@@ -66,7 +65,7 @@ class ClienteMapper implements SQLMapper<Cliente, _Cliente> {
      * 
      * @param clientes Clients as SQL rows.
      */
-    public manySQLToEntities(clientes: Table<_Cliente>[]): Cliente[] {
+    public manySQLToEntities(clientes: OkPacket[]): Cliente[] {
         let result: Cliente[] = [];
         for(let cliente of clientes) {
             result.push(this.sQLToEntity(cliente));

@@ -1,4 +1,4 @@
-import { Table } from '../../repository/table.interface';
+import { OkPacket } from 'mysql';
 
 /**
  * An interface that defines the most basic mapping models from a metamodel SQL object
@@ -13,7 +13,7 @@ export interface SQLMapper<E, _E> {
      * 
      * @param source Source MySQL-column defined object.
      */
-    sQLToEntity(source: Table<_E>): E;
+    sQLToEntity(source: OkPacket): E;
 
     /**
      * Returns a MySQL-column defined object from an entity.
@@ -27,6 +27,6 @@ export interface SQLMapper<E, _E> {
      * 
      * @param source Array of MySQL-column defined objects.
      */
-    manySQLToEntities(source: Table<_E>[]): E[];
+    manySQLToEntities(source: OkPacket[]): E[];
 
 }

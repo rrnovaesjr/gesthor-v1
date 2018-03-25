@@ -2,10 +2,9 @@ import { RestAPIService } from './rest-service.interface';
 import { clienteRepository } from '../repository/cliente.repository';
 import { RequestHandler } from 'express';
 import { _Cliente, Cliente } from '../../commons/model/cliente';
-import { QueryError } from 'mysql';
+import { QueryError, OkPacket } from 'mysql';
 import { clienteMapper } from './mapper/cliente.mapper';
 import { Request, Response } from 'express';
-import { Table } from '../repository/table.interface';
 
 /**
  * A client service handler for API requests.
@@ -17,33 +16,56 @@ class ClienteService implements RestAPIService {
     /**
      * Maps all POST functions for clients;
      */
-    readonly post = [
+    public readonly post = [
         {
             url: '/api/cliente',
             callback: (req: Request, res: Response) => {
                 const clienteBody: _Cliente = clienteMapper.entityToSQL(req.body);
-                clienteRepository.create(clienteBody, (err: QueryError, result: Table<_Cliente>[]) => {
+                clienteRepository.create(clienteBody, (err: QueryError, result: OkPacket) => {
                     if(err) {
-                        res.send(err.name);
+                        res.send(err);
+                        return;
                     }
-                    let _result: Cliente;
-                    _result = result && result.length ? clienteMapper.sQLToEntity(result[0]) : null;
+                    let _result: Cliente = clienteBody;
+                    _result.id = result.insertId;
                     res.send(_result);
                 });
             }   
         }
-    ]
+    ];
+
+    /**
+     * Maps all PUT functions for clients.
+     */
+    public readonly put = [
+        {
+            url: '/api/cliente',
+            callback: (req: Request, res: Response) => {
+                const clienteBody: _Cliente = clienteMapper.entityToSQL(req.body);
+                clienteRepository.update(clienteBody, (err: QueryError, result: OkPacket) => {
+                    if(err) {
+                        res.send(err);
+                        return;
+                    }
+                    console.log(result);
+                    let _result: Cliente = clienteBody;
+                    res.send(_result);
+                })
+            }
+        }
+    ];
 
     /**
      * Maps all GET functions for clients.
      */
-    readonly get = [
+    public readonly get = [
         {
             url: '/api/cliente',
             callback: (req: Request, res: Response) => {
-                clienteRepository.findAll((err: QueryError, result: Table<_Cliente>[]) => {
+                clienteRepository.findAll((err: QueryError, result: OkPacket[]) => {
                     if(err) {
-                        res.send(err.name);
+                        res.send(err);
+                        return;
                     }
                     let _result: Cliente[];
                     _result = result && result.length ? clienteMapper.manySQLToEntities(result) : [];
@@ -55,15 +77,32 @@ class ClienteService implements RestAPIService {
             url: '/api/cliente/:id',
             callback: (req: Request, res: Response) => {
                 const clienteId: number = req.params.id;
-                clienteRepository.findOne(clienteId, (err: QueryError, result: Table<_Cliente>[]) => {
+                clienteRepository.findOne(clienteId, (err: QueryError, result: OkPacket[]) => {
                     if(err) {
-                        res.send(err.name);
+                        res.send(err);
+                        return;
                     }
-                    let ppp = Object.assign<_Cliente, Table<_Cliente>>({}, result[0]);
-                    console.log(ppp);
                     let _result: Cliente;
                     _result = result && result.length ? clienteMapper.sQLToEntity(result[0]) : null;
                     res.send(_result);
+                });
+            }
+        }
+    ];
+
+    /**
+     * Maps all DELETE functions for clients.
+     */
+    public readonly delete = [
+        {
+            url: '/api/cliente/:id',
+            callback: (req: Request, res: Response) => {
+                const clienteId: number = req.params.id;
+                clienteRepository.delete(clienteId, (err: QueryError, result: OkPacket[]) => {
+                    if(err) {
+                        res.send(err);
+                        return;
+                    }
                 });
             }
         }
