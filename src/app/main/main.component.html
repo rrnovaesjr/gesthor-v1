@@ -1,0 +1,16 @@
+<div class="main-container" [class.main-is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="main-toolbar">
+    <a mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></a>
+    <h1 class="main-app-name">Gesthor</h1>
+    <span class="main-spacer"></span>
+    <app-member></app-member>
+  </mat-toolbar>
+  <mat-sidenav-container class="main-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+      <router-outlet name="navbar"></router-outlet>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
