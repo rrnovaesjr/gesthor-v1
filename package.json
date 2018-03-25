@@ -10,9 +10,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "angular-build": "ng build --base-href=./ -op=./desktop-app/dist/",
+    "angular-build": "ng build --base-href=. -op=./desktop-app/dist/",
     "electron": "electron .",
-    "electron-build": "ng build --base-href=./ -op=./desktop-app/dist/ && electron ."
+    "electron-build": "ng build --base-href=. -op=./desktop-app/dist/ && electron ."
   },
   "private": true,
   "dependencies": {
