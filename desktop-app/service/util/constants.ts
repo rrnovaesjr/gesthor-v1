@@ -26,4 +26,14 @@ export namespace Constants {
      * The object that defines the production environment.
      */
     export const ENVIRONMENT_PROD: string = 'prod';
+
+    /**
+     * The default search parameters for each query.
+     */
+    export const DEFAULT_QUERY_PARAMS: {sort: string, size: number, page: number} = {
+        sort: 'id,ASC',
+        size: 20,
+        page: 0
+    }
+
 }
