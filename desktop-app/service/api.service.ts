@@ -15,25 +15,25 @@ import { Request, Response } from 'express';
 import { clienteService } from './cliente.service';
 
 /**
- * This namespace encapsulates the fundamental functions from Gesthor's API into a singleton reference.
+ * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
  * 
  * Any service/resource that imports this service can access the public functions the Gesthor's API exports.
  * 
  * @author rodrigo-novaes
  */
-export namespace ApiService {
+class ApiService {
 
     /**
      * All implemented API interfaces.
      */
-    const restAPI: RestAPIService[] = [
+    private restAPI: RestAPIService[] = [
         clienteService
     ]
 
     /**
      * Creates a request handler for secure connections.
      */
-    var jwtCheck: jwt.RequestHandler = jwt({
+    private jwtCheck: jwt.RequestHandler = jwt({
         secret: jwks.expressJwtSecret(environment.auth.secret),
         audience: environment.auth.audience,
         issuer: environment.auth.issuer,
@@ -43,15 +43,15 @@ export namespace ApiService {
     /**
      * A global reference to a `mysql.Connection` object.
      */
-    export var connection: mysql.Connection;
+    public readonly connection: mysql.Connection = mysql.createConnection(environment.databaseConfig);
 
     /**
      * A private function that registers to the services and API methods for each entity.
      * 
      * @param port A port number.
      */
-    function register(port: number): void {
-        for(let api of restAPI) {
+    private register(port: number): void {
+        for(let api of this.restAPI) {
             if(api.post) {
                 for(let post of api.post) {
                     ServerService.getExpressByPort(port).post(post.url, (req: Request, res: Response) => {
@@ -86,8 +86,7 @@ export namespace ApiService {
     /**
      * A global function that configures the API.
      */
-    export function config(port: number = Constants.DEFAULT_API_PORT): void {
-        connection = mysql.createConnection(environment.databaseConfig);
+    public config(port: number = Constants.DEFAULT_API_PORT): void {
         serverService.build(port);
         serverService.use(port, bodyParser.json(environment.serverConfig.json));
         serverService.use(port, bodyParser.urlencoded(environment.serverConfig.urlencoded));
@@ -95,8 +94,15 @@ export namespace ApiService {
         //serverService.use(port, serveStatic());
         serverService.use(port, cors());
         //serverService.use(port, jwtCheck);
-        register(port);
+        this.register(port);
         serverService.listen(port);
     }
     
 }
+
+/**
+ * A singleton constant reference to the Gesthor's API service.
+ * 
+ * @author rodrigo-novaes
+ */
+export const apiService: ApiService = new ApiService();
