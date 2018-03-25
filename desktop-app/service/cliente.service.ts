@@ -47,7 +47,6 @@ class ClienteService implements RestAPIService {
                         res.send(err);
                         return;
                     }
-                    console.log(result);
                     let _result: Cliente = clienteBody;
                     res.send(_result);
                 })
@@ -103,6 +102,7 @@ class ClienteService implements RestAPIService {
                         res.send(err);
                         return;
                     }
+                    res.send(result);
                 });
             }
         }

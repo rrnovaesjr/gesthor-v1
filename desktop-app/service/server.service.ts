@@ -2,25 +2,25 @@ import * as express from 'express';
 import { Server } from 'http';
 
 /**
- * This namespace encapsulates the fundamental functions from Express' API into a singleton reference.
+ * This class encapsulates the fundamental functions from Express' API into a singleton reference.
  * 
  * @author rodrigo-novaes
  */
-export namespace ServerService {
+class ServerService {
 
     /**
      * Global reference to the application's servers.
      */
-    var serverApplication: Map<number, express.Express> = new Map();
+    public readonly serverApplication: Map<number, express.Express> = new Map();
 
     /**
      * Creates a new express service in the given port.
      * 
      * @param port A port number.
      */
-    export function build(port: number): express.Express {
-        serverApplication.set(port, express())
-        return serverApplication.get(port);
+    public build(port: number): express.Express {
+        this.serverApplication.set(port, express())
+        return this.serverApplication.get(port);
     }
 
     /**
@@ -31,11 +31,11 @@ export namespace ServerService {
      * @param port A port number.
      * @param handler Defines a request handler to be used on callbacks.
      */
-    export function use(port: number, handler: express.RequestHandler | express.RequestHandler[]): express.Express {
-        if(!serverApplication.get(port)) {
+    public use(port: number, handler: express.RequestHandler | express.RequestHandler[]): express.Express {
+        if(!this.serverApplication.get(port)) {
             return null;
         }
-        return serverApplication.get(port).use(handler);
+        return this.serverApplication.get(port).use(handler);
     }
 
     /**
@@ -46,11 +46,11 @@ export namespace ServerService {
      * @param hostname A string to the hostname.
      * @param callback A function to be executed as callback.
      */
-    export function listen(port: number, hostname?: string, callback?: Function): Server {
-        if(!serverApplication.get(port)) {
+    public listen(port: number, hostname?: string, callback?: Function): Server {
+        if(!this.serverApplication.get(port)) {
             return null;
         }
-        return serverApplication.get(port).listen(port, hostname, callback);
+        return this.serverApplication.get(port).listen(port, hostname, callback);
     }
 
     /**
@@ -58,8 +58,15 @@ export namespace ServerService {
      * 
      * @param port A port number.
      */
-    export function getExpressByPort(port: number): express.Express {
-        return serverApplication.get(port);
+    public getExpressByPort(port: number): express.Express {
+        return this.serverApplication.get(port);
     }
 
 }
+
+/**
+ * A constant singleton reference to the Servers Service.
+ * 
+ * @author rodrigo-novaes
+ */
+export const serverService = new ServerService();

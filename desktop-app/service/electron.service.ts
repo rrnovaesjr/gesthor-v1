@@ -3,54 +3,54 @@ import * as path from 'path';
 import * as url from 'url';
 
 /**
- * This namespace encapsulates the fundamental functions from Electron's API into a singleton reference.
+ * This class encapsulates the fundamental functions from Electron's API into a singleton reference.
  * 
  * Any service/resource that imports this service can access the same functions the Electron's API does.
  * 
  * @author rodrigo-novaes
  */
-export namespace ElectronService {
+class ElectronService {
 
     /**
      * Default window's width.
      */
-    export const MAIN_WINDOW_DEFAULT_WIDTH: number = 800;
+    public static readonly MAIN_WINDOW_DEFAULT_WIDTH: number = 800;
 
     /**
      * Default window's height.
      */
-    export const MAIN_WINDOW_DEFAULT_HEIGHT: number = 600;
+    public static readonly MAIN_WINDOW_DEFAULT_HEIGHT: number = 600;
 
     /**
      * Default `BrowserWindow`'s default configuration.
      */
-    export const BROWSER_WINDOW_DEFAULT_CONFIG: electron.BrowserWindowConstructorOptions = {
+    public static readonly BROWSER_WINDOW_DEFAULT_CONFIG: electron.BrowserWindowConstructorOptions = {
         width: 800,
         height: 600
     };
 
     /**
-     * Global constant reference to the Electron application.
+     * Global reference to the Electron application.
      */
-    export var application: electron.App = electron.app;
+    public application: electron.App = electron.app;
 
     /**
-     * Global constant reference to the main window.
+     * Global reference to the main window.
      */
-    export var rootWindow: electron.BrowserWindow;
+    public rootWindow: electron.BrowserWindow;
 
     /**
      * Function executed on Electron application start.
      * 
      * This sets the root window's reference, as well as sets its parameters.
      */
-    function _onAppStart(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): void {
-        rootWindow = new electron.BrowserWindow(config ? config : BROWSER_WINDOW_DEFAULT_CONFIG);
+    public _onAppStart(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): void {
+        this.rootWindow = new electron.BrowserWindow(config ? config : ElectronService.BROWSER_WINDOW_DEFAULT_CONFIG);
         if(maximized || maximized == null || maximized == undefined) {
-            ElectronService.rootWindow.maximize();
+            this.rootWindow.maximize();
         }
-        rootWindow.loadURL(url.format(initialURL));
-        rootWindow.on('close', (event: electron.Event) => rootWindow = null);
+        this.rootWindow.loadURL(url.format(initialURL));
+        this.rootWindow.on('close', (event: electron.Event) => this.rootWindow = null);
     }
 
     /**
@@ -72,19 +72,26 @@ export namespace ElectronService {
      * @param maximized Set if main window must be maximized.
      * @param menu Set application's menu.
      */
-    export function appInit(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): electron.App {
-        application = application.on('ready', () => _onAppStart(initialURL, config, maximized, menu));
-        application = application.on('activate', () => {
-            if(rootWindow == null) {
-                _onAppStart(initialURL, config, maximized, menu);
+    public appInit(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): electron.App {
+        this.application = this.application.on('ready', () => this._onAppStart(initialURL, config, maximized, menu));
+        this.application = this.application.on('activate', () => {
+            if(this.rootWindow == null) {
+                this._onAppStart(initialURL, config, maximized, menu);
             }
         });
-        application = application.on('window-all-closed', () => {
+        this.application = this.application.on('window-all-closed', () => {
             if(process.platform !== 'darwin') {
-                application.quit();
+                this.application.quit();
             }
         });
-        return application;
+        return this.application;
     }
 
 }
+
+/**
+ * A constant singleton reference to the ElectronService API.
+ * 
+ * @author rodrigo-novaes
+ */
+export const electronService: ElectronService = new ElectronService();

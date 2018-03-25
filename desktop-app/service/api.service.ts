@@ -1,4 +1,4 @@
-import { ServerService as serverService, ServerService } from './server.service';
+import { serverService } from './server.service';
 import * as mysql from 'mysql2';
 import * as jwt from 'express-jwt';
 import * as jwks from 'jwks-rsa';
@@ -54,28 +54,28 @@ class ApiService {
         for(let api of this.restAPI) {
             if(api.post) {
                 for(let post of api.post) {
-                    ServerService.getExpressByPort(port).post(post.url, (req: Request, res: Response) => {
+                    serverService.getExpressByPort(port).post(post.url, (req: Request, res: Response) => {
                         post.callback(req, res);
                     });
                 }
             }
             if(api.put) {
                 for(let put of api.put) {
-                    ServerService.getExpressByPort(port).put(put.url, (req: Request, res: Response) => {
+                    serverService.getExpressByPort(port).put(put.url, (req: Request, res: Response) => {
                         put.callback(req, res);
                     });
                 }
             }
             if(api.get) {
                 for(let get of api.get) {
-                    ServerService.getExpressByPort(port).get(get.url, (req: Request, res: Response) => {
+                    serverService.getExpressByPort(port).get(get.url, (req: Request, res: Response) => {
                         get.callback(req, res);
                     });
                 }
             }
             if(api.delete) {
                 for(let del of api.delete) {
-                    ServerService.getExpressByPort(port).delete(del.url, (req: Request, res: Response) => {
+                    serverService.getExpressByPort(port).delete(del.url, (req: Request, res: Response) => {
                         del.callback(req, res);
                     });
                 }
