@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { AuthService } from '../auth';
-import { UserInfo } from '@firebase/auth-types';
+import { Auth0UserProfile } from 'auth0-js';
 import {
   trigger,
   state,
@@ -18,13 +18,13 @@ import {
     <mat-card class="login-card" *ngIf="showCard" [@enterCard]>
       <mat-card-header>
         <div mat-card-avatar *ngIf="authService.isAuthenticated">
-          <img [src]="user?.photoURL">
+          <img [src]="user?.picture">
         </div>
         <mat-card-title>
           Bem-vindo
         </mat-card-title>
         <mat-card-subtitle *ngIf="authService.isAuthenticated">
-          {{user?.displayName}}
+          {{user?.name}}
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-actions>
@@ -75,7 +75,7 @@ export class MemberComponent implements OnInit {
   /**
    * Maintain users information.
    */
-  public user: UserInfo;
+  public user: Auth0UserProfile;
 
   /**
    * Controls view of login card.
@@ -87,7 +87,11 @@ export class MemberComponent implements OnInit {
    * 
    * @param authService Authorization service.
    */
-  constructor(public authService: AuthService) { 
+  constructor(public authService: AuthService) {
+    this.authService.userProfile$.subscribe((res: Auth0UserProfile) => {
+      this.user = res;
+      
+    });
   }
 
   /** 

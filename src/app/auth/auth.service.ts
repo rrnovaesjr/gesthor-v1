@@ -1,12 +1,28 @@
 import { Injectable } from '@angular/core';
-import * as auth0 from 'auth0-js';
+import { 
+  WebAuth, 
+  Auth0UserProfile, 
+  Auth0DecodedHash, 
+  Auth0Callback, 
+  Auth0Error 
+} from 'auth0-js';
 import { environment } from './../../environments/environment';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
+/**
+ * An Auth0 service interface.
+ * 
+ * @author rodrigo-novaes
+ */
 @Injectable()
 export class AuthService {
 
-  auth0 = new auth0.WebAuth({
+
+  /**
+   * A private reference to the Auth0 web authority.
+   */
+  private readonly auth0: WebAuth = new WebAuth({
     clientID: environment.auth.clientID,
     domain: environment.auth.domain,
     responseType: 'token',
@@ -15,69 +31,121 @@ export class AuthService {
     scope: environment.auth.scope
   });
 
-  userProfile: any;
+  /**
+   * A private reference to the Auth0 user profile.
+   */
+  private userProfile: Auth0UserProfile;
 
-  accessToken: string;
+  /**
+   * A behavior subject for the user profile.
+   */
+  private _userProfile: BehaviorSubject<Auth0UserProfile> = new BehaviorSubject(this.userProfile);
 
-  authenticated: boolean;
+  /**
+   * Creates a stream for observing into user profile's changes.
+   */
+  public userProfile$: Observable<Auth0UserProfile> = this._userProfile.asObservable();
 
+  /**
+   * A private reference to the access token.
+   */
+  private accessToken: string;
+
+  /**
+   * A boolean flag that indicates if an user is authenticated.
+   */
+  private authenticated: boolean;
+
+  /**
+   * Builds the service based on the current session settings.
+   * 
+   * @param router A router reference.
+   */
   constructor(private router: Router) {
     this.getAccessToken();
   }
 
-  login() {
+  /**
+   * Open centralized login.
+   */
+  public login(): void {
     this.auth0.authorize();
   }
 
-  handleLoginCallback() {
-    this.auth0.parseHash((err, authResult) => {
-      if (authResult && authResult.accessToken) {
+  /**
+   * Handles the login callback.
+   */
+  public handleLoginCallback(): void {
+    this.auth0.parseHash((err: Auth0Error, authResult: Auth0DecodedHash) => {
+      if(authResult && authResult.accessToken) {
         window.location.hash = '';
         this.getUserInfo(authResult);
-      } else if (err) {
-        console.error(`Error: ${err.error}`);
       }
       this.router.navigate(['/']);
     });
   }
 
-  getAccessToken() {
-    this.auth0.checkSession({}, (err, authResult) => {
+  /**
+   * Gets an access token based on the session.
+   */
+  public getAccessToken(): void {
+    this.auth0.checkSession({}, (err: Auth0Error, authResult: Auth0DecodedHash) => {
       if (authResult && authResult.accessToken) {
         this.getUserInfo(authResult);
-      } else if (err) {
-        console.log(err);
+      } 
+      else if(err) {
         this.logout();
         this.authenticated = false;
       }
-    });
+    }); 
   }
 
-  getUserInfo(authResult) {
-    this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
-      if (profile) {
+  /**
+   * Get the user's information from the authorization result.
+   * 
+   * @param authResult A reference to the authorization result.
+   */
+  public getUserInfo(authResult: Auth0DecodedHash): void {
+    this.auth0.client.userInfo(authResult.accessToken, (err: Auth0Error, profile: Auth0UserProfile) => {
+      if(profile) {
         this._setSession(authResult, profile);
       }
     });
   }
 
-  private _setSession(authResult, profile) {
-    const expTime = authResult.expiresIn * 1000 + Date.now();
+  /**
+   * Sets the current session based on the Auth0Profile and the decoded hash.
+   * 
+   * @param authResult Decoded hash.
+   * @param profile User's profile.
+   */
+  private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
+    const expTime: number = authResult.expiresIn * 1000 + Date.now();
     localStorage.setItem('expires_at', JSON.stringify(expTime));
     this.accessToken = authResult.accessToken;
     this.userProfile = profile;
+    this._userProfile.next(this.userProfile);
     this.authenticated = true;
   }
 
-  logout() {
+  /**
+   * Removes current session data.
+   */
+  public logout(): void {
     localStorage.removeItem('expires_at');
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('nonce');
     this.userProfile = undefined;
+    this._userProfile.next(this.userProfile);
     this.accessToken = undefined;
     this.authenticated = false;
   }
 
+  /**
+   * Checks if current user is authenticated.
+   */
   get isAuthenticated(): boolean {
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    const expiresAt: number = JSON.parse(localStorage.getItem('expires_at'));
     return Date.now() < expiresAt && this.authenticated;
   }
 
