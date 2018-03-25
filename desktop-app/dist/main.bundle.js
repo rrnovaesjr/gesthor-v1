@@ -127,6 +127,7 @@ var AppModule = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthCallbackComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1____ = __webpack_require__("./src/app/auth/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -137,17 +138,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var AuthCallbackComponent = /** @class */ (function () {
-    function AuthCallbackComponent() {
+    function AuthCallbackComponent(authService) {
+        this.authService = authService;
     }
     AuthCallbackComponent.prototype.ngOnInit = function () {
+        this.authService.handleLoginCallback();
     };
     AuthCallbackComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'app-auth-callback',
             template: '<mat-card>Carregando...</mat-card>'
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1____["b" /* AuthService */]])
     ], AuthCallbackComponent);
     return AuthCallbackComponent;
 }());
@@ -876,7 +880,7 @@ var environment = {
         clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
         domain: 'rrnovaesjr.auth0.com',
         audience: 'http://localhost:8080',
-        redirect: 'http://localhost:8080/callback',
+        redirect: 'http://localhost:9000/callback',
         scope: 'openid profile email'
     },
 };
