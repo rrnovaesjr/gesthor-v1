@@ -266,6 +266,8 @@ var AuthModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_auth0_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_auth0_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs__ = __webpack_require__("./node_modules/rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -279,9 +281,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+/**
+ * An Auth0 service interface.
+ *
+ * @author rodrigo-novaes
+ */
 var AuthService = /** @class */ (function () {
+    /**
+     * Builds the service based on the current session settings.
+     *
+     * @param router A router reference.
+     */
     function AuthService(router) {
         this.router = router;
+        /**
+         * A private reference to the Auth0 web authority.
+         */
         this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
             clientID: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.clientID,
             domain: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain,
@@ -290,11 +306,25 @@ var AuthService = /** @class */ (function () {
             audience: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.audience,
             scope: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.scope
         });
+        /**
+         * A behavior subject for the user profile.
+         */
+        this._userProfile = new __WEBPACK_IMPORTED_MODULE_4_rxjs__["BehaviorSubject"](this.userProfile);
+        /**
+         * Creates a stream for observing into user profile's changes.
+         */
+        this.userProfile$ = this._userProfile.asObservable();
         this.getAccessToken();
     }
+    /**
+     * Open centralized login.
+     */
     AuthService.prototype.login = function () {
         this.auth0.authorize();
     };
+    /**
+     * Handles the login callback.
+     */
     AuthService.prototype.handleLoginCallback = function () {
         var _this = this;
         this.auth0.parseHash(function (err, authResult) {
@@ -302,12 +332,12 @@ var AuthService = /** @class */ (function () {
                 window.location.hash = '';
                 _this.getUserInfo(authResult);
             }
-            else if (err) {
-                console.error("Error: " + err.error);
-            }
             _this.router.navigate(['/']);
         });
     };
+    /**
+     * Gets an access token based on the session.
+     */
     AuthService.prototype.getAccessToken = function () {
         var _this = this;
         this.auth0.checkSession({}, function (err, authResult) {
@@ -315,12 +345,16 @@ var AuthService = /** @class */ (function () {
                 _this.getUserInfo(authResult);
             }
             else if (err) {
-                console.log(err);
                 _this.logout();
                 _this.authenticated = false;
             }
         });
     };
+    /**
+     * Get the user's information from the authorization result.
+     *
+     * @param authResult A reference to the authorization result.
+     */
     AuthService.prototype.getUserInfo = function (authResult) {
         var _this = this;
         this.auth0.client.userInfo(authResult.accessToken, function (err, profile) {
@@ -329,20 +363,36 @@ var AuthService = /** @class */ (function () {
             }
         });
     };
+    /**
+     * Sets the current session based on the Auth0Profile and the decoded hash.
+     *
+     * @param authResult Decoded hash.
+     * @param profile User's profile.
+     */
     AuthService.prototype._setSession = function (authResult, profile) {
         var expTime = authResult.expiresIn * 1000 + Date.now();
         localStorage.setItem('expires_at', JSON.stringify(expTime));
         this.accessToken = authResult.accessToken;
         this.userProfile = profile;
+        this._userProfile.next(this.userProfile);
         this.authenticated = true;
     };
+    /**
+     * Removes current session data.
+     */
     AuthService.prototype.logout = function () {
         localStorage.removeItem('expires_at');
+        localStorage.removeItem('id_token');
+        localStorage.removeItem('nonce');
         this.userProfile = undefined;
+        this._userProfile.next(this.userProfile);
         this.accessToken = undefined;
         this.authenticated = false;
     };
     Object.defineProperty(AuthService.prototype, "isAuthenticated", {
+        /**
+         * Checks if current user is authenticated.
+         */
         get: function () {
             var expiresAt = JSON.parse(localStorage.getItem('expires_at'));
             return Date.now() < expiresAt && this.authenticated;
@@ -592,11 +642,15 @@ var MemberComponent = /** @class */ (function () {
      * @param authService Authorization service.
      */
     function MemberComponent(authService) {
+        var _this = this;
         this.authService = authService;
         /**
          * Controls view of login card.
          */
         this.showCard = false;
+        this.authService.userProfile$.subscribe(function (res) {
+            _this.user = res;
+        });
     }
     /**
      * Initializes the data into the component and adds an event listener for mouse clicking.
@@ -619,7 +673,7 @@ var MemberComponent = /** @class */ (function () {
     MemberComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'app-member',
-            template: "\n  <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n  <br>\n  <div id=\"login-card-container\" class=\"login-card-container\">\n    <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n      <mat-card-header>\n        <div mat-card-avatar *ngIf=\"authService.isAuthenticated\">\n          <img [src]=\"user?.photoURL\">\n        </div>\n        <mat-card-title>\n          Bem-vindo\n        </mat-card-title>\n        <mat-card-subtitle *ngIf=\"authService.isAuthenticated\">\n          {{user?.displayName}}\n        </mat-card-subtitle>\n      </mat-card-header>\n      <mat-card-actions>\n        <button mat-button *ngIf=\"authService.isAuthenticated\" (click)=\"authService.logout()\">Log out</button>\n        <button mat-button *ngIf=\"!authService.isAuthenticated\" (click)=\"authService.login()\">Log in</button>\n      </mat-card-actions>\n    </mat-card>  \n  </div>\n  ",
+            template: "\n  <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n  <br>\n  <div id=\"login-card-container\" class=\"login-card-container\">\n    <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n      <mat-card-header>\n        <div mat-card-avatar *ngIf=\"authService.isAuthenticated\">\n          <img [src]=\"user?.picture\">\n        </div>\n        <mat-card-title>\n          Bem-vindo\n        </mat-card-title>\n        <mat-card-subtitle *ngIf=\"authService.isAuthenticated\">\n          {{user?.name}}\n        </mat-card-subtitle>\n      </mat-card-header>\n      <mat-card-actions>\n        <button mat-button *ngIf=\"authService.isAuthenticated\" (click)=\"authService.logout()\">Log out</button>\n        <button mat-button *ngIf=\"!authService.isAuthenticated\" (click)=\"authService.login()\">Log in</button>\n      </mat-card-actions>\n    </mat-card>  \n  </div>\n  ",
             styles: [
                 ":host { \n      font-size: 11pt \n    }",
                 ".login-card-container { \n      position: absolute;\n      margin: 0; \n      padding: 0; \n    }",
