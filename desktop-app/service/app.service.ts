@@ -41,6 +41,11 @@ class AppService {
         });
     }
 
+    /**
+     * Returns the application's path.
+     * 
+     * @param extra Optional extra string
+     */
     private getAppPath(extra?: string): string {
         if(extra) {
             return path.join(electronService.application.getAppPath(), 'desktop-app', 'dist', extra);
