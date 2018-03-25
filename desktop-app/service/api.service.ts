@@ -90,8 +90,6 @@ class ApiService {
         serverService.build(port);
         serverService.use(port, bodyParser.json(environment.serverConfig.json));
         serverService.use(port, bodyParser.urlencoded(environment.serverConfig.urlencoded));
-        //serverService.use(port, express.static(environment.serverConfig.static));
-        //serverService.use(port, serveStatic());
         serverService.use(port, cors());
         //serverService.use(port, jwtCheck);
         this.register(port);
