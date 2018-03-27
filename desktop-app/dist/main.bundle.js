@@ -825,7 +825,7 @@ module.exports = ""
 /***/ "./src/app/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<mat-nav-list>\n  <a mat-list-item routerLink=\".\">Ola mundo</a>\n</mat-nav-list>"
+module.exports = "<mat-nav-list>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.cliente.link' | translate }}</a>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.ordemServico.link' | translate }}</a>\n</mat-nav-list>"
 
 /***/ }),
 
@@ -836,6 +836,7 @@ module.exports = "<mat-nav-list>\n  <a mat-list-item routerLink=\".\">Ola mundo<
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NavbarComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__ = __webpack_require__("./node_modules/@angular/cdk/esm5/layout.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -847,8 +848,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var NavbarComponent = /** @class */ (function () {
-    function NavbarComponent(changeDetectorRef, media) {
+    function NavbarComponent(translateService, changeDetectorRef, media) {
+        this.translateService = translateService;
         this.mobileQuery = media.matchMedia('(max-width: 600px)');
         this._mobileQueryListener = function () { return changeDetectorRef.detectChanges(); };
         this.mobileQuery.addListener(this._mobileQueryListener);
@@ -864,7 +867,7 @@ var NavbarComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/navbar/navbar.component.html"),
             styles: [__webpack_require__("./src/app/navbar/navbar.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */], __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */], __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
     ], NavbarComponent);
     return NavbarComponent;
 }());
@@ -880,10 +883,9 @@ var NavbarComponent = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NavbarModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__ = __webpack_require__("./node_modules/@angular/cdk/esm5/layout.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common__ = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__navbar_routing_module__ = __webpack_require__("./src/app/navbar/navbar-routing.module.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__navbar_component__ = __webpack_require__("./src/app/navbar/navbar.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__navbar_routing_module__ = __webpack_require__("./src/app/navbar/navbar-routing.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__navbar_component__ = __webpack_require__("./src/app/navbar/navbar.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared__ = __webpack_require__("./src/app/shared/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -895,27 +897,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-
 var NavbarModule = /** @class */ (function () {
     function NavbarModule() {
     }
     NavbarModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_3__angular_common__["b" /* CommonModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["c" /* LayoutModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["b" /* MatButtonModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["m" /* MatIconModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["o" /* MatListModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["v" /* MatSidenavModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["D" /* MatToolbarModule */],
-                __WEBPACK_IMPORTED_MODULE_4__navbar_routing_module__["a" /* NavbarRoutingModule */]
+                __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */],
+                __WEBPACK_IMPORTED_MODULE_2__navbar_routing_module__["a" /* NavbarRoutingModule */]
             ],
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_5__navbar_component__["a" /* NavbarComponent */]
+                __WEBPACK_IMPORTED_MODULE_3__navbar_component__["a" /* NavbarComponent */]
             ],
             exports: [
-                __WEBPACK_IMPORTED_MODULE_5__navbar_component__["a" /* NavbarComponent */]
+                __WEBPACK_IMPORTED_MODULE_3__navbar_component__["a" /* NavbarComponent */]
             ]
         })
     ], NavbarModule);
