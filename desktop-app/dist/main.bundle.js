@@ -76,12 +76,14 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__entities__ = __webpack_require__("./src/app/entities/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_component__ = __webpack_require__("./src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__auth__ = __webpack_require__("./src/app/auth/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -100,6 +102,7 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_8__auth__["a" /* AuthModule */],
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_animations__["a" /* BrowserAnimationsModule */],
+                __WEBPACK_IMPORTED_MODULE_9__angular_common_http__["b" /* HttpClientModule */],
                 __WEBPACK_IMPORTED_MODULE_4__main__["a" /* MainModule */],
                 __WEBPACK_IMPORTED_MODULE_5__navbar__["a" /* NavbarModule */],
                 __WEBPACK_IMPORTED_MODULE_6__entities__["a" /* EntitiesModule */],
@@ -211,12 +214,10 @@ var AuthRoutingModule = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__auth_callback_component__ = __webpack_require__("./src/app/auth/auth-callback.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__auth_routing_module__ = __webpack_require__("./src/app/auth/auth-routing.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__ = __webpack_require__("./src/app/auth/auth-callback.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth_routing_module__ = __webpack_require__("./src/app/auth/auth-routing.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared__ = __webpack_require__("./src/app/shared/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -228,24 +229,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-
-
 var AuthModule = /** @class */ (function () {
     function AuthModule() {
     }
     AuthModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_6__auth_routing_module__["a" /* AuthRoutingModule */],
-                __WEBPACK_IMPORTED_MODULE_1__angular_common__["b" /* CommonModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["b" /* HttpClientModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatCardModule */]
+                __WEBPACK_IMPORTED_MODULE_3__auth_routing_module__["a" /* AuthRoutingModule */],
+                __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_4__auth_service__["a" /* AuthService */]
+                __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]
             ],
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_5__auth_callback_component__["a" /* AuthCallbackComponent */]
+                __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__["a" /* AuthCallbackComponent */]
             ]
         })
     ], AuthModule);
@@ -551,13 +548,10 @@ var MainComponent = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MainModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__ = __webpack_require__("./node_modules/@angular/cdk/esm5/layout.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth__ = __webpack_require__("./src/app/auth/index.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_common__ = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__main_component__ = __webpack_require__("./src/app/main/main.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__member__ = __webpack_require__("./src/app/member/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__main_component__ = __webpack_require__("./src/app/main/main.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared__ = __webpack_require__("./src/app/shared/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__member__ = __webpack_require__("./src/app/member/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -569,31 +563,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-
-
-
 var MainModule = /** @class */ (function () {
     function MainModule() {
     }
     MainModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_2__auth__["a" /* AuthModule */],
-                __WEBPACK_IMPORTED_MODULE_4__angular_common__["b" /* CommonModule */],
-                __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["c" /* LayoutModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["a" /* MatButtonModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["e" /* MatIconModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["f" /* MatListModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["g" /* MatSidenavModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["h" /* MatToolbarModule */],
-                __WEBPACK_IMPORTED_MODULE_7__member__["a" /* MemberModule */],
-                __WEBPACK_IMPORTED_MODULE_5__angular_router__["b" /* RouterModule */]
+                __WEBPACK_IMPORTED_MODULE_4__member__["a" /* MemberModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* RouterModule */],
+                __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* SharedModule */]
             ],
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_6__main_component__["a" /* MainComponent */]
+                __WEBPACK_IMPORTED_MODULE_1__main_component__["a" /* MainComponent */]
             ],
             exports: [
-                __WEBPACK_IMPORTED_MODULE_6__main_component__["a" /* MainComponent */]
+                __WEBPACK_IMPORTED_MODULE_1__main_component__["a" /* MainComponent */]
             ]
         })
     ], MainModule);
@@ -726,11 +710,11 @@ var MemberModule = /** @class */ (function () {
             imports: [
                 __WEBPACK_IMPORTED_MODULE_4__auth__["a" /* AuthModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_common__["b" /* CommonModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["a" /* MatButtonModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["b" /* MatButtonToggleModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatCardModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["d" /* MatExpansionModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_material__["e" /* MatIconModule */]
+                __WEBPACK_IMPORTED_MODULE_3__angular_material__["b" /* MatButtonModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatButtonToggleModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_material__["d" /* MatCardModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_material__["j" /* MatExpansionModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_material__["m" /* MatIconModule */]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_2__member_component__["a" /* MemberComponent */]
@@ -891,11 +875,11 @@ var NavbarModule = /** @class */ (function () {
             imports: [
                 __WEBPACK_IMPORTED_MODULE_3__angular_common__["b" /* CommonModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["c" /* LayoutModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["a" /* MatButtonModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["e" /* MatIconModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["f" /* MatListModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["g" /* MatSidenavModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_material__["h" /* MatToolbarModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_material__["b" /* MatButtonModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_material__["m" /* MatIconModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_material__["o" /* MatListModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_material__["v" /* MatSidenavModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_material__["D" /* MatToolbarModule */],
                 __WEBPACK_IMPORTED_MODULE_4__navbar_routing_module__["a" /* NavbarRoutingModule */]
             ],
             declarations: [
@@ -907,6 +891,131 @@ var NavbarModule = /** @class */ (function () {
         })
     ], NavbarModule);
     return NavbarModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/shared/index.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_module__ = __webpack_require__("./src/app/shared/shared.module.ts");
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__shared_module__["a"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/app/shared/shared.module.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SharedModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_material__ = __webpack_require__("./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+/**
+ * A common module to be imported by all modules of Gesthor's app.
+ *
+ * Contains modules from:
+ *
+ * - Angular common API;
+ *
+ * - Angular Material's API;
+ *
+ * - Translate Module from `ngx-translate`.
+ */
+var SharedModule = /** @class */ (function () {
+    function SharedModule() {
+    }
+    SharedModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_2__angular_common__["b" /* CommonModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["a" /* MatAutocompleteModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["e" /* MatCheckboxModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["g" /* MatDatepickerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["k" /* MatFormFieldModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["n" /* MatInputModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["t" /* MatRadioModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["u" /* MatSelectModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["x" /* MatSliderModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["w" /* MatSlideToggleModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["p" /* MatMenuModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["v" /* MatSidenavModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["D" /* MatToolbarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["d" /* MatCardModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["i" /* MatDividerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["j" /* MatExpansionModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["l" /* MatGridListModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["o" /* MatListModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["A" /* MatStepperModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["C" /* MatTabsModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["b" /* MatButtonModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["c" /* MatButtonToggleModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["f" /* MatChipsModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["m" /* MatIconModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["s" /* MatProgressSpinnerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["r" /* MatProgressBarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["h" /* MatDialogModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["y" /* MatSnackBarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["E" /* MatTooltipModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["q" /* MatPaginatorModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["z" /* MatSortModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["B" /* MatTableModule */],
+                __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["a" /* TranslateModule */]
+            ],
+            exports: [
+                __WEBPACK_IMPORTED_MODULE_2__angular_common__["b" /* CommonModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["a" /* MatAutocompleteModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["e" /* MatCheckboxModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["g" /* MatDatepickerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["k" /* MatFormFieldModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["n" /* MatInputModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["t" /* MatRadioModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["u" /* MatSelectModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["x" /* MatSliderModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["w" /* MatSlideToggleModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["p" /* MatMenuModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["v" /* MatSidenavModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["D" /* MatToolbarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["d" /* MatCardModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["i" /* MatDividerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["j" /* MatExpansionModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["l" /* MatGridListModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["o" /* MatListModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["A" /* MatStepperModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["C" /* MatTabsModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["b" /* MatButtonModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["c" /* MatButtonToggleModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["f" /* MatChipsModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["m" /* MatIconModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["s" /* MatProgressSpinnerModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["r" /* MatProgressBarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["h" /* MatDialogModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["y" /* MatSnackBarModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["E" /* MatTooltipModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["q" /* MatPaginatorModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["z" /* MatSortModule */],
+                __WEBPACK_IMPORTED_MODULE_1__angular_material__["B" /* MatTableModule */],
+                __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["a" /* TranslateModule */]
+            ]
+        })
+    ], SharedModule);
+    return SharedModule;
 }());
 
 
