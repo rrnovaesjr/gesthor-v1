@@ -4,6 +4,9 @@
 
         }
     },
+    "global": {
+        "login": "Login"
+    },
     "main": {
         "appName": "Gesthor"
     },
@@ -16,6 +19,10 @@
         },
         "ordemServico": {
             "link": "Ordens de Serviço"
+        },
+        "messages": {
+            "loginHeader": "Você não está autenticado.",
+            "loginBody": "Favor entrar com seu usuário do Google para ter acesso aos recursos da aplicação."
         }
     }
 

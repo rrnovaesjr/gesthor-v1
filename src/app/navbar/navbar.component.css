@@ -1,0 +1,11 @@
+:host div 
+{
+    width: 250px;
+    font-size: 10pt;
+    text-align: justify;
+}
+
+:host p
+{
+    padding: .25em;
+}

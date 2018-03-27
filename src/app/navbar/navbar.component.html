@@ -4,5 +4,7 @@
 </mat-nav-list>
 
 <div *ngIf="!authService.isAuthenticated">
-  Não autenticado.
+  <p>{{ 'navbar.messages.loginHeader' | translate }}</p>
+  <p>{{ 'navbar.messages.loginBody' | translate }}</p>
+  <button mat-button (click)="authService.login()">{{ 'global.login' | translate }}</button>
 </div>
