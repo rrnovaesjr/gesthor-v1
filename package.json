@@ -27,6 +27,7 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
+    "@ngx-translate/core": "^9.1.1",
     "@types/auth0": "^2.7.1",
     "@types/auth0-js": "^8.11.2",
     "@types/mysql2": "github:types/mysql2",
