@@ -1,3 +1,17 @@
 {
-    "appName": "Gesthor"
+    "entities": {
+        "cliente": {
+
+        }
+    },
+    "main": {
+        "appName": "Gesthor"
+    },
+    "member": {
+        
+    },
+    "navbar": {
+
+    }
+
 }
