@@ -175,9 +175,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AuthCallbackComponent = /** @class */ (function () {
+    /**
+     * Calls for authorization service.
+     *
+     * @param authService Authorization service.
+     */
     function AuthCallbackComponent(authService) {
         this.authService = authService;
     }
+    /**
+     * Handles the login callback as the decoded hash is sent by Auth0.
+     *
+     * This component receives such hash and sends it to the specified method.
+     */
     AuthCallbackComponent.prototype.ngOnInit = function () {
         this.authService.handleLoginCallback();
     };
@@ -818,14 +828,14 @@ var NavbarRoutingModule = /** @class */ (function () {
 /***/ "./src/app/navbar/navbar.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ":host div \n{\n    width: 250px;\n    padding: .25em;\n    font-size: 11pt;\n}"
 
 /***/ }),
 
 /***/ "./src/app/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<mat-nav-list>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.cliente.link' | translate }}</a>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.ordemServico.link' | translate }}</a>\n</mat-nav-list>"
+module.exports = "<mat-nav-list *ngIf=\"authService.isAuthenticated\">\n  <a mat-list-item routerLink=\".\">{{ 'navbar.cliente.link' | translate }}</a>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.ordemServico.link' | translate }}</a>\n</mat-nav-list>\n\n<div *ngIf=\"!authService.isAuthenticated\">\n  <span>{{ 'navbar.messages.login' | translate }}</span>\n  <br>\n  <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n</div>"
 
 /***/ }),
 
@@ -837,6 +847,7 @@ module.exports = "<mat-nav-list>\n  <a mat-list-item routerLink=\".\">{{ 'navbar
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__ = __webpack_require__("./node_modules/@angular/cdk/esm5/layout.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth__ = __webpack_require__("./src/app/auth/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -849,15 +860,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var NavbarComponent = /** @class */ (function () {
-    function NavbarComponent(translateService, changeDetectorRef, media) {
+    /**
+     * A constructor that injects many services.
+     *
+     * @param authService Authorization service.
+     * @param translateService Translating service.
+     * @param changeDetectorRef Change detector references.
+     * @param media A media matcher.
+     */
+    function NavbarComponent(authService, translateService, changeDetectorRef, media) {
+        this.authService = authService;
         this.translateService = translateService;
         this.mobileQuery = media.matchMedia('(max-width: 600px)');
         this._mobileQueryListener = function () { return changeDetectorRef.detectChanges(); };
         this.mobileQuery.addListener(this._mobileQueryListener);
     }
+    /**
+     * Method executed in the initialization of the component.
+     */
     NavbarComponent.prototype.ngOnInit = function () {
     };
+    /**
+     * Method executed when the component is destroyed.
+     */
     NavbarComponent.prototype.ngOnDestroy = function () {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     };
@@ -867,7 +894,10 @@ var NavbarComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/navbar/navbar.component.html"),
             styles: [__webpack_require__("./src/app/navbar/navbar.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */], __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth__["b" /* AuthService */],
+            __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */],
+            __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
     ], NavbarComponent);
     return NavbarComponent;
 }());
