@@ -11,7 +11,12 @@
         
     },
     "navbar": {
-
+        "cliente": {
+            "link": "Clientes"
+        },
+        "ordemServico": {
+            "link": "Ordens de Serviço"
+        }
     }
 
 }
