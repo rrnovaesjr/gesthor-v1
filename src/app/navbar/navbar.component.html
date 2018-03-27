@@ -1,4 +1,8 @@
-<mat-nav-list>
+<mat-nav-list *ngIf="authService.isAuthenticated">
   <a mat-list-item routerLink=".">{{ 'navbar.cliente.link' | translate }}</a>
   <a mat-list-item routerLink=".">{{ 'navbar.ordemServico.link' | translate }}</a>
 </mat-nav-list>
+
+<div *ngIf="!authService.isAuthenticated">
+  Não autenticado.
+</div>
