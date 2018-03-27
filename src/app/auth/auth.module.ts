@@ -6,13 +6,12 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { AuthCallbackComponent } from './auth-callback.component';
 import { AuthRoutingModule } from './auth-routing.module';
+import { SharedModule } from '../shared';
 
 @NgModule({
   imports: [
     AuthRoutingModule,
-    CommonModule,
-    HttpClientModule,
-    MatCardModule
+    SharedModule
   ],
   providers: [
     AuthService
