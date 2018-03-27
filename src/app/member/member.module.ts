@@ -1,24 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MemberComponent } from './member.component';
-import {
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatExpansionModule,
-  MatIconModule
-} from '@angular/material';
-import { AuthModule } from '../auth';
+import { SharedModule } from '../shared';
 
 @NgModule({
   imports: [
-    AuthModule,
-    CommonModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatExpansionModule,
-    MatIconModule
+    SharedModule
   ],
   declarations: [
     MemberComponent
