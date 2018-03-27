@@ -7,12 +7,14 @@ import { NavbarModule} from './navbar';
 import { EntitiesModule } from './entities';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     AuthModule,
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MainModule,
     NavbarModule,
     EntitiesModule,
