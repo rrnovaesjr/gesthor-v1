@@ -828,14 +828,14 @@ var NavbarRoutingModule = /** @class */ (function () {
 /***/ "./src/app/navbar/navbar.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ":host div \n{\n    width: 250px;\n    padding: .25em;\n    font-size: 11pt;\n}"
+module.exports = ":host div \n{\n    width: 200px;\n    font-size: 10pt;\n    text-align: justify;\n    -ms-flex-line-pack: center;\n        align-content: center;\n}\n\n:host p\n{\n    padding: .25em .25em .25em .35em;\n}\n\n:host button\n{\n    margin: 0 0 0 2em;\n}"
 
 /***/ }),
 
 /***/ "./src/app/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<mat-nav-list *ngIf=\"authService.isAuthenticated\">\n  <a mat-list-item routerLink=\".\">{{ 'navbar.cliente.link' | translate }}</a>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.ordemServico.link' | translate }}</a>\n</mat-nav-list>\n\n<div *ngIf=\"!authService.isAuthenticated\">\n  <span>{{ 'navbar.messages.login' | translate }}</span>\n  <br>\n  <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n</div>"
+module.exports = "<mat-nav-list *ngIf=\"authService.isAuthenticated\">\n  <a mat-list-item routerLink=\".\">{{ 'navbar.cliente.link' | translate }}</a>\n  <a mat-list-item routerLink=\".\">{{ 'navbar.ordemServico.link' | translate }}</a>\n</mat-nav-list>\n\n<div *ngIf=\"!authService.isAuthenticated\">\n  <p>{{ 'navbar.messages.loginHeader' | translate }}</p>\n  <p>{{ 'navbar.messages.loginBody' | translate }}</p>\n  <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n</div>"
 
 /***/ }),
 
