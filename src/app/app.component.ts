@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,11 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   title = 'Gesthor';
+
+  public constructor(private translateService: TranslateService) {
+    this.translateService.addLangs(['pt-br']);
+    this.translateService.setDefaultLang('pt-br');
+    this.translateService.use('pt-br');
+  }
 
 }

@@ -7,16 +7,38 @@ import { NavbarModule} from './navbar';
 import { EntitiesModule } from './entities';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+/**
+ * Creates an instance for a HTTP loader for translations.
+ * 
+ * @param httpClient A HTTP Client.
+ */
+export function httpLoaderFactory(httpClient: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
+}
 
 @NgModule({
   imports: [
     AuthModule,
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MainModule,
     NavbarModule,
     EntitiesModule,
-    RouterModule
+    RouterModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpLoaderFactory,
+        deps: [
+          HttpClient
+        ]
+      }
+    })
   ],
   declarations: [
     AppComponent

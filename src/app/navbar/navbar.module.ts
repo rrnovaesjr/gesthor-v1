@@ -1,25 +1,13 @@
 import { NgModule } from '@angular/core';
 import { LayoutModule } from '@angular/cdk/layout';
-import { 
-  MatButtonModule,
-  MatIconModule,
-  MatListModule,
-  MatSidenavModule,
-  MatToolbarModule
-} from '@angular/material';
-import { CommonModule } from '@angular/common';
 import { NavbarRoutingModule } from './navbar-routing.module';
 import { NavbarComponent } from './navbar.component';
+import { SharedModule } from '../shared';
 
 @NgModule({
   imports: [
-    CommonModule,
     LayoutModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatSidenavModule,
-    MatToolbarModule,
+    SharedModule,
     NavbarRoutingModule
   ],
   declarations: [

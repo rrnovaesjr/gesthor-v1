@@ -1,24 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ClickOutsideModule } from 'ng-click-outside';
 import { MemberComponent } from './member.component';
-import {
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatExpansionModule,
-  MatIconModule
-} from '@angular/material';
-import { AuthModule } from '../auth';
+import { SharedModule } from '../shared';
 
 @NgModule({
   imports: [
-    AuthModule,
-    CommonModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatExpansionModule,
-    MatIconModule
+    ClickOutsideModule,
+    SharedModule
   ],
   declarations: [
     MemberComponent

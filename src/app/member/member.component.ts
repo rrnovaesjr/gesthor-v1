@@ -12,26 +12,28 @@ import {
 @Component({
   selector: 'app-member',
   template: `
-  <button mat-icon-button (click)="toggle()"><mat-icon>account_circle</mat-icon></button>
-  <br>
-  <div id="login-card-container" class="login-card-container">
-    <mat-card class="login-card" *ngIf="showCard" [@enterCard]>
-      <mat-card-header>
-        <div mat-card-avatar *ngIf="authService.isAuthenticated">
-          <img [src]="user?.picture">
-        </div>
-        <mat-card-title>
-          Bem-vindo
-        </mat-card-title>
-        <mat-card-subtitle *ngIf="authService.isAuthenticated">
-          {{user?.name}}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-actions>
-        <button mat-button *ngIf="authService.isAuthenticated" (click)="authService.logout()">Log out</button>
-        <button mat-button *ngIf="!authService.isAuthenticated" (click)="authService.login()">Log in</button>
-      </mat-card-actions>
-    </mat-card>  
+  <div (clickOutside)="onClickOutside($event)">
+    <button mat-icon-button (click)="toggle()"><mat-icon>account_circle</mat-icon></button>
+    <br>
+    <div id="login-card-container" class="login-card-container">
+      <mat-card class="login-card" *ngIf="showCard" [@enterCard]>
+        <mat-card-header>
+          <div mat-card-avatar *ngIf="authService.isAuthenticated">
+            <img [src]="user?.picture">
+          </div>
+          <mat-card-title>
+            Bem-vindo
+          </mat-card-title>
+          <mat-card-subtitle *ngIf="authService.isAuthenticated">
+            {{user?.name}}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions>
+          <button mat-button *ngIf="authService.isAuthenticated" (click)="authService.logout()">Log out</button>
+          <button mat-button *ngIf="!authService.isAuthenticated" (click)="authService.login()">Log in</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
   `,
   styles: [
@@ -95,16 +97,14 @@ export class MemberComponent implements OnInit {
   }
 
   /** 
-   * Initializes the data into the component and adds an event listener for mouse clicking.
-   * 
-   * Every mouse click in the window must switch the card to invisible state.
+   * Initializes the data into the component.
   */
   public ngOnInit(): void {
 
   }
 
   /** 
-   * Removes the event listener.
+   * Called on component's destroy.
   */
   public ngOnDestroy(): void {
 
@@ -115,6 +115,15 @@ export class MemberComponent implements OnInit {
   */
   public toggle(): void {
     this.showCard = !this.showCard;
+  }
+
+  /**
+   * Cancels the view of mat-card when clicking outside of it.
+   * 
+   * @param event The event object.
+   */
+  public onClickOutside(event: Event): void {
+    this.showCard = false;
   }
 
 }
