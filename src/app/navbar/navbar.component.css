@@ -1,11 +1,17 @@
 :host div 
 {
-    width: 250px;
+    width: 200px;
     font-size: 10pt;
     text-align: justify;
+    align-content: center;
 }
 
 :host p
 {
-    padding: .25em;
+    padding: .25em .25em .25em .35em;
+}
+
+:host button
+{
+    margin: 0 0 0 2em;
 }

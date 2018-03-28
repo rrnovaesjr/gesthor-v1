@@ -21,7 +21,8 @@
             "link": "Ordens de Serviço"
         },
         "messages": {
-            "login": "Você não está autenticado.<br>Favor entrar com seu usuário do Google para ter acesso aos recursos da aplicação."
+            "loginHeader": "Você não está autenticado.",
+            "loginBody": "Favor entrar com seu usuário do Google para ter acesso aos recursos da aplicação."
         }
     }
 
