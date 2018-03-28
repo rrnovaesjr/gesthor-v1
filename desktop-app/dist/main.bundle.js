@@ -58,7 +58,7 @@ var AppComponent = /** @class */ (function () {
         this.translateService.use('pt-br');
     }
     AppComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-root',
             template: __webpack_require__("./src/app/app.component.html"),
             styles: [__webpack_require__("./src/app/app.component.css")]
@@ -120,7 +120,7 @@ var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_8__auth__["a" /* AuthModule */],
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -192,7 +192,7 @@ var AuthCallbackComponent = /** @class */ (function () {
         this.authService.handleLoginCallback();
     };
     AuthCallbackComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-auth-callback',
             template: '<mat-card>Carregando...</mat-card>'
         }),
@@ -234,7 +234,7 @@ var AuthRoutingModule = /** @class */ (function () {
     function AuthRoutingModule() {
     }
     AuthRoutingModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* RouterModule */].forRoot(routes)
             ],
@@ -275,7 +275,7 @@ var AuthModule = /** @class */ (function () {
     function AuthModule() {
     }
     AuthModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_3__auth_routing_module__["a" /* AuthRoutingModule */],
                 __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */]
@@ -440,7 +440,7 @@ var AuthService = /** @class */ (function () {
         configurable: true
     });
     AuthService = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["C" /* Injectable */])(),
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]])
     ], AuthService);
     return AuthService;
@@ -483,9 +483,9 @@ var EntitiesModule = /** @class */ (function () {
     function EntitiesModule() {
     }
     EntitiesModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1__angular_common__["b" /* CommonModule */]
+                __WEBPACK_IMPORTED_MODULE_1__angular_common__["CommonModule"]
             ],
             declarations: []
         })
@@ -575,13 +575,13 @@ var MainComponent = /** @class */ (function () {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     };
     MainComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-main',
             template: __webpack_require__("./src/app/main/main.component.html"),
             styles: [__webpack_require__("./src/app/main/main.component.css")]
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */],
-            __WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"],
             __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
     ], MainComponent);
     return MainComponent;
@@ -616,7 +616,7 @@ var MainModule = /** @class */ (function () {
     function MainModule() {
     }
     MainModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_4__member__["a" /* MemberModule */],
                 __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* RouterModule */],
@@ -686,14 +686,12 @@ var MemberComponent = /** @class */ (function () {
         });
     }
     /**
-     * Initializes the data into the component and adds an event listener for mouse clicking.
-     *
-     * Every mouse click in the window must switch the card to invisible state.
+     * Initializes the data into the component.
     */
     MemberComponent.prototype.ngOnInit = function () {
     };
     /**
-     * Removes the event listener.
+     * Called on component's destroy.
     */
     MemberComponent.prototype.ngOnDestroy = function () {
     };
@@ -703,10 +701,18 @@ var MemberComponent = /** @class */ (function () {
     MemberComponent.prototype.toggle = function () {
         this.showCard = !this.showCard;
     };
+    /**
+     * Cancels the view of mat-card when clicking outside of it.
+     *
+     * @param event The event object.
+     */
+    MemberComponent.prototype.onClickOutside = function (event) {
+        this.showCard = false;
+    };
     MemberComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-member',
-            template: "\n  <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n  <br>\n  <div id=\"login-card-container\" class=\"login-card-container\">\n    <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n      <mat-card-header>\n        <div mat-card-avatar *ngIf=\"authService.isAuthenticated\">\n          <img [src]=\"user?.picture\">\n        </div>\n        <mat-card-title>\n          Bem-vindo\n        </mat-card-title>\n        <mat-card-subtitle *ngIf=\"authService.isAuthenticated\">\n          {{user?.name}}\n        </mat-card-subtitle>\n      </mat-card-header>\n      <mat-card-actions>\n        <button mat-button *ngIf=\"authService.isAuthenticated\" (click)=\"authService.logout()\">Log out</button>\n        <button mat-button *ngIf=\"!authService.isAuthenticated\" (click)=\"authService.login()\">Log in</button>\n      </mat-card-actions>\n    </mat-card>  \n  </div>\n  ",
+            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div id=\"login-card-container\" class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <mat-card-header>\n          <div mat-card-avatar *ngIf=\"authService.isAuthenticated\">\n            <img [src]=\"user?.picture\">\n          </div>\n          <mat-card-title>\n            Bem-vindo\n          </mat-card-title>\n          <mat-card-subtitle *ngIf=\"authService.isAuthenticated\">\n            {{user?.name}}\n          </mat-card-subtitle>\n        </mat-card-header>\n        <mat-card-actions>\n          <button mat-button *ngIf=\"authService.isAuthenticated\" (click)=\"authService.logout()\">Log out</button>\n          <button mat-button *ngIf=\"!authService.isAuthenticated\" (click)=\"authService.login()\">Log in</button>\n        </mat-card-actions>\n      </mat-card>\n    </div>\n  </div>\n  ",
             styles: [
                 ":host { \n      font-size: 11pt \n    }",
                 ".login-card-container { \n      position: absolute;\n      margin: 0; \n      padding: 0; \n    }",
@@ -736,8 +742,10 @@ var MemberComponent = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MemberModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__member_component__ = __webpack_require__("./src/app/member/member.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared__ = __webpack_require__("./src/app/shared/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng_click_outside__ = __webpack_require__("./node_modules/ng-click-outside/lib/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng_click_outside___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_ng_click_outside__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__member_component__ = __webpack_require__("./src/app/member/member.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared__ = __webpack_require__("./src/app/shared/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -747,19 +755,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var MemberModule = /** @class */ (function () {
     function MemberModule() {
     }
     MemberModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* SharedModule */]
+                __WEBPACK_IMPORTED_MODULE_1_ng_click_outside__["ClickOutsideModule"],
+                __WEBPACK_IMPORTED_MODULE_3__shared__["a" /* SharedModule */]
             ],
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_1__member_component__["a" /* MemberComponent */]
+                __WEBPACK_IMPORTED_MODULE_2__member_component__["a" /* MemberComponent */]
             ],
             exports: [
-                __WEBPACK_IMPORTED_MODULE_1__member_component__["a" /* MemberComponent */]
+                __WEBPACK_IMPORTED_MODULE_2__member_component__["a" /* MemberComponent */]
             ]
         })
     ], MemberModule);
@@ -809,7 +819,7 @@ var NavbarRoutingModule = /** @class */ (function () {
     function NavbarRoutingModule() {
     }
     NavbarRoutingModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* RouterModule */].forRoot(navbarRoutes)
             ],
@@ -889,14 +899,14 @@ var NavbarComponent = /** @class */ (function () {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     };
     NavbarComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-navbar',
             template: __webpack_require__("./src/app/navbar/navbar.component.html"),
             styles: [__webpack_require__("./src/app/navbar/navbar.component.css")]
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth__["b" /* AuthService */],
             __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */],
-            __WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* ChangeDetectorRef */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"],
             __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
     ], NavbarComponent);
     return NavbarComponent;
@@ -931,7 +941,7 @@ var NavbarModule = /** @class */ (function () {
     function NavbarModule() {
     }
     NavbarModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["c" /* LayoutModule */],
                 __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */],
@@ -997,9 +1007,9 @@ var SharedModule = /** @class */ (function () {
     function SharedModule() {
     }
     SharedModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["K" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_2__angular_common__["b" /* CommonModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_common__["CommonModule"],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["a" /* MatAutocompleteModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["e" /* MatCheckboxModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["g" /* MatDatepickerModule */],
@@ -1034,7 +1044,7 @@ var SharedModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["b" /* TranslateModule */]
             ],
             exports: [
-                __WEBPACK_IMPORTED_MODULE_2__angular_common__["b" /* CommonModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_common__["CommonModule"],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["a" /* MatAutocompleteModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["e" /* MatCheckboxModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_material__["g" /* MatDatepickerModule */],
@@ -1123,7 +1133,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].production) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_17" /* enableProdMode */])();
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
 }
 Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */])
     .catch(function (err) { return console.log(err); });
