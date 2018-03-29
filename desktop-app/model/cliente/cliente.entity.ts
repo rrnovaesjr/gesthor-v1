@@ -1,4 +1,4 @@
-import { Entity } from "../abstract/entity.model";
+import { Entity } from "../abstract/entity";
 
 /**
  * A metamodel that represents a SQL row of a client's entity.
@@ -50,7 +50,7 @@ export class _Cliente extends Entity<number> {
         public email?: string,
         public descricao?: string
     ) {
-        super(_Cliente.TABLE_NAME, id);
+        super(id);
     }
 
 }

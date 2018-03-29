@@ -1,7 +1,7 @@
 import { RestAPIService } from './rest-service.interface';
 import { clienteRepository } from '../repository/cliente.repository';
 import { RequestHandler } from 'express';
-import { _Cliente, Cliente } from '../../commons/model/cliente';
+import { _Cliente, Cliente } from '../model/cliente';
 import { QueryError, OkPacket } from 'mysql';
 import { clienteMapper } from './mapper/cliente.mapper';
 import { Request, Response } from 'express';
@@ -59,9 +59,10 @@ class ClienteService implements RestAPIService {
      */
     public readonly get = [
         {
-            url: '/api/cliente',
+            url: '/api/cliente/:usuario_id',
             callback: (req: Request, res: Response) => {
-                clienteRepository.findAll((err: QueryError, result: OkPacket[]) => {
+                const usuarioId: string = req.params.usuario_id;
+                clienteRepository.findAllByUsuarioId(usuarioId, (err: QueryError, result: OkPacket[]) => {
                     if(err) {
                         res.send(err);
                         return;
@@ -69,7 +70,7 @@ class ClienteService implements RestAPIService {
                     let _result: Cliente[];
                     _result = result && result.length ? clienteMapper.manySQLToEntities(result) : [];
                     res.send(_result);
-                });
+                }, req.query);
             }
         },
         {
