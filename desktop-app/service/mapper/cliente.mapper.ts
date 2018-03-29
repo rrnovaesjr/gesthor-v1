@@ -1,5 +1,5 @@
 import { SQLMapper } from './mapper.interface';
-import { Cliente, _Cliente } from '../../../commons/model/cliente';
+import { Cliente, _Cliente } from '../../model/cliente';
 import { OkPacket } from 'mysql';
 
 /**
