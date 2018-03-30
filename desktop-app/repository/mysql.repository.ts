@@ -100,23 +100,6 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
         apiService.connection.query(query, callback);
     }
 
-    /**
-     * Finds objects based on optional search parameters.
-     * 
-     * @param callback A function to be executed when the search is completed.
-     * @param searchOptions Optional search parameters.
-     */
-    public search(callback: (err: QueryError, result: OkPacket[]) => any, searchOptions?: any): void {
-        const size: number = searchOptions.size ? 
-            searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
-        const page: number = searchOptions.page ? 
-            searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
-        const sort: string = searchOptions.sort ? 
-            searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
-        let query = `select * from ${this.tableName} order by 
-            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        apiService.connection.query(query, callback);
-    }
 }
 
 /**
@@ -157,28 +140,6 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
         const sort: string = searchOptions.sort ? 
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
-            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        apiService.connection.query(query, callback);
-    }
-
-    /**
-     * Finds objects based on optional search parameters.
-     * 
-     * @param callback A function to be executed when the search is completed.
-     * @param searchOptions Optional search parameters.
-     */
-    public searchByUsuarioId(
-        usuario_id: FK, 
-        callback: (err: QueryError, result: OkPacket[]) => any, 
-        searchOptions?: any
-    ): void {
-        const size: number = searchOptions.size ? 
-            searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
-        const page: number = searchOptions.page ? 
-            searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
-        const sort: string = searchOptions.sort ? 
-            searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
-        let query = `select * from ${this.tableName} where usuario_id like ${usuario_id} order by 
             ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
         apiService.connection.query(query, callback);
     }
