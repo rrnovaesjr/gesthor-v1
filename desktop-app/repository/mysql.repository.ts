@@ -7,11 +7,6 @@ import { Constants } from '../service/util/constants';
 abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
 
     /**
-     * A protected reference to the repository connection.
-     */
-    protected connection: Connection = apiService.connection;
-
-    /**
      * Receives the table's name as a parameter.
      * 
      * @param tableName The entity's table name.
@@ -29,7 +24,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when create is done.
      */
     public create(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        this.connection.query(`insert into ${this.tableName} set ?`, entity, callback);
+        apiService.connection.query(`insert into ${this.tableName} set ?`, entity, callback);
     }
 
     /**
@@ -41,7 +36,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the update is completed.
      */
     public update(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        this.connection.query(`replace into ${this.tableName} set ?`, entity, callback)
+        apiService.connection.query(`replace into ${this.tableName} set ?`, entity, callback)
     }
 
     /**
@@ -51,7 +46,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the search is completed.
      */
     public findOne(id: PK, callback: (err: QueryError, result: OkPacket[]) => any): void {
-        this.connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
+        apiService.connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
     }
 
     /**
@@ -61,7 +56,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the deletion is completed.
      */
     public delete(id: PK, callback: (err: QueryError, result: OkPacket[]) => void): void {
-        this.connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
+        apiService.connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
     }
 
 
@@ -101,8 +96,8 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
         const sort: string = searchOptions.sort ? 
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} order by 
-            ${this.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        this.connection.query(query, callback);
+            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+        apiService.connection.query(query, callback);
     }
 
     /**
@@ -119,8 +114,8 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
         const sort: string = searchOptions.sort ? 
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} order by 
-            ${this.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        this.connection.query(query, callback);
+            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+        apiService.connection.query(query, callback);
     }
 }
 
@@ -161,9 +156,9 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
             searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
         const sort: string = searchOptions.sort ? 
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
-        let query = `select * from ${this.tableName} where usuario_id like ${usuario_id} order by 
-            ${this.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        this.connection.query(query, callback);
+        let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
+            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+        apiService.connection.query(query, callback);
     }
 
     /**
@@ -184,8 +179,8 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
         const sort: string = searchOptions.sort ? 
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} where usuario_id like ${usuario_id} order by 
-            ${this.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        this.connection.query(query, callback);
+            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+        apiService.connection.query(query, callback);
     }
 
 }
