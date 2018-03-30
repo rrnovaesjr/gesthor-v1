@@ -1,10 +1,11 @@
-import { electronService } from './service/electron.service';
 import { apiService } from './service/api.service';
+import { appService } from './service/app.service';
+import { electronService } from './service/electron.service';
 import { Constants } from './service/util/constants';
 import * as url from 'url';
 import * as path from 'path';
-import { appService } from './service/app.service';
 
+apiService.config(Constants.DEFAULT_API_PORT);
 appService.config(Constants.DEFAULT_APP_PORT);
 
 electronService.appInit(url.format({
@@ -12,5 +13,3 @@ electronService.appInit(url.format({
     protocol: 'http:',
     slashes: true
 })); 
-
-apiService.config(Constants.DEFAULT_API_PORT);
