@@ -49,9 +49,8 @@ import {
       position: relative; 
       z-index: 2;
       top: 20px; 
+      width: 135px;
       right: 150px;
-      width: 150px;
-      height: 135px;
       overflow: hidden; 
     }`,
     `.login-card mat-card-subtitle {
@@ -67,8 +66,12 @@ import {
   ],
   animations: [
     trigger('enterCard', [
-      transition('void => *', [style({height: 0}), animate('256ms ease-in-out', style({height: 135}))]),
-      transition('* => void', [style({height: 135}), animate('256ms ease-in-out', style({height: 0}))])
+      transition('void => *', [
+        style({transform: 'scale(0.8)', opacity: 0.35}), 
+        animate('128ms 16ms ease-in-out', 
+        style({transform: 'scale(1)', opacity: 1}))
+      ]),
+      transition('* => void', [style({height: '*'}), animate('128ms 8ms ease-in-out', style({height: 0}))])
     ])
   ]
 })

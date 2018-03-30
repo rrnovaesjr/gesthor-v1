@@ -716,14 +716,17 @@ var MemberComponent = /** @class */ (function () {
             styles: [
                 ":host { \n      font-size: 11pt \n    }",
                 ".login-card-container { \n      position: absolute;\n      margin: 0; \n      padding: 0; \n    }",
-                ".login-card { \n      position: relative; \n      z-index: 2;\n      top: 20px; \n      right: 150px;\n      width: 150px;\n      height: 135px;\n      overflow: hidden; \n    }",
+                ".login-card { \n      position: relative; \n      z-index: 2;\n      top: 20px; \n      width: 135px;\n      right: 150px;\n      overflow: hidden; \n    }",
                 ".login-card mat-card-subtitle {\n      font-size: 9pt; \n    }",
                 ".login-card img {\n      height: 100%;\n      width: 100%;\n      border-radius: 50%;\n      padding: 0;\n      margin: 1.25em 0 0 0;\n    }"
             ],
             animations: [
                 Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["m" /* trigger */])('enterCard', [
-                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('void => *', [Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 0 }), Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('256ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 135 }))]),
-                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('* => void', [Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 135 }), Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('256ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 0 }))])
+                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('void => *', [
+                        Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(0.8)', opacity: 0.35 }),
+                        Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('128ms 16ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(1)', opacity: 1 }))
+                    ]),
+                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('* => void', [Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: '*' }), Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('128ms 8ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 0 }))])
                 ])
             ]
         }),
