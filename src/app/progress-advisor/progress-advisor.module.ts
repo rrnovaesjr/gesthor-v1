@@ -1,11 +1,20 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { SharedModule } from '../shared';
 import { ProgressAdvisorComponent } from './progress-advisor.component';
+import { ProgressAdvisorService } from './progress-advisor.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule
   ],
-  declarations: [ProgressAdvisorComponent]
+  declarations: [
+    ProgressAdvisorComponent
+  ],
+  exports: [
+    ProgressAdvisorComponent
+  ],
+  providers: [
+    ProgressAdvisorService
+  ]
 })
 export class ProgressAdvisorModule { }
