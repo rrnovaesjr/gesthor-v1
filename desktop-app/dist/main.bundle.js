@@ -656,6 +656,7 @@ var MainModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth__ = __webpack_require__("./src/app/auth/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_animations__ = __webpack_require__("./node_modules/@angular/animations/esm5/animations.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -668,15 +669,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var MemberComponent = /** @class */ (function () {
     /**
      * Injects necessary services.
      *
      * @param authService Authorization service.
      */
-    function MemberComponent(authService) {
+    function MemberComponent(authService, translateService) {
         var _this = this;
         this.authService = authService;
+        this.translateService = translateService;
         /**
          * Controls view of login card.
          */
@@ -712,25 +715,26 @@ var MemberComponent = /** @class */ (function () {
     MemberComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-member',
-            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div id=\"login-card-container\" class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <mat-card-header>\n          <div mat-card-avatar *ngIf=\"authService.isAuthenticated\">\n            <img [src]=\"user?.picture\">\n          </div>\n          <mat-card-title>\n            Bem-vindo\n          </mat-card-title>\n          <mat-card-subtitle *ngIf=\"authService.isAuthenticated\">\n            {{user?.name}}\n          </mat-card-subtitle>\n        </mat-card-header>\n        <mat-card-actions>\n          <button mat-button *ngIf=\"authService.isAuthenticated\" (click)=\"authService.logout()\">Log out</button>\n          <button mat-button *ngIf=\"!authService.isAuthenticated\" (click)=\"authService.login()\">Log in</button>\n        </mat-card-actions>\n      </mat-card>\n    </div>\n  </div>\n  ",
+            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n            <mat-card-subtitle><small>{{user?.email}}</small></mat-card-subtitle>\n          </mat-card-header>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n  ",
             styles: [
-                ":host { \n      font-size: 11pt \n    }",
-                ".login-card-container { \n      position: absolute;\n      margin: 0; \n      padding: 0; \n    }",
-                ".login-card { \n      position: relative; \n      z-index: 2;\n      top: 20px; \n      width: 135px;\n      right: 150px;\n      overflow: hidden; \n    }",
-                ".login-card mat-card-subtitle {\n      font-size: 9pt; \n    }",
-                ".login-card img {\n      height: 100%;\n      width: 100%;\n      border-radius: 50%;\n      padding: 0;\n      margin: 1.25em 0 0 0;\n    }"
+                ":host p {\n      white-space: pre-line;\n      text-align: justify;\n    }",
+                ".login-card-container {\n      position: relative;\n      right: 200px;\n    }",
+                ".login-card {\n      position: fixed;\n      z-index: 2;     \n      width: 200px;\n      line-break: normal;\n    }",
+                ".login-card img {\n      height: 50px;\n      width: 50px;\n      padding: 0;\n      margin: 0;\n    }"
             ],
             animations: [
                 Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["m" /* trigger */])('enterCard', [
                     Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('void => *', [
                         Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(0.8)', opacity: 0.35 }),
-                        Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('128ms 16ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(1)', opacity: 1 }))
+                        Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('256ms 2ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(1)', opacity: 1 }))
                     ]),
-                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('* => void', [Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: '*' }), Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('128ms 8ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ height: 0 }))])
+                    Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('* => void', [
+                        Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["e" /* animate */])('256ms 2ms ease-in-out', Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["k" /* style */])({ transform: 'scale(0.8)', opacity: 0.35 }))
+                    ])
                 ])
             ]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */]])
     ], MemberComponent);
     return MemberComponent;
 }());
@@ -841,7 +845,7 @@ var NavbarRoutingModule = /** @class */ (function () {
 /***/ "./src/app/navbar/navbar.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ":host div \n{\n    width: 200px;\n    font-size: 10pt;\n    text-align: justify;\n    -ms-flex-line-pack: center;\n        align-content: center;\n}\n\n:host p\n{\n    padding: .25em .25em .25em .35em;\n}\n\n:host button\n{\n    margin: 0 0 0 2em;\n}"
+module.exports = ":host div \n{\n    width: 200px;\n    font-size: 10pt;\n    text-align: justify;\n}\n\n:host p\n{\n    padding: .25em .25em .25em .35em;\n}\n\n:host button\n{\n    margin: 0 0 0 2em;\n}"
 
 /***/ }),
 

@@ -8,6 +8,7 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-member',
@@ -15,63 +16,71 @@ import {
   <div (clickOutside)="onClickOutside($event)">
     <button mat-icon-button (click)="toggle()"><mat-icon>account_circle</mat-icon></button>
     <br>
-    <div id="login-card-container" class="login-card-container">
+    <div class="login-card-container">
       <mat-card class="login-card" *ngIf="showCard" [@enterCard]>
-        <mat-card-header>
-          <div mat-card-avatar *ngIf="authService.isAuthenticated">
-            <img [src]="user?.picture">
-          </div>
-          <mat-card-title>
-            Bem-vindo
-          </mat-card-title>
-          <mat-card-subtitle *ngIf="authService.isAuthenticated">
-            {{user?.name}}
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-actions>
-          <button mat-button *ngIf="authService.isAuthenticated" (click)="authService.logout()">Log out</button>
-          <button mat-button *ngIf="!authService.isAuthenticated" (click)="authService.login()">Log in</button>
-        </mat-card-actions>
+        <div *ngIf="!authService.isAuthenticated">
+          <mat-card-header>
+            <img mat-card-avatar src="assets/img/no-user.png" />
+            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content class="login-content">
+            <p>{{ 'member.loginHeader' | translate }}</p>
+            <p>{{ 'member.loginBody' | translate }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button (click)="authService.login()">{{ 'global.login' | translate }}</button>
+          </mat-card-actions>
+        </div>
+        <div *ngIf="authService.isAuthenticated">
+          <mat-card-header>
+            <img mat-card-avatar [src]="user?.picture" />
+            <mat-card-title>{{user?.name}}</mat-card-title>
+            <mat-card-subtitle><small>{{user?.email}}</small></mat-card-subtitle>
+          </mat-card-header>
+          <br>
+          <mat-card-content>
+
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button (click)="authService.logout()">{{ 'global.logout' | translate }}</button>
+          </mat-card-actions>
+        </div>
       </mat-card>
     </div>
   </div>
   `,
   styles: [
-    `:host { 
-      font-size: 11pt 
+    `:host p {
+      white-space: pre-line;
+      text-align: justify;
     }`,
-    `.login-card-container { 
-      position: absolute;
-      margin: 0; 
-      padding: 0; 
-    }`,
-    `.login-card { 
-      position: relative; 
-      z-index: 2;
-      top: 20px; 
-      width: 135px;
-      right: 150px;
-      overflow: hidden; 
-    }`,
-    `.login-card mat-card-subtitle {
-      font-size: 9pt; 
+    `.login-card-container {
+      position: relative;
+      right: 200px;
+    }`, 
+    `.login-card {
+      position: fixed;
+      z-index: 2;     
+      width: 200px;
+      line-break: normal;
     }`,
     `.login-card img {
-      height: 100%;
-      width: 100%;
-      border-radius: 50%;
+      height: 50px;
+      width: 50px;
       padding: 0;
-      margin: 1.25em 0 0 0;
+      margin: 0;
     }`
   ],
   animations: [
     trigger('enterCard', [
       transition('void => *', [
         style({transform: 'scale(0.8)', opacity: 0.35}), 
-        animate('128ms 16ms ease-in-out', 
-        style({transform: 'scale(1)', opacity: 1}))
+        animate('256ms 2ms ease-in-out', style({transform: 'scale(1)', opacity: 1}))
       ]),
-      transition('* => void', [style({height: '*'}), animate('128ms 8ms ease-in-out', style({height: 0}))])
+      transition('* => void', [ 
+        animate('256ms 2ms ease-in-out', style({transform: 'scale(0.8)', opacity: 0.35}))
+      ])
     ])
   ]
 })
@@ -92,7 +101,7 @@ export class MemberComponent implements OnInit {
    * 
    * @param authService Authorization service.
    */
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private translateService: TranslateService) {
     this.authService.userProfile$.subscribe((res: Auth0UserProfile) => {
       this.user = res;
       

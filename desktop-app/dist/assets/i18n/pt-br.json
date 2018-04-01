@@ -5,13 +5,17 @@
         }
     },
     "global": {
-        "login": "Login"
+        "login": "Entrar",
+        "logout": "Sair"
     },
     "main": {
         "appName": "Gesthor"
     },
     "member": {
-        "perfil": "Perfil"
+        "perfil": "Perfil",
+        "bemVindo": "Bem-vindo",
+        "loginHeader": "Você não está autenticado.",
+        "loginBody": "Favor entrar com seu usuário do Google para ter acesso aos recursos da aplicação."
     },
     "navbar": {
         "cliente": {
