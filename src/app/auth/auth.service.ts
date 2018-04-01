@@ -9,6 +9,7 @@ import {
 import { environment } from './../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
 
 /**
  * An Auth0 service interface.
@@ -61,7 +62,7 @@ export class AuthService {
    * 
    * @param router A router reference.
    */
-  constructor(private router: Router) {
+  constructor(private router: Router, private progressAdvisorService: ProgressAdvisorService) {
     this.getAccessToken();
   }
 
@@ -69,6 +70,7 @@ export class AuthService {
    * Open centralized login.
    */
   public login(): void {
+    this.progressAdvisorService.announceConfig({show: true});
     this.auth0.authorize();
   }
 
@@ -82,6 +84,7 @@ export class AuthService {
         this.getUserInfo(authResult);
       }
       this.router.navigate(['/']);
+      this.progressAdvisorService.announceConfig({show: false});
     });
   }
 
