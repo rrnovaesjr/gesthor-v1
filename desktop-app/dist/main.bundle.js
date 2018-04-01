@@ -307,6 +307,7 @@ var AuthModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs__ = __webpack_require__("./node_modules/rxjs/Rx.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -316,6 +317,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -332,8 +334,9 @@ var AuthService = /** @class */ (function () {
      *
      * @param router A router reference.
      */
-    function AuthService(router) {
+    function AuthService(router, progressAdvisorService) {
         this.router = router;
+        this.progressAdvisorService = progressAdvisorService;
         /**
          * A private reference to the Auth0 web authority.
          */
@@ -359,6 +362,7 @@ var AuthService = /** @class */ (function () {
      * Open centralized login.
      */
     AuthService.prototype.login = function () {
+        this.progressAdvisorService.announceConfig({ show: true });
         this.auth0.authorize();
     };
     /**
@@ -372,6 +376,7 @@ var AuthService = /** @class */ (function () {
                 _this.getUserInfo(authResult);
             }
             _this.router.navigate(['/']);
+            _this.progressAdvisorService.announceConfig({ show: false });
         });
     };
     /**
@@ -441,7 +446,7 @@ var AuthService = /** @class */ (function () {
     });
     AuthService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */], __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_service__["a" /* ProgressAdvisorService */]])
     ], AuthService);
     return AuthService;
 }());
@@ -529,7 +534,7 @@ module.exports = ".main-container \n{\n    display: -webkit-box;\n    display: -
 /***/ "./src/app/main/main.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"main-container\" [class.main-is-mobile]=\"mobileQuery.matches\">\n  <mat-toolbar color=\"primary\" class=\"main-toolbar\">\n    <a mat-icon-button (click)=\"snav.toggle()\"><mat-icon>menu</mat-icon></a>\n    <h1 class=\"main-app-name\" [translate]=\"'main.appName'\"></h1>\n    <span class=\"main-spacer\"></span>\n    <app-member></app-member>\n  </mat-toolbar>\n  <mat-sidenav-container class=\"main-sidenav-container\" [style.marginTop.px]=\"mobileQuery.matches ? 56 : 0\">\n    <mat-sidenav #snav [mode]=\"mobileQuery.matches ? 'over' : 'side'\" [fixedInViewport]=\"mobileQuery.matches\" fixedTopGap=\"56\">\n      <router-outlet name=\"navbar\"></router-outlet>\n    </mat-sidenav>\n    <mat-sidenav-content>\n      <router-outlet></router-outlet>\n    </mat-sidenav-content>\n  </mat-sidenav-container>\n</div>"
+module.exports = "<div class=\"main-container\" [class.main-is-mobile]=\"mobileQuery.matches\">\n  <mat-toolbar color=\"primary\" class=\"main-toolbar\">\n    <a mat-icon-button (click)=\"snav.toggle()\"><mat-icon>menu</mat-icon></a>\n    <h1 class=\"main-app-name\" [translate]=\"'main.appName'\"></h1>\n    <span class=\"main-spacer\"></span>\n    <app-member></app-member>\n  </mat-toolbar>\n  <mat-sidenav-container class=\"main-sidenav-container\" [style.marginTop.px]=\"mobileQuery.matches ? 56 : 0\">\n    <mat-sidenav #snav [mode]=\"mobileQuery.matches ? 'over' : 'side'\" [fixedInViewport]=\"mobileQuery.matches\" fixedTopGap=\"56\">\n      <router-outlet name=\"navbar\"></router-outlet>\n    </mat-sidenav>\n    <mat-sidenav-content>\n      <app-progress-advisor></app-progress-advisor>\n      <router-outlet></router-outlet>\n    </mat-sidenav-content>\n  </mat-sidenav-container>\n</div>"
 
 /***/ }),
 
@@ -601,12 +606,14 @@ var MainComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared__ = __webpack_require__("./src/app/shared/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__member__ = __webpack_require__("./src/app/member/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_module__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.module.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -619,6 +626,7 @@ var MainModule = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
                 __WEBPACK_IMPORTED_MODULE_4__member__["a" /* MemberModule */],
+                __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_module__["a" /* ProgressAdvisorModule */],
                 __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* RouterModule */],
                 __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* SharedModule */]
             ],
@@ -715,7 +723,7 @@ var MemberComponent = /** @class */ (function () {
     MemberComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-member',
-            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n            <mat-card-subtitle><small>{{user?.email}}</small></mat-card-subtitle>\n          </mat-card-header>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n  ",
+            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n            <mat-card-subtitle><small>{{user?.email}}</small></mat-card-subtitle>\n          </mat-card-header>\n          <br>\n          <mat-card-content>\n\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n  ",
             styles: [
                 ":host p {\n      white-space: pre-line;\n      text-align: justify;\n    }",
                 ".login-card-container {\n      position: relative;\n      right: 200px;\n    }",
@@ -963,6 +971,172 @@ var NavbarModule = /** @class */ (function () {
         })
     ], NavbarModule);
     return NavbarModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/progress-advisor/progress-advisor.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProgressAdvisorComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ProgressAdvisorComponent = /** @class */ (function () {
+    /**
+     * Injects the necessary services.
+     *
+     * @param progressAdvisorService The global progress bar's service.
+     */
+    function ProgressAdvisorComponent(progressAdvisorService) {
+        this.progressAdvisorService = progressAdvisorService;
+        /**
+         * If progress bar must be displayed or not.
+         */
+        this.show = false;
+        /**
+         * The progress bar's mode.
+         */
+        this.mode = 'indeterminate';
+        /**
+         * The value of the progress bar.
+         */
+        this.value = 0;
+        /**
+         * The buffer value of the progress bar.
+         */
+        this.bufferValue = 0;
+    }
+    /**
+     * Subscribes to events.
+     */
+    ProgressAdvisorComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.progressAdvisorService.configNotifier$.subscribe(function (config) {
+            _this.show = config.show;
+            _this.mode = config.mode ? config.mode : 'indeterminate';
+            _this.value = config.value ? config.value : 0;
+            _this.bufferValue = config.bufferValue ? config.bufferValue : 0;
+        });
+    };
+    ProgressAdvisorComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-progress-advisor',
+            template: "\n    <mat-progress-bar [mode]=\"mode\" [value]=\"value\" [bufferValue]=\"bufferValue\" *ngIf=\"show\">\n    </mat-progress-bar>\n  ",
+            styles: []
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__progress_advisor_service__["a" /* ProgressAdvisorService */]])
+    ], ProgressAdvisorComponent);
+    return ProgressAdvisorComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/progress-advisor/progress-advisor.module.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProgressAdvisorModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared__ = __webpack_require__("./src/app/shared/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__progress_advisor_component__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+var ProgressAdvisorModule = /** @class */ (function () {
+    function ProgressAdvisorModule() {
+    }
+    ProgressAdvisorModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_1__shared__["a" /* SharedModule */]
+            ],
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_2__progress_advisor_component__["a" /* ProgressAdvisorComponent */]
+            ],
+            exports: [
+                __WEBPACK_IMPORTED_MODULE_2__progress_advisor_component__["a" /* ProgressAdvisorComponent */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_3__progress_advisor_service__["a" /* ProgressAdvisorService */]
+            ]
+        })
+    ], ProgressAdvisorModule);
+    return ProgressAdvisorModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/progress-advisor/progress-advisor.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProgressAdvisorService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__ = __webpack_require__("./node_modules/rxjs/_esm5/Subject.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ProgressAdvisorService = /** @class */ (function () {
+    /**
+     * Instantiates the new service.
+     */
+    function ProgressAdvisorService() {
+        /**
+         * A configuration subject.
+         */
+        this.configSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__["a" /* Subject */]();
+        /**
+         * Receives notifications from the subject.
+         */
+        this.configNotifier$ = this.configSubject.asObservable();
+    }
+    /**
+     * Announces `config` to the interested components.
+     *
+     * @param config A set of configurations for the global progress bar.
+     */
+    ProgressAdvisorService.prototype.announceConfig = function (config) {
+        this.configSubject.next(config);
+    };
+    ProgressAdvisorService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [])
+    ], ProgressAdvisorService);
+    return ProgressAdvisorService;
 }());
 
 
