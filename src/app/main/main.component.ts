@@ -7,6 +7,7 @@ import {
 import { AuthService } from '../auth';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
+import { WebappConstants } from '../shared';
 
 @Component({
   selector: 'app-main',
@@ -19,6 +20,11 @@ export class MainComponent implements OnInit, OnDestroy {
    * A mobile query.
    */
   public mobileQuery: MediaQueryList;
+
+  /**
+   * The app's version.
+   */
+  public version: string = WebappConstants.APP_VERSION;
 
   /**
    * A mobile query listener.
