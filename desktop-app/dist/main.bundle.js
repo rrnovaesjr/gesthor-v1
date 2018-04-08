@@ -425,6 +425,7 @@ var AuthService = /** @class */ (function () {
      * Removes current session data.
      */
     AuthService.prototype.logout = function () {
+        console.log(arguments.callee.caller.name);
         localStorage.removeItem('expires_at');
         localStorage.removeItem('id_token');
         localStorage.removeItem('nonce');
@@ -662,6 +663,20 @@ var MainModule = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/member/member.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ":host div {\n    padding: 0;\n    margin: 0;\n}\n\n:host p {\n    white-space: pre-line;\n    text-align: justify;\n    padding: 0;\n    margin: 0;\n}\n\n.member-container {    \n    width: 200px;\n}\n\n.button-container {\n    float: right;\n}\n\n:host br {\n    clear: both;\n}\n\n.login-card-container {\n    position: relative;\n    right: 25px;\n    width: 200px;\n}\n\n.login-card {\n    position: fixed;\n    z-index: 2;     \n    width: 200px;\n    line-break: normal;\n    padding: 0;\n    margin: 0;\n}\n\n.login-card img {\n    height: 50px;\n    width: 50px;\n    padding: 0;\n    margin: 0;\n}"
+
+/***/ }),
+
+/***/ "./src/app/member/member.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div class=\"button-container\">\n        <button mat-icon-button (click)=\"toggle()\" *ngIf=\"!authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n        </button>\n        <button mat-button (click)=\"toggle()\" *ngIf=\"authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n            {{ user?.given_name }}\n        </button>\n    </div>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content>\n            <p>{{ 'member.user.email' | translate}}: {{user?.email}}</p>\n            <p>{{ 'member.user.locale' | translate}}: {{user?.locale}}</p>\n            <p></p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n</div>"
+
+/***/ }),
+
 /***/ "./src/app/member/member.component.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -729,13 +744,8 @@ var MemberComponent = /** @class */ (function () {
     MemberComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-member',
-            template: "\n  <div (clickOutside)=\"onClickOutside($event)\">\n    <button mat-icon-button (click)=\"toggle()\"><mat-icon>account_circle</mat-icon></button>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n            <mat-card-subtitle><small>{{user?.email}}</small></mat-card-subtitle>\n          </mat-card-header>\n          <br>\n          <mat-card-content>\n\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n  ",
-            styles: [
-                ":host p {\n      white-space: pre-line;\n      text-align: justify;\n    }",
-                ".login-card-container {\n      position: relative;\n      right: 200px;\n    }",
-                ".login-card {\n      position: fixed;\n      z-index: 2;     \n      width: 200px;\n      line-break: normal;\n    }",
-                ".login-card img {\n      height: 50px;\n      width: 50px;\n      padding: 0;\n      margin: 0;\n    }"
-            ],
+            template: __webpack_require__("./src/app/member/member.component.html"),
+            styles: [__webpack_require__("./src/app/member/member.component.css")],
             animations: [
                 Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["m" /* trigger */])('enterCard', [
                     Object(__WEBPACK_IMPORTED_MODULE_2__angular_animations__["l" /* transition */])('void => *', [
