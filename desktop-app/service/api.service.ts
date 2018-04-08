@@ -91,7 +91,7 @@ class ApiService {
         serverService.use(port, bodyParser.json(environment.serverConfig.json));
         serverService.use(port, bodyParser.urlencoded({extended: false}));
         serverService.use(port, cors());
-        //serverService.use(port, this.jwtCheck);
+        serverService.use(port, this.jwtCheck);
         this.register(port);
         serverService.listen(port);
     }
