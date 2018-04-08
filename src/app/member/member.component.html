@@ -1,0 +1,45 @@
+<div (clickOutside)="onClickOutside($event)">
+    <div class="button-container">
+        <button mat-icon-button (click)="toggle()" *ngIf="!authService.isAuthenticated">
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <button mat-button (click)="toggle()" *ngIf="authService.isAuthenticated">
+            <mat-icon>account_circle</mat-icon>
+            {{ user?.given_name }}
+        </button>
+    </div>
+    <br>
+    <div class="login-card-container">
+      <mat-card class="login-card" *ngIf="showCard" [@enterCard]>
+        <div *ngIf="!authService.isAuthenticated">
+          <mat-card-header>
+            <img mat-card-avatar src="assets/img/no-user.png" />
+            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content class="login-content">
+            <p>{{ 'member.loginHeader' | translate }}</p>
+            <p>{{ 'member.loginBody' | translate }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button (click)="authService.login()">{{ 'global.login' | translate }}</button>
+          </mat-card-actions>
+        </div>
+        <div *ngIf="authService.isAuthenticated">
+          <mat-card-header>
+            <img mat-card-avatar [src]="user?.picture" />
+            <mat-card-title>{{user?.name}}</mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content>
+            <p>{{ 'member.user.email' | translate}}: {{user?.email}}</p>
+            <p>{{ 'member.user.locale' | translate}}: {{user?.locale}}</p>
+            <p></p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button (click)="authService.logout()">{{ 'global.logout' | translate }}</button>
+          </mat-card-actions>
+        </div>
+      </mat-card>
+    </div>
+</div>
