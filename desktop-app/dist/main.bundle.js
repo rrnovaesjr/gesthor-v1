@@ -149,7 +149,10 @@ var AbstractSecureCrudService = /** @class */ (function (_super) {
      * A default constrctor for HTTP headers.
      */
     AbstractSecureCrudService.prototype.createHttpHeaders = function () {
-        return new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["c" /* HttpHeaders */]({ 'Authentication': "Bearer " + this.authService.getManagementAPIToken });
+        return new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["c" /* HttpHeaders */]({
+            'content-type': 'application/json',
+            'Authentication': "Bearer " + this.authService.getManagementAPIToken
+        });
     };
     AbstractSecureCrudService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),
@@ -405,14 +408,12 @@ var AuthRoutingModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__ = __webpack_require__("./src/app/auth/auth-callback.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth_routing_module__ = __webpack_require__("./src/app/auth/auth-routing.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared__ = __webpack_require__("./src/app/shared/index.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__user_service__ = __webpack_require__("./src/app/auth/user.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 
 
 
@@ -428,8 +429,7 @@ var AuthModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */],
-                __WEBPACK_IMPORTED_MODULE_5__user_service__["a" /* UserService */]
+                __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__["a" /* AuthCallbackComponent */]
@@ -544,7 +544,7 @@ var AuthService = /** @class */ (function (_super) {
          * Creates a stream for observing into user profile's changes.
          */
         _this.userProfile$ = _this._userProfile.asObservable();
-        _this._getAccessToken();
+        _this._checkSession();
         return _this;
     }
     AuthService_1 = AuthService;
@@ -572,7 +572,7 @@ var AuthService = /** @class */ (function (_super) {
     /**
      * Gets an access token based on the session.
      */
-    AuthService.prototype._getAccessToken = function () {
+    AuthService.prototype._checkSession = function () {
         var _this = this;
         this.auth0.checkSession({}, function (err, authResult) {
             if (authResult && authResult.accessToken) {
@@ -605,20 +605,11 @@ var AuthService = /** @class */ (function (_super) {
      */
     AuthService.prototype._setSession = function (authResult, profile) {
         var expTime = authResult.expiresIn * 1000 + Date.now();
-        this.httpClient.post(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.url, {
-            grant_type: 'client_credentials',
-            client_id: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID,
-            client_secret: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.clientSecret,
-            audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.audience
-        }, {
-            headers: { 'content-type': 'application/json' }
-        }).subscribe(function (response) {
-            console.log(response);
-        });
         localStorage.setItem(AuthService_1.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
         this.userProfile = profile;
-        this._userProfile.next(this.userProfile);
         this.authenticated = true;
+        this.auth0DecodedHash = authResult;
+        this._userProfile.next(this.userProfile);
     };
     /**
      * Removes current session data.
@@ -645,7 +636,7 @@ var AuthService = /** @class */ (function (_super) {
          * Gets the string corresponding to the access token.
          */
         get: function () {
-            return this.managementAPIToken;
+            return this.auth0DecodedHash.accessToken;
         },
         enumerable: true,
         configurable: true
@@ -685,81 +676,6 @@ var AuthService = /** @class */ (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_module__ = __webpack_require__("./src/app/auth/auth.module.ts");
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__auth_module__["a"]; });
 
-
-
-
-/***/ }),
-
-/***/ "./src/app/auth/user.service.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UserService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-var UserService = /** @class */ (function (_super) {
-    __extends(UserService, _super);
-    /**
-     * Constructor that injects other servces.
-     */
-    function UserService(httpClient, authService) {
-        var _this = _super.call(this, authService, httpClient) || this;
-        _this.userApi = "https://" + __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain + "/api/v2/users";
-        return _this;
-    }
-    UserService.prototype.create = function (user) {
-        return null;
-    };
-    UserService.prototype.read = function (user_id) {
-        return this.httpClient.get(this.userApi + "/" + user_id, {
-            headers: this.createHttpHeaders(),
-            params: { search_engine: 'v3' },
-            observe: 'body'
-        }).map(function (res) {
-            return res;
-        });
-    };
-    UserService.prototype.update = function (user) {
-        return null;
-    };
-    UserService.prototype.delete = function (key) {
-        return null;
-    };
-    UserService = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]])
-    ], UserService);
-    return UserService;
-}(__WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__["a" /* AbstractSecureCrudService */]));
 
 
 
@@ -981,7 +897,7 @@ module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div clas
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth__ = __webpack_require__("./src/app/auth/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_animations__ = __webpack_require__("./node_modules/@angular/animations/esm5/animations.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__auth_user_service__ = __webpack_require__("./src/app/auth/user.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__member_user_service__ = __webpack_require__("./src/app/member/user.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1014,10 +930,9 @@ var MemberComponent = /** @class */ (function () {
         this.authService.userProfile$.subscribe(function (res) {
             _this.user = res;
             if (_this.user) {
-                /*
-                this.userService.getUser(this.user.sub).subscribe((res: Auth0UserProfile) => {
-                  console.log(res);
-                });*/
+                _this.userService.read(_this.user.sub).subscribe(function (res) {
+                    console.log(res);
+                });
             }
         });
     }
@@ -1062,7 +977,7 @@ var MemberComponent = /** @class */ (function () {
                 ])
             ]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_4__auth_user_service__["a" /* UserService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_4__member_user_service__["a" /* UserService */]])
     ], MemberComponent);
     return MemberComponent;
 }());
@@ -1081,12 +996,14 @@ var MemberComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng_click_outside___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_ng_click_outside__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__member_component__ = __webpack_require__("./src/app/member/member.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared__ = __webpack_require__("./src/app/shared/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__user_service__ = __webpack_require__("./src/app/member/user.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -1105,11 +1022,99 @@ var MemberModule = /** @class */ (function () {
             ],
             exports: [
                 __WEBPACK_IMPORTED_MODULE_2__member_component__["a" /* MemberComponent */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_4__user_service__["a" /* UserService */]
             ]
         })
     ], MemberModule);
     return MemberModule;
 }());
+
+
+
+/***/ }),
+
+/***/ "./src/app/member/user.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UserService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+var UserService = /** @class */ (function (_super) {
+    __extends(UserService, _super);
+    /**
+     * Constructor that injects other servces.
+     */
+    function UserService(httpClient, authService) {
+        var _this = _super.call(this, authService, httpClient) || this;
+        /**
+         * A constant reference to the API URL.
+         */
+        _this.userApi = __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].apiUrl + "/api/users";
+        return _this;
+    }
+    UserService.prototype.create = function (user) {
+        return null;
+    };
+    /**
+     * Reads an user by its identifier.
+     *
+     * @param user_id An user's identifier.
+     */
+    UserService.prototype.read = function (user_id) {
+        return this.httpClient.get(this.userApi + "/" + user_id, {
+            headers: {
+                'content-type': "application/json",
+                'Authentication': "Bearer " + this.authService.getManagementAPIToken
+            }
+        }).map(function (res) {
+            console.log(res);
+            return res;
+        });
+    };
+    UserService.prototype.update = function (user) {
+        return null;
+    };
+    UserService.prototype.delete = function (key) {
+        return null;
+    };
+    UserService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_1__auth_auth_service__["a" /* AuthService */]])
+    ], UserService);
+    return UserService;
+}(__WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__["a" /* AbstractSecureCrudService */]));
 
 
 
@@ -1638,7 +1643,7 @@ var WebappConstants = /** @class */ (function () {
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    apiUrl: 'http://localhost:8080/',
+    apiUrl: 'http://localhost:8080',
     auth: {
         clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
         managementApi: {

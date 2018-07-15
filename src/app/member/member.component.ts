@@ -47,10 +47,9 @@ export class MemberComponent implements OnInit {
     this.authService.userProfile$.subscribe((res: Auth0UserProfile) => {
       this.user = res;   
       if(this.user) {
-        /*
-        this.userService.getUser(this.user.sub).subscribe((res: Auth0UserProfile) => {
+        this.userService.read(this.user.sub).subscribe((res: Auth0UserProfile) => {
           console.log(res);
-        });*/     
+        });
       }
     });
   }

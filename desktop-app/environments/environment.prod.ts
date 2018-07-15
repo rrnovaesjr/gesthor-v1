@@ -24,7 +24,7 @@ export const environment = {
     },
     apiUrl: 'https://rrnovaesjr.auth0.com/oauth/token',
     audience: 'http://localhost:8080',
-    issuer: 'https://rrnovaesjr.auth0.com/',
+    issuer: 'https://rrnovaesjr.auth0.com',
     algorithms: ['RS256']
   },
   serverConfig: {

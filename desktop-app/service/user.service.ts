@@ -18,15 +18,9 @@ class UserService implements RestAPIService {
     private apiToken: { access_token: string, expires_in: number, token_type: string };
 
     /**
-     * Request to the API management.
+     * The reference to the user API for Token Management on Auth0.
      */
-    private readonly options = {
-        method: 'POST',
-        url: environment.auth.apiUrl,
-        headers: { 'content-type': 'application/json' },
-        body: environment.auth.optionsBody,
-        json: true
-    };
+    private readonly userApi: string = `https://${environment.auth.issuer}/api/v2/users`;
 
     /**
      * Initializes a new User Service. This function starts a new timer to get a new API
@@ -39,7 +33,13 @@ class UserService implements RestAPIService {
             environment.auth.apiManagementTokenRequestConfig.initialDelay,
             environment.auth.apiManagementTokenRequestConfig.period
         ).subscribe((it: number) => {
-            request(this.options, (err, response, body) => {
+            request({
+                method: 'POST',
+                url: environment.auth.apiUrl,
+                headers: { 'content-type': 'application/json' },
+                body: environment.auth.optionsBody,
+                json: true
+            }, (err, response, body) => {
                 if (err) {
                     throw err;
                 }
@@ -50,19 +50,28 @@ class UserService implements RestAPIService {
     }
 
     /**
-     * Maps all GET functions for users.
+     * Maps all users API GET requests.
      */
-    public readonly post = [
+    public readonly get = [
         {
-            url: '/api/token',
+            url: 'api/users/:id',
             callback: (req: Request, res: Response) => {
-                request(this.options, (error, response, body) => {
-                    if (error) {
-                        console.log(error);
+                const userId: string = req.params.id;
+                request({
+                    method: 'GET',
+                    url: `${this.userApi}/${userId}`,
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authentication': `${this.apiToken.token_type} ${this.apiToken.access_token}`
+                    },
+                    body: null,
+                    json: true
+                }, (err, response, body) => {
+                    if(err) {
+                        throw err;
                     }
-                    console.log(response);
-                    this.apiToken = body;
-                    res.send(this.apiToken);
+                    console.log(body);
+                    res.send(body);
                 });
             },
             jwtCheck: serverService.jwtCheck

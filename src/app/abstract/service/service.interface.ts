@@ -91,10 +91,10 @@ export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
      */
     protected createHttpParams(paramMap: Map<string, string>): HttpParams {
         let httpParams: HttpParams = new HttpParams();
-        if(paramMap) {
-            for(let i: number = 0; i < paramMap.size; i++) {
+        if (paramMap) {
+            for (let i: number = 0; i < paramMap.size; i++) {
                 httpParams = httpParams.set(paramMap[i][0], paramMap[i][1]);
-            }    
+            }
         }
         return httpParams;
     }
@@ -126,7 +126,10 @@ export abstract class AbstractSecureCrudService<E, PK> extends AbstractCrudServi
      * A default constrctor for HTTP headers.
      */
     protected createHttpHeaders(): HttpHeaders {
-        return new HttpHeaders({'Authentication': `Bearer ${this.authService.getManagementAPIToken}`});
+        return new HttpHeaders({ 
+            'content-type': 'application/json',
+            'Authentication': `Bearer ${this.authService.getManagementAPIToken}` 
+        });
     }
 
 }

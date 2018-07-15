@@ -76,14 +76,14 @@ export class AuthService extends AbstractSimpleService {
   public userProfile$: Observable<Auth0UserProfile> = this._userProfile.asObservable();
 
   /**
-   * A private reference to the management API token.
-   */
-  private managementAPIToken: string;
-
-  /**
    * A boolean flag that indicates if an user is authenticated.
    */
   private authenticated: boolean;
+
+  /**
+   * The user's decoded information.
+   */
+  private auth0DecodedHash: Auth0DecodedHash;
 
   /**
    * Builds the service based on the current session settings.
@@ -95,7 +95,7 @@ export class AuthService extends AbstractSimpleService {
     private httpClient: HttpClient
   ) {
     super();
-    this._getAccessToken();
+    this._checkSession();
   }
 
   /**
@@ -123,7 +123,7 @@ export class AuthService extends AbstractSimpleService {
   /**
    * Gets an access token based on the session.
    */
-  private _getAccessToken(): void {
+  private _checkSession(): void {
     this.auth0.checkSession({}, (err: Auth0Error, authResult: Auth0DecodedHash) => {
       if (authResult && authResult.accessToken) {
         this._getUserInfo(authResult);
@@ -156,20 +156,11 @@ export class AuthService extends AbstractSimpleService {
    */
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
     const expTime: number = authResult.expiresIn * 1000 + Date.now();
-    this.httpClient.post(environment.auth.managementApi.url, {
-      grant_type: 'client_credentials',
-      client_id: environment.auth.clientID,
-      client_secret: environment.auth.managementApi.clientSecret,
-      audience: environment.auth.managementApi.audience
-    }, {
-        headers: { 'content-type': 'application/json' }
-      }).subscribe((response) => {
-        console.log(response);
-      });
     localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
     this.userProfile = profile;
-    this._userProfile.next(this.userProfile);
     this.authenticated = true;
+    this.auth0DecodedHash = authResult;
+    this._userProfile.next(this.userProfile);
   }
 
   /**
@@ -194,7 +185,7 @@ export class AuthService extends AbstractSimpleService {
    * Gets the string corresponding to the access token.
    */
   get getManagementAPIToken(): string {
-    return this.managementAPIToken;
+    return this.auth0DecodedHash.accessToken;
   }
 
   /**

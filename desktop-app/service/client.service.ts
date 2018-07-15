@@ -75,7 +75,7 @@ class ClientService implements RestAPIService {
             url: '/api/client/:user_id',
             callback: (req: Request, res: Response) => {
                 transactionService.doInTransactionWithoutResult(() => {
-                    const userId: string = req.params.usuario_id;
+                    const userId: string = req.params.user_id;
                     clientRepository.findAllByUsuarioId(userId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
                             throw err;

@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/',  
+  apiUrl: 'http://localhost:8080',  
   auth:   {
     clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
     managementApi: {
