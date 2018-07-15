@@ -19,28 +19,44 @@ class TransactionService {
      * 
      * @param proc Function to be executed inside the void transactional body.
      */
-    public doInTransactionWithoutResult(proc: () => void): void {
+    public doInTransactionWithoutResult(proc: () => void, excHandler?: (err?: any) => void): void {
         apiService.connection.beginTransaction((transactionError: QueryError) => {
-            if(transactionError) {
+            if (transactionError) {
                 apiService.connection.rollback(() => {
-                    throw transactionError;
+                    this.excHandler(transactionError, excHandler);
                 });
             }
             try {
                 proc();
-            } catch(err) {
+            } catch (err) {
                 apiService.connection.rollback(() => {
-                    throw err;
+                    this.excHandler(err, excHandler);
                 });
             }
             apiService.connection.commit((commitError: QueryError) => {
-                if(commitError) {
+                if (commitError) {
                     apiService.connection.rollback(() => {
-                        throw commitError;
+                        this.excHandler(commitError, excHandler);
                     });
                 }
             });
         });
+    }
+
+    /**
+     * Handles exceptions ocurred during a void transaction. If a customized handler
+     * is passed, then it is used. Otherwise, the exception is thrown.
+     * 
+     * @param err An exception instance.
+     * @param excHandler An exception handler function. In this function's scope,
+     * a transaction rollback has been already executed.
+     */
+    private excHandler(err: any, excHandler?: (err?: any) => void): void {
+        if (excHandler) {
+            excHandler(err);
+            return;
+        }
+        throw err;
     }
 }
 

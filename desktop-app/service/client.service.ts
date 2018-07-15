@@ -31,6 +31,10 @@ class ClientService implements RestAPIService {
                         _result.id = result.insertId;
                         res.send(_result);
                     });
+                }, (err?: any) => {
+                    if (err) {
+                        res.send(err);
+                    }
                 });
             },
             jwtCheck: serverService.jwtCheck
@@ -53,6 +57,10 @@ class ClientService implements RestAPIService {
                         let _result: Client = clientBody;
                         res.send(_result);
                     })
+                }, (err?: any) => {
+                    if (err) {
+                        res.send(err);
+                    }
                 });
             },
             jwtCheck: serverService.jwtCheck
@@ -76,6 +84,10 @@ class ClientService implements RestAPIService {
                         _result = result && result.length ? clientMapper.manySQLToEntities(result) : [];
                         res.send(_result);
                     }, req.query);
+                }, (err?: any) => {
+                    if (err) {
+                        res.send(err);
+                    }
                 });
             },
             jwtCheck: serverService.jwtCheck
@@ -93,6 +105,10 @@ class ClientService implements RestAPIService {
                         _result = result && result.length ? clientMapper.sQLToEntity(result[0]) : null;
                         res.send(_result);
                     });
+                }, (err?: any) => {
+                    if (err) {
+                        res.send(err);
+                    }
                 });
             },
             jwtCheck: serverService.jwtCheck
@@ -114,6 +130,10 @@ class ClientService implements RestAPIService {
                         }
                         res.send(result);
                     });
+                }, (err?: any) => {
+                    if (err) {
+                        res.send(err);
+                    }
                 });
             },
             jwtCheck: serverService.jwtCheck
