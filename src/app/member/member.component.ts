@@ -8,7 +8,7 @@ import {
   transition
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '../auth/user.service';
+import { UserService } from '../member/user.service';
 
 @Component({
   selector: 'app-member',

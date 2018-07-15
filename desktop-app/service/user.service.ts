@@ -2,6 +2,7 @@ import { RestAPIService } from './rest-service.interface';
 import { environment } from '../environments';
 import { Request, Response } from 'express';
 import { serverService } from './server.service';
+import { Observable } from 'rxjs';
 const request = require("request");
 
 /**
@@ -14,7 +15,7 @@ class UserService implements RestAPIService {
     /**
      * The reference to the API token.
      */
-    private apiToken: string = '';
+    private apiToken: { access_token: string, expires_in: number, token_type: string };
 
     /**
      * Request to the API management.
@@ -28,6 +29,27 @@ class UserService implements RestAPIService {
     };
 
     /**
+     * Initializes a new User Service. This function starts a new timer to get a new API
+     * Management Token in a specific time period.
+     * 
+     * The initial delay and period is configured by the environment properties.
+     */
+    public constructor() {
+        Observable.timer(
+            environment.auth.apiManagementTokenRequestConfig.initialDelay,
+            environment.auth.apiManagementTokenRequestConfig.period
+        ).subscribe((it: number) => {
+            request(this.options, (err, response, body) => {
+                if (err) {
+                    throw err;
+                }
+                this.apiToken = body;
+                console.log(this.apiToken);
+            });
+        });
+    }
+
+    /**
      * Maps all GET functions for users.
      */
     public readonly post = [
@@ -35,7 +57,7 @@ class UserService implements RestAPIService {
             url: '/api/token',
             callback: (req: Request, res: Response) => {
                 request(this.options, (error, response, body) => {
-                    if(error) {
+                    if (error) {
                         console.log(error);
                     }
                     console.log(response);

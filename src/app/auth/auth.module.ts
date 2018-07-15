@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthCallbackComponent } from './auth-callback.component';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from '../shared';
-import { UserService } from './user.service';
 
 @NgModule({
   imports: [
@@ -11,8 +10,7 @@ import { UserService } from './user.service';
     SharedModule
   ],
   providers: [
-    AuthService,
-    UserService
+    AuthService
   ],
   declarations: [
     AuthCallbackComponent

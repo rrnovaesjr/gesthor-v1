@@ -7,6 +7,10 @@ export const environment = {
     password: '123456'
   },
   auth: {
+    apiManagementTokenRequestConfig: {
+      initialDelay: 0,
+      period: 84400000
+    },
     secret: {
       cache: true,
       rateLimit: true,
