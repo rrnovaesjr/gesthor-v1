@@ -5,6 +5,7 @@ import { QueryError, OkPacket } from 'mysql';
 import { clientMapper } from './mapper/client.mapper';
 import { Request, Response } from 'express';
 import { transactionService } from './transaction.service';
+import { serverService } from './server.service';
 
 /**
  * A client service handler for API requests.
@@ -31,7 +32,8 @@ class ClientService implements RestAPIService {
                         res.send(_result);
                     });
                 });
-            }
+            },
+            jwtCheck: serverService.jwtCheck
         }
     ];
 
@@ -52,7 +54,8 @@ class ClientService implements RestAPIService {
                         res.send(_result);
                     })
                 });
-            }
+            },
+            jwtCheck: serverService.jwtCheck
         }
     ];
 
@@ -74,7 +77,8 @@ class ClientService implements RestAPIService {
                         res.send(_result);
                     }, req.query);
                 });
-            }
+            },
+            jwtCheck: serverService.jwtCheck
         },
         {
             url: '/api/client/:id',
@@ -90,7 +94,8 @@ class ClientService implements RestAPIService {
                         res.send(_result);
                     });
                 });
-            }
+            },
+            jwtCheck: serverService.jwtCheck
         }
     ];
 
@@ -110,7 +115,8 @@ class ClientService implements RestAPIService {
                         res.send(result);
                     });
                 });
-            }
+            },
+            jwtCheck: serverService.jwtCheck
         }
     ];
 }
