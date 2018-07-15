@@ -4,7 +4,7 @@ import {
   OnDestroy, 
   ChangeDetectorRef 
 } from '@angular/core';
-import { AuthService } from '../auth';
+import { AuthService } from '../auth/auth.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
 import { WebappConstants } from '../shared';

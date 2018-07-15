@@ -1,5 +1,5 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { AuthService } from '../auth';
+import { AuthService } from '../auth/auth.service';
 import { Auth0UserProfile } from 'auth0-js';
 import {
   trigger,

@@ -20,7 +20,8 @@ export const environment = {
     optionsBody: {
       client_secret: 'r6JmjUgiEppyN8P6O1dzJpI9wysh2UqHgm639H4E1QXMgtluBSOO1FexlUAbmbOl',
       client_id: 'fJUfe_XmjbfVEw7J8QCtXvIUqlJbYm_K',
-      grant_type: 'client_credentials'
+      grant_type: 'client_credentials',
+      audience: 'https://rrnovaesjr.auth0.com/api/v2/'
     },
     apiUrl: 'https://rrnovaesjr.auth0.com/oauth/token',
     audience: 'http://localhost:8080',

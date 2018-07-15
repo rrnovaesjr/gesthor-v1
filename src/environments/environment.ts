@@ -8,11 +8,6 @@ export const environment = {
   apiUrl: 'http://localhost:8080',  
   auth:   {
     clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
-    managementApi: {
-      clientSecret: 'jzKlwruyaZj4c2nVVIre1XOusaKd7mvW9AFJZDxOibENrAquebPKy3DAN-b49uu0',
-      audience: 'https://rrnovaesjr.auth0.com/api/v2/',
-      url: 'https://rrnovaesjr.auth0.com/oauth/token'
-    },
     domain: 'rrnovaesjr.auth0.com',
     audience: 'http://localhost:8080',
     redirect: 'http://localhost:9000/callback',

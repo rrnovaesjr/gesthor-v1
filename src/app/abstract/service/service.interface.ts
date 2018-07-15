@@ -2,7 +2,8 @@ import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth';
+import { AuthService } from '../../auth/auth.service';
+import { ObservableInput } from 'rxjs/Observable';
 
 /**
  * Determinates simple abstract methods for all services.
@@ -16,13 +17,7 @@ export abstract class AbstractSimpleService {
      * A protected reference to the API url.
      */
     protected readonly api: string = environment.apiUrl;
-
-    /**
-     * A default error handling method.
-     */
-    protected handleError(err): void {
-
-    }
+    
 }
 
 /**
@@ -99,6 +94,16 @@ export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
         return httpParams;
     }
 
+    /**
+     * Handles different kinds of erros from the application.
+     * 
+     * @param err Error to be handled.
+     */
+    protected handleError(err: any, caughtError: Observable<E>): ObservableInput<E> {
+        console.log(err);
+        return null;
+    }
+
 }
 
 /**
@@ -128,7 +133,7 @@ export abstract class AbstractSecureCrudService<E, PK> extends AbstractCrudServi
     protected createHttpHeaders(): HttpHeaders {
         return new HttpHeaders({ 
             'content-type': 'application/json',
-            'Authentication': `Bearer ${this.authService.getManagementAPIToken}` 
+            'Authorization': `Bearer ${this.authService.getManagementAPIToken}` 
         });
     }
 

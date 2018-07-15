@@ -20,7 +20,7 @@ class UserService implements RestAPIService {
     /**
      * The reference to the user API for Token Management on Auth0.
      */
-    private readonly userApi: string = `https://${environment.auth.issuer}/api/v2/users`;
+    private readonly userApi: string = `${environment.auth.issuer}api/v2/users`;
 
     /**
      * Initializes a new User Service. This function starts a new timer to get a new API
@@ -44,7 +44,6 @@ class UserService implements RestAPIService {
                     throw err;
                 }
                 this.apiToken = body;
-                console.log(this.apiToken);
             });
         });
     }
@@ -54,20 +53,17 @@ class UserService implements RestAPIService {
      */
     public readonly get = [
         {
-            url: 'api/users/:id',
+            url: '/api/users/:id',
             callback: (req: Request, res: Response) => {
                 const userId: string = req.params.id;
                 request({
                     method: 'GET',
                     url: `${this.userApi}/${userId}`,
                     headers: {
-                        'content-type': 'application/json',
-                        'Authentication': `${this.apiToken.token_type} ${this.apiToken.access_token}`
-                    },
-                    body: null,
-                    json: true
+                        authorization: `Bearer ${this.apiToken.access_token}`
+                    }
                 }, (err, response, body) => {
-                    if(err) {
+                    if (err) {
                         throw err;
                     }
                     console.log(body);

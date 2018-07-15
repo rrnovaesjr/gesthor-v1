@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
 import { HttpClient } from '@angular/common/http';
-import { AbstractSimpleService } from '../abstract/service/service.interface';
 
 /**
  * An Auth0 service interface.
@@ -19,7 +18,7 @@ import { AbstractSimpleService } from '../abstract/service/service.interface';
  * @author rodrigo-novaes
  */
 @Injectable()
-export class AuthService extends AbstractSimpleService {
+export class AuthService {
 
   /**
    * Key that references the current session's expiration time on the local storage.
@@ -94,7 +93,6 @@ export class AuthService extends AbstractSimpleService {
     private progressAdvisorService: ProgressAdvisorService,
     private httpClient: HttpClient
   ) {
-    super();
     this._checkSession();
   }
 

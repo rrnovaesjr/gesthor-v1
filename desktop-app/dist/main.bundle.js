@@ -21,13 +21,13 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AbstractSimpleService; });
+/* unused harmony export AbstractSimpleService */
 /* unused harmony export AbstractCrudService */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractSecureCrudService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth__ = __webpack_require__("./src/app/auth/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth_auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -63,11 +63,6 @@ var AbstractSimpleService = /** @class */ (function () {
          */
         this.api = __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].apiUrl;
     }
-    /**
-     * A default error handling method.
-     */
-    AbstractSimpleService.prototype.handleError = function (err) {
-    };
     AbstractSimpleService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])()
     ], AbstractSimpleService);
@@ -117,6 +112,15 @@ var AbstractCrudService = /** @class */ (function (_super) {
         }
         return httpParams;
     };
+    /**
+     * Handles different kinds of erros from the application.
+     *
+     * @param err Error to be handled.
+     */
+    AbstractCrudService.prototype.handleError = function (err, caughtError) {
+        console.log(err);
+        return null;
+    };
     AbstractCrudService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
@@ -151,12 +155,12 @@ var AbstractSecureCrudService = /** @class */ (function (_super) {
     AbstractSecureCrudService.prototype.createHttpHeaders = function () {
         return new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["c" /* HttpHeaders */]({
             'content-type': 'application/json',
-            'Authentication': "Bearer " + this.authService.getManagementAPIToken
+            'Authorization': "Bearer " + this.authService.getManagementAPIToken
         });
     };
     AbstractSecureCrudService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
     ], AbstractSecureCrudService);
     return AbstractSecureCrudService;
 }(AbstractCrudService));
@@ -234,7 +238,7 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__navbar__ = __webpack_require__("./src/app/navbar/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__entities__ = __webpack_require__("./src/app/entities/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_component__ = __webpack_require__("./src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__auth__ = __webpack_require__("./src/app/auth/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__auth_auth_module__ = __webpack_require__("./src/app/auth/auth.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ngx_translate_http_loader__ = __webpack_require__("./node_modules/@ngx-translate/http-loader/index.js");
@@ -270,7 +274,7 @@ var AppModule = /** @class */ (function () {
     AppModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["NgModule"])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_8__auth__["a" /* AuthModule */],
+                __WEBPACK_IMPORTED_MODULE_8__auth_auth_module__["a" /* AuthModule */],
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
                 __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_animations__["a" /* BrowserAnimationsModule */],
                 __WEBPACK_IMPORTED_MODULE_9__angular_common_http__["b" /* HttpClientModule */],
@@ -459,17 +463,6 @@ var AuthModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__progress_advisor_progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -487,48 +480,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 /**
  * An Auth0 service interface.
  *
  * @author rodrigo-novaes
  */
-var AuthService = /** @class */ (function (_super) {
-    __extends(AuthService, _super);
+var AuthService = /** @class */ (function () {
     /**
      * Builds the service based on the current session settings.
      *
      * @param router A router reference.
      */
     function AuthService(router, progressAdvisorService, httpClient) {
-        var _this = _super.call(this) || this;
-        _this.router = router;
-        _this.progressAdvisorService = progressAdvisorService;
-        _this.httpClient = httpClient;
+        this.router = router;
+        this.progressAdvisorService = progressAdvisorService;
+        this.httpClient = httpClient;
         /**
          * An auth parameters object that sets google login to be selectable.
          */
-        _this.authParams = {
+        this.authParams = {
             scope: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.scope,
             prompt: 'select_account'
         };
         /**
          * Constant reference to the auth0 lock instance.
          */
-        _this.auth0Lock = new __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default.a(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID, __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain, {
+        this.auth0Lock = new __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default.a(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID, __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain, {
             rememberLastLogin: false,
             auth: {
                 audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.audience,
                 redirect: true,
                 redirectUrl: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.redirect,
                 responseType: 'token',
-                params: _this.authParams
+                params: this.authParams
             }
         });
         /**
          * A private reference to the Auth0 web authority.
          */
-        _this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
+        this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
             clientID: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID,
             domain: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain,
             responseType: 'token',
@@ -539,13 +529,12 @@ var AuthService = /** @class */ (function (_super) {
         /**
          * A behavior subject for the user profile.
          */
-        _this._userProfile = new __WEBPACK_IMPORTED_MODULE_5_rxjs__["BehaviorSubject"](_this.userProfile);
+        this._userProfile = new __WEBPACK_IMPORTED_MODULE_5_rxjs__["BehaviorSubject"](this.userProfile);
         /**
          * Creates a stream for observing into user profile's changes.
          */
-        _this.userProfile$ = _this._userProfile.asObservable();
-        _this._checkSession();
-        return _this;
+        this.userProfile$ = this._userProfile.asObservable();
+        this._checkSession();
     }
     AuthService_1 = AuthService;
     /**
@@ -661,21 +650,7 @@ var AuthService = /** @class */ (function (_super) {
     ], AuthService);
     return AuthService;
     var AuthService_1;
-}(__WEBPACK_IMPORTED_MODULE_8__abstract_service_service_interface__["b" /* AbstractSimpleService */]));
-
-
-
-/***/ }),
-
-/***/ "./src/app/auth/index.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__auth_service__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_module__ = __webpack_require__("./src/app/auth/auth.module.ts");
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__auth_module__["a"]; });
-
+}());
 
 
 
@@ -894,7 +869,7 @@ module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div clas
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MemberComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth__ = __webpack_require__("./src/app/auth/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_animations__ = __webpack_require__("./node_modules/@angular/animations/esm5/animations.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__member_user_service__ = __webpack_require__("./src/app/member/user.service.ts");
@@ -977,7 +952,7 @@ var MemberComponent = /** @class */ (function () {
                 ])
             ]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_4__member_user_service__["a" /* UserService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_4__member_user_service__["a" /* UserService */]])
     ], MemberComponent);
     return MemberComponent;
 }());
@@ -1046,6 +1021,7 @@ var MemberModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rxjs_operators__ = __webpack_require__("./node_modules/rxjs/_esm5/operators.js");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1065,6 +1041,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1094,14 +1071,8 @@ var UserService = /** @class */ (function (_super) {
      */
     UserService.prototype.read = function (user_id) {
         return this.httpClient.get(this.userApi + "/" + user_id, {
-            headers: {
-                'content-type': "application/json",
-                'Authentication': "Bearer " + this.authService.getManagementAPIToken
-            }
-        }).map(function (res) {
-            console.log(res);
-            return res;
-        });
+            headers: this.createHttpHeaders()
+        }).pipe(Object(__WEBPACK_IMPORTED_MODULE_6_rxjs_operators__["catchError"])(this.handleError));
     };
     UserService.prototype.update = function (user) {
         return null;
@@ -1197,7 +1168,7 @@ module.exports = "<mat-nav-list *ngIf=\"authService.isAuthenticated\">\n  <a mat
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__ = __webpack_require__("./node_modules/@angular/cdk/esm5/layout.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth__ = __webpack_require__("./src/app/auth/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth_auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1244,7 +1215,7 @@ var NavbarComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/navbar/navbar.component.html"),
             styles: [__webpack_require__("./src/app/navbar/navbar.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth__["b" /* AuthService */],
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth_auth_service__["a" /* AuthService */],
             __WEBPACK_IMPORTED_MODULE_2__ngx_translate_core__["c" /* TranslateService */],
             __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"],
             __WEBPACK_IMPORTED_MODULE_1__angular_cdk_layout__["d" /* MediaMatcher */]])
@@ -1646,11 +1617,6 @@ var environment = {
     apiUrl: 'http://localhost:8080',
     auth: {
         clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
-        managementApi: {
-            clientSecret: 'jzKlwruyaZj4c2nVVIre1XOusaKd7mvW9AFJZDxOibENrAquebPKy3DAN-b49uu0',
-            audience: 'https://rrnovaesjr.auth0.com/api/v2/',
-            url: 'https://rrnovaesjr.auth0.com/oauth/token'
-        },
         domain: 'rrnovaesjr.auth0.com',
         audience: 'http://localhost:8080',
         redirect: 'http://localhost:9000/callback',

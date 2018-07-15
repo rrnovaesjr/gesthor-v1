@@ -82,7 +82,7 @@ class ApiService {
     public config(port: number = Constants.DEFAULT_API_PORT): void {
         serverService.build(port);
         serverService.use(port, bodyParser.json(environment.serverConfig.json));
-        serverService.use(port, bodyParser.urlencoded({extended: false}));
+        serverService.use(port, bodyParser.urlencoded({ extended: true }));
         serverService.use(port, cors());
         serverService.use(port, serverService.jwtCheck);
         this.register(port);

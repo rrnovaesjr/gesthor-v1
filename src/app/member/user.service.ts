@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { environment } from './../../environments/environment';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/Rx';
 import { AbstractSecureCrudService } from '../abstract/service/service.interface';
 import { Auth0UserProfile } from 'auth0-js';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class UserService extends AbstractSecureCrudService<Auth0UserProfile, string> {
@@ -32,15 +33,9 @@ export class UserService extends AbstractSecureCrudService<Auth0UserProfile, str
      * @param user_id An user's identifier.
      */
     public read(user_id: string): Observable<Auth0UserProfile> {
-        return this.httpClient.get(`${this.userApi}/${user_id}`, {
-            headers: {
-                'content-type': `application/json`,
-                'Authentication': `Bearer ${this.authService.getManagementAPIToken}`
-            }
-        }).map((res: Auth0UserProfile) => {
-            console.log(res);
-            return res;
-        });
+        return this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${user_id}`, {
+            headers: this.createHttpHeaders()
+        }).pipe(catchError(this.handleError));
     }
 
     public update(user: Auth0UserProfile): Observable<Auth0UserProfile> {

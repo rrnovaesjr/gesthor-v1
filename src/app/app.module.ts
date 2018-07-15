@@ -6,7 +6,7 @@ import { MainModule } from './main';
 import { NavbarModule} from './navbar';
 import { EntitiesModule } from './entities';
 import { AppComponent } from './app.component';
-import { AuthModule } from './auth';
+import { AuthModule } from './auth/auth.module';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
