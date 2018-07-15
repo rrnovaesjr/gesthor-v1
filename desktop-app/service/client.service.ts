@@ -24,8 +24,7 @@ class ClientService implements RestAPIService {
                     const clientBody: _Client = clientMapper.entityToSQL(req.body);
                     clientRepository.create(clientBody, (err: QueryError, result: OkPacket) => {
                         if (err) {
-                            res.send(err);
-                            return;
+                            throw err;
                         }
                         let _result: Client = clientBody;
                         _result.id = result.insertId;
@@ -47,8 +46,7 @@ class ClientService implements RestAPIService {
                     const clientBody: _Client = clientMapper.entityToSQL(req.body);
                     clientRepository.update(clientBody, (err: QueryError, result: OkPacket) => {
                         if (err) {
-                            res.send(err);
-                            return;
+                            throw err;
                         }
                         let _result: Client = clientBody;
                         res.send(_result);
@@ -69,8 +67,7 @@ class ClientService implements RestAPIService {
                     const userId: string = req.params.usuario_id;
                     clientRepository.findAllByUsuarioId(userId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
-                            res.send(err);
-                            return;
+                            throw err;
                         }
                         let _result: Client[];
                         _result = result && result.length ? clientMapper.manySQLToEntities(result) : [];
@@ -86,8 +83,7 @@ class ClientService implements RestAPIService {
                     const clienteId: number = req.params.id;
                     clientRepository.findOne(clienteId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
-                            res.send(err);
-                            return;
+                            throw err;
                         }
                         let _result: Client;
                         _result = result && result.length ? clientMapper.sQLToEntity(result[0]) : null;
@@ -109,8 +105,7 @@ class ClientService implements RestAPIService {
                     const clienteId: number = req.params.id;
                     clientRepository.delete(clienteId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
-                            res.send(err);
-                            return;
+                            throw err;
                         }
                         res.send(result);
                     });
