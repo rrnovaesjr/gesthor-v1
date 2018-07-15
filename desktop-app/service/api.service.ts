@@ -1,18 +1,13 @@
 import { serverService } from './server.service';
-import * as mysql from 'mysql2';
-import * as jwt from 'express-jwt';
-import * as jwks from 'jwks-rsa';
-import * as path from 'path';
-import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as serveStatic from 'serve-static';
 import * as cors from 'cors';
 import { Constants } from './util/constants';
 import { environment } from '../environments';
 import { RestAPIService } from './rest-service.interface';
 import { Request, Response } from 'express';
-
-import { clienteService } from './cliente.service';
+import { clientService } from './client.service';
+import { userService } from './user.service';
+import { Connection, createConnection } from 'mysql2';
 
 /**
  * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -27,23 +22,14 @@ class ApiService {
      * All implemented API interfaces.
      */
     private restAPI: RestAPIService[] = [
-        clienteService
-    ]
-
-    /**
-     * Creates a request handler for secure connections.
-     */
-    private jwtCheck: jwt.RequestHandler = jwt({
-        secret: jwks.expressJwtSecret(environment.auth.secret),
-        audience: environment.auth.audience,
-        issuer: environment.auth.issuer,
-        algorithms: environment.auth.algorithms
-    });
+        clientService,
+        userService
+    ];
 
     /**
      * A global reference to a `mysql.Connection` object.
      */
-    public readonly connection: mysql.Connection = mysql.createConnection(environment.databaseConfig);
+    public readonly connection: Connection = createConnection(environment.databaseConfig);
 
     /**
      * A private function that registers to the services and API methods for each entity.
@@ -56,28 +42,35 @@ class ApiService {
                 for(let post of api.post) {
                     serverService.getExpressByPort(port).post(post.url, (req: Request, res: Response) => {
                         post.callback(req, res);
-                    });
+                    }, post.jwtCheck);
                 }
             }
             if(api.put) {
                 for(let put of api.put) {
                     serverService.getExpressByPort(port).put(put.url, (req: Request, res: Response) => {
                         put.callback(req, res);
-                    });
+                    }, put.jwtCheck);
                 }
             }
             if(api.get) {
                 for(let get of api.get) {
                     serverService.getExpressByPort(port).get(get.url, (req: Request, res: Response) => {
                         get.callback(req, res);
-                    });
+                    }, get.jwtCheck);
                 }
             }
             if(api.delete) {
                 for(let del of api.delete) {
                     serverService.getExpressByPort(port).delete(del.url, (req: Request, res: Response) => {
                         del.callback(req, res);
-                    });
+                    }, del.jwtCheck);
+                }
+            }
+            if(api.patch) {
+                for(let pat of api.patch) {
+                    serverService.getExpressByPort(port).patch(pat.url, (req: Request, res: Response) => {
+                        pat.callback(req, res);
+                    }, pat.jwtCheck);
                 }
             }
         }
@@ -91,7 +84,7 @@ class ApiService {
         serverService.use(port, bodyParser.json(environment.serverConfig.json));
         serverService.use(port, bodyParser.urlencoded({extended: false}));
         serverService.use(port, cors());
-        serverService.use(port, this.jwtCheck);
+        serverService.use(port, serverService.jwtCheck);
         this.register(port);
         serverService.listen(port);
     }

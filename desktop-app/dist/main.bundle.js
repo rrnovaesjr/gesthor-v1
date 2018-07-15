@@ -260,12 +260,14 @@ var AuthRoutingModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__ = __webpack_require__("./src/app/auth/auth-callback.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth_routing_module__ = __webpack_require__("./src/app/auth/auth-routing.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared__ = __webpack_require__("./src/app/shared/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__user_service__ = __webpack_require__("./src/app/auth/user.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -281,7 +283,8 @@ var AuthModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_4__shared__["a" /* SharedModule */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]
+                __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */],
+                __WEBPACK_IMPORTED_MODULE_5__user_service__["a" /* UserService */]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_2__auth_callback_component__["a" /* AuthCallbackComponent */]
@@ -303,11 +306,14 @@ var AuthModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_auth0_js__ = __webpack_require__("./node_modules/auth0-js/src/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_auth0_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_auth0_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs__ = __webpack_require__("./node_modules/rxjs/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_auth0_lock__ = __webpack_require__("./node_modules/auth0-lock/lib/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_auth0_lock__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs__ = __webpack_require__("./node_modules/rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__progress_advisor_progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -317,6 +323,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -334,36 +342,58 @@ var AuthService = /** @class */ (function () {
      *
      * @param router A router reference.
      */
-    function AuthService(router, progressAdvisorService) {
+    function AuthService(router, progressAdvisorService, httpClient) {
         this.router = router;
         this.progressAdvisorService = progressAdvisorService;
+        this.httpClient = httpClient;
+        /**
+         * An auth parameters object that sets google login to be selectable.
+         */
+        this.authParams = {
+            scope: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.scope,
+            prompt: 'select_account'
+        };
+        /**
+         * Constant reference to the auth0 lock instance.
+         */
+        this.auth0Lock = new __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default.a(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID, __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain, {
+            rememberLastLogin: false,
+            auth: {
+                audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.audience,
+                redirect: true,
+                redirectUrl: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.redirect,
+                responseType: 'token',
+                params: this.authParams
+            }
+        });
         /**
          * A private reference to the Auth0 web authority.
          */
         this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
-            clientID: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.clientID,
-            domain: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain,
+            clientID: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID,
+            domain: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain,
             responseType: 'token',
-            redirectUri: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.redirect,
-            audience: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.audience,
-            scope: __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.scope
+            redirectUri: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.redirect,
+            audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.audience,
+            scope: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.scope
         });
         /**
          * A behavior subject for the user profile.
          */
-        this._userProfile = new __WEBPACK_IMPORTED_MODULE_4_rxjs__["BehaviorSubject"](this.userProfile);
+        this._userProfile = new __WEBPACK_IMPORTED_MODULE_5_rxjs__["BehaviorSubject"](this.userProfile);
         /**
          * Creates a stream for observing into user profile's changes.
          */
         this.userProfile$ = this._userProfile.asObservable();
-        this.getAccessToken();
+        this._getAccessToken();
     }
+    AuthService_1 = AuthService;
     /**
      * Open centralized login.
      */
     AuthService.prototype.login = function () {
         this.progressAdvisorService.announceConfig({ show: true });
-        this.auth0.authorize();
+        this.auth0Lock.show();
     };
     /**
      * Handles the login callback.
@@ -373,7 +403,7 @@ var AuthService = /** @class */ (function () {
         this.auth0.parseHash(function (err, authResult) {
             if (authResult && authResult.accessToken) {
                 window.location.hash = '';
-                _this.getUserInfo(authResult);
+                _this._getUserInfo(authResult);
             }
             _this.router.navigate(['/']);
             _this.progressAdvisorService.announceConfig({ show: false });
@@ -382,11 +412,11 @@ var AuthService = /** @class */ (function () {
     /**
      * Gets an access token based on the session.
      */
-    AuthService.prototype.getAccessToken = function () {
+    AuthService.prototype._getAccessToken = function () {
         var _this = this;
         this.auth0.checkSession({}, function (err, authResult) {
             if (authResult && authResult.accessToken) {
-                _this.getUserInfo(authResult);
+                _this._getUserInfo(authResult);
             }
             else if (err) {
                 _this.logout();
@@ -399,7 +429,7 @@ var AuthService = /** @class */ (function () {
      *
      * @param authResult A reference to the authorization result.
      */
-    AuthService.prototype.getUserInfo = function (authResult) {
+    AuthService.prototype._getUserInfo = function (authResult) {
         var _this = this;
         this.auth0.client.userInfo(authResult.accessToken, function (err, profile) {
             if (profile) {
@@ -415,8 +445,17 @@ var AuthService = /** @class */ (function () {
      */
     AuthService.prototype._setSession = function (authResult, profile) {
         var expTime = authResult.expiresIn * 1000 + Date.now();
-        localStorage.setItem('expires_at', JSON.stringify(expTime));
-        this.accessToken = authResult.accessToken;
+        this.httpClient.post(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.url, {
+            grant_type: 'client_credentials',
+            client_id: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID,
+            client_secret: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.clientSecret,
+            audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.managementApi.audience
+        }, {
+            headers: { 'content-type': 'application/json' }
+        }).subscribe(function (response) {
+            console.log(response);
+        });
+        localStorage.setItem(AuthService_1.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
         this.userProfile = profile;
         this._userProfile.next(this.userProfile);
         this.authenticated = true;
@@ -425,13 +464,9 @@ var AuthService = /** @class */ (function () {
      * Removes current session data.
      */
     AuthService.prototype.logout = function () {
-        console.log(arguments.callee.caller.name);
-        localStorage.removeItem('expires_at');
-        localStorage.removeItem('id_token');
-        localStorage.removeItem('nonce');
+        localStorage.removeItem(AuthService_1.EXPIRES_AT_STORAGE_KEY);
         this.userProfile = undefined;
         this._userProfile.next(this.userProfile);
-        this.accessToken = undefined;
         this.authenticated = false;
     };
     Object.defineProperty(AuthService.prototype, "isAuthenticated", {
@@ -439,17 +474,42 @@ var AuthService = /** @class */ (function () {
          * Checks if current user is authenticated.
          */
         get: function () {
-            var expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+            var expiresAt = JSON.parse(localStorage.getItem(AuthService_1.EXPIRES_AT_STORAGE_KEY));
             return Date.now() < expiresAt && this.authenticated;
         },
         enumerable: true,
         configurable: true
     });
-    AuthService = __decorate([
+    Object.defineProperty(AuthService.prototype, "getManagementAPIToken", {
+        /**
+         * Gets the string corresponding to the access token.
+         */
+        get: function () {
+            return this.managementAPIToken;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Checks if current user has a matching `role` to access determinated route.
+     *
+     * @param role Role to be checked.
+     */
+    AuthService.prototype.hasPermission = function (role) {
+        return (this.userProfile.app_metadata.userRole == role);
+    };
+    /**
+     * Key that references the current session's expiration time on the local storage.
+     */
+    AuthService.EXPIRES_AT_STORAGE_KEY = 'expires_at';
+    AuthService = AuthService_1 = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */], __WEBPACK_IMPORTED_MODULE_5__progress_advisor_progress_advisor_service__["a" /* ProgressAdvisorService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */],
+            __WEBPACK_IMPORTED_MODULE_6__progress_advisor_progress_advisor_service__["a" /* ProgressAdvisorService */],
+            __WEBPACK_IMPORTED_MODULE_7__angular_common_http__["a" /* HttpClient */]])
     ], AuthService);
     return AuthService;
+    var AuthService_1;
 }());
 
 
@@ -465,6 +525,75 @@ var AuthService = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_module__ = __webpack_require__("./src/app/auth/auth.module.ts");
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__auth_module__["a"]; });
 
+
+
+
+/***/ }),
+
+/***/ "./src/app/auth/user.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UserService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth_service__ = __webpack_require__("./src/app/auth/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var UserService = /** @class */ (function () {
+    /**
+     * Constructor that injects other servces.
+     */
+    function UserService(httpClient, authService) {
+        this.httpClient = httpClient;
+        this.authService = authService;
+        this.api = "https://" + __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain + "/api/v2/users";
+    }
+    /**
+     * Gets an user by id.
+     *
+     * @param user_id An user identifier.
+     */
+    UserService.prototype.getUser = function (user_id) {
+        return this.httpClient.get(this.api + "/" + user_id, {
+            headers: this._createHeaders(),
+            params: { search_engine: 'v3' },
+            observe: 'body'
+        }).map(function (res) {
+            return res;
+        });
+    };
+    /**
+     * Create Http Headers according to the access token.
+     */
+    UserService.prototype._createHeaders = function () {
+        return new __WEBPACK_IMPORTED_MODULE_3__angular_common_http__["c" /* HttpHeaders */]({
+            'authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJqazJSRU16TlVNME5EUTVNemsyTnpOQ05FSkZNVFV4TURWQk9FVTFORU5HTXpNNE5UZEZNQSJ9.eyJpc3MiOiJodHRwczovL3Jybm92YWVzanIuYXV0aDAuY29tLyIsInN1YiI6InFVMmxxVVRPaWoyVnNqN1RpbWlvbG42bnlLVHpmMklkQGNsaWVudHMiLCJhdWQiOiJodHRwczovL3Jybm92YWVzanIuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1Mjk4NzUxMjMsImV4cCI6MTAwMTUyOTg3NTEyMiwiYXpwIjoicVUybHFVVE9pajJWc2o3VGltaW9sbjZueUtUemYySWQiLCJzY29wZSI6InJlYWQ6Y2xpZW50X2dyYW50cyBjcmVhdGU6Y2xpZW50X2dyYW50cyBkZWxldGU6Y2xpZW50X2dyYW50cyB1cGRhdGU6Y2xpZW50X2dyYW50cyByZWFkOnVzZXJzIHVwZGF0ZTp1c2VycyBkZWxldGU6dXNlcnMgY3JlYXRlOnVzZXJzIHJlYWQ6dXNlcnNfYXBwX21ldGFkYXRhIHVwZGF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgZGVsZXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGNyZWF0ZTp1c2VyX3RpY2tldHMgcmVhZDpjbGllbnRzIHVwZGF0ZTpjbGllbnRzIGRlbGV0ZTpjbGllbnRzIGNyZWF0ZTpjbGllbnRzIHJlYWQ6Y2xpZW50X2tleXMgdXBkYXRlOmNsaWVudF9rZXlzIGRlbGV0ZTpjbGllbnRfa2V5cyBjcmVhdGU6Y2xpZW50X2tleXMgcmVhZDpjb25uZWN0aW9ucyB1cGRhdGU6Y29ubmVjdGlvbnMgZGVsZXRlOmNvbm5lY3Rpb25zIGNyZWF0ZTpjb25uZWN0aW9ucyByZWFkOnJlc291cmNlX3NlcnZlcnMgdXBkYXRlOnJlc291cmNlX3NlcnZlcnMgZGVsZXRlOnJlc291cmNlX3NlcnZlcnMgY3JlYXRlOnJlc291cmNlX3NlcnZlcnMgcmVhZDpkZXZpY2VfY3JlZGVudGlhbHMgdXBkYXRlOmRldmljZV9jcmVkZW50aWFscyBkZWxldGU6ZGV2aWNlX2NyZWRlbnRpYWxzIGNyZWF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgcmVhZDpydWxlcyB1cGRhdGU6cnVsZXMgZGVsZXRlOnJ1bGVzIGNyZWF0ZTpydWxlcyByZWFkOnJ1bGVzX2NvbmZpZ3MgdXBkYXRlOnJ1bGVzX2NvbmZpZ3MgZGVsZXRlOnJ1bGVzX2NvbmZpZ3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.Vhi_dVC0i0qUF_-W_PIafCUn0_jWKUu17PcZ64LqGuVO8uTMAsG0zrFnsMpQcd4Akomme5G-AWi79ixVNflSV2NVCNKoe3PMFvoiOjfsBeAhtGoqCzN8P97oTfGXp29ScL0qVHAX7GKQLvX7rXsijX2DbzpQJM_3TYZX97GPzfhjJmFvdSMPFMBUi1omYWjM6v7Wh-pDTZ_7IaNhYIbyEU1JlmhdEbsPf1sSr5Fkyis3vbd8xbRzvkhz5r4kjcZxgt47-5ggmKDu9vnUDTQytzX2lIupVh0xf1TQZS9jE1BKMSXQBJ_8a6-vJGDh8Njtg6HE09zaX0EbzMTTRjUjmg"
+        });
+    };
+    UserService.prototype._createParams = function () {
+        return new __WEBPACK_IMPORTED_MODULE_3__angular_common_http__["d" /* HttpParams */]().set('search_engine', 'v3');
+    };
+    UserService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]])
+    ], UserService);
+    return UserService;
+}());
 
 
 
@@ -686,6 +815,7 @@ module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div clas
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__auth__ = __webpack_require__("./src/app/auth/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_animations__ = __webpack_require__("./node_modules/@angular/animations/esm5/animations.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__ = __webpack_require__("./node_modules/@ngx-translate/core/@ngx-translate/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__auth_user_service__ = __webpack_require__("./src/app/auth/user.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -699,22 +829,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var MemberComponent = /** @class */ (function () {
     /**
      * Injects necessary services.
      *
      * @param authService Authorization service.
      */
-    function MemberComponent(authService, translateService) {
+    function MemberComponent(authService, translateService, userService) {
         var _this = this;
         this.authService = authService;
         this.translateService = translateService;
+        this.userService = userService;
         /**
          * Controls view of login card.
          */
         this.showCard = false;
         this.authService.userProfile$.subscribe(function (res) {
             _this.user = res;
+            if (_this.user) {
+                _this.userService.getUser(_this.user.sub).subscribe(function (res) {
+                    console.log(res);
+                });
+            }
         });
     }
     /**
@@ -758,7 +895,7 @@ var MemberComponent = /** @class */ (function () {
                 ])
             ]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_4__auth_user_service__["a" /* UserService */]])
     ], MemberComponent);
     return MemberComponent;
 }());
@@ -1148,7 +1285,7 @@ var ProgressAdvisorService = /** @class */ (function () {
         /**
          * A configuration subject.
          */
-        this.configSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__["a" /* Subject */]();
+        this.configSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__["b" /* Subject */]();
         /**
          * Receives notifications from the subject.
          */
@@ -1334,14 +1471,14 @@ var WebappConstants = /** @class */ (function () {
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    databaseConfig: {
-        host: 'localhost',
-        user: 'root',
-        database: 'gesthor_dev',
-        password: '1234'
-    },
+    apiUrl: 'http://localhost:8080/',
     auth: {
         clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
+        managementApi: {
+            clientSecret: 'jzKlwruyaZj4c2nVVIre1XOusaKd7mvW9AFJZDxOibENrAquebPKy3DAN-b49uu0',
+            audience: 'https://rrnovaesjr.auth0.com/api/v2/',
+            url: 'https://rrnovaesjr.auth0.com/oauth/token'
+        },
         domain: 'rrnovaesjr.auth0.com',
         audience: 'http://localhost:8080',
         redirect: 'http://localhost:9000/callback',

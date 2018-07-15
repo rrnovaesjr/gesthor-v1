@@ -3,12 +3,12 @@ import { AuthService } from '../auth';
 import { Auth0UserProfile } from 'auth0-js';
 import {
   trigger,
-  state,
   style,
   animate,
   transition
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '../auth/user.service';
 
 @Component({
   selector: 'app-member',
@@ -43,9 +43,14 @@ export class MemberComponent implements OnInit {
    * 
    * @param authService Authorization service.
    */
-  constructor(public authService: AuthService, private translateService: TranslateService) {
+  constructor(public authService: AuthService, private translateService: TranslateService, private userService: UserService) {
     this.authService.userProfile$.subscribe((res: Auth0UserProfile) => {
-      this.user = res;      
+      this.user = res;   
+      if(this.user) {
+        this.userService.getUser(this.user.sub).subscribe((res: Auth0UserProfile) => {
+          console.log(res);
+        });     
+      }
     });
   }
 

@@ -1,9 +1,16 @@
 import { QueryError, OkPacket } from 'mysql2';
 import { Entity, UserAuditedEntity } from '../model/abstract/entity';
 import { apiService } from '../service/api.service';
-import { Connection } from 'mysql';
 import { Constants } from '../service/util/constants';
 
+/**
+ * A common abstract definition to MySQL repositories. This class contains the default methods
+ * for CRUDs.
+ * 
+ * @param _E an Entity with primary key PK.
+ * @param PK A Serializable primary key's type.
+ * @author rodrigo-novaes
+ */
 abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
 
     /**
@@ -89,11 +96,11 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
      * @param searchOptions The search options.
      */
     public findAll(callback: (err: QueryError, result: OkPacket[]) => any, searchOptions?: any): void {
-        const size: number = searchOptions.size ? 
+        const size: number = searchOptions.size ?
             searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
-        const page: number = searchOptions.page ? 
+        const page: number = searchOptions.page ?
             searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
-        const sort: string = searchOptions.sort ? 
+        const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} order by 
             ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
@@ -105,9 +112,12 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
 /**
  * A default interface for an user audited repository.
  * 
+ * @param _E An user audited entity type with primary key PK and user identifier type FK.
+ * @param PK A serializable primary key's type.
+ * @param FK A serializable user identifier's type.
  * @author rodrigo-novaes
  */
-export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK>, PK, FK> 
+export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK>, PK, FK>
     extends CommonMySQLRepository<_E, PK> {
 
     /**
@@ -129,15 +139,15 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
      * @param searchOptions The search options.
      */
     public findAllByUsuarioId(
-        usuario_id: FK, 
+        usuario_id: FK,
         callback: (err: QueryError, result: OkPacket[]) => any,
         searchOptions?: any
     ): void {
-        const size: number = searchOptions.size ? 
+        const size: number = searchOptions.size ?
             searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
-        const page: number = searchOptions.page ? 
+        const page: number = searchOptions.page ?
             searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
-        const sort: string = searchOptions.sort ? 
+        const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
             ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;

@@ -1,5 +1,3 @@
-
-
 /**
  * A global reference to the application's constants.
  * 
@@ -26,6 +24,16 @@ export namespace Constants {
      * The object that defines the production environment.
      */
     export const ENVIRONMENT_PROD: string = 'prod';
+
+    /**
+     * String that defines the user's default role in the application.
+     */
+    export const ROLE_USER: string = 'ROLE_USER';
+
+    /**
+     * String that defines the user's admin role in the application.
+     */
+    export const ROLE_ADMIN: string = 'ROLE_ADMIN';
 
     /**
      * The default search parameters for each query.

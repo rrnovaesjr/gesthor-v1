@@ -4,7 +4,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import { Constants } from './util/constants';
-import { environment } from '../environments';
 import { Request, Response } from 'express';
 import { electronService } from './electron.service';
 
@@ -46,7 +45,7 @@ class AppService {
      * 
      * @param extra Optional extra string
      */
-    private getAppPath(extra?: string): string {
+    public getAppPath(extra?: string): string {
         if(extra) {
             return path.join(electronService.application.getAppPath(), 'desktop-app', 'dist', extra);
         }
