@@ -17,6 +17,151 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
+/***/ "./src/app/abstract/service/service.interface.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AbstractSimpleService; });
+/* unused harmony export AbstractCrudService */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractSecureCrudService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__auth__ = __webpack_require__("./src/app/auth/index.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+/**
+ * Determinates simple abstract methods for all services.
+ *
+ * @author rodrigo-novaes
+ */
+var AbstractSimpleService = /** @class */ (function () {
+    function AbstractSimpleService() {
+        /**
+         * A protected reference to the API url.
+         */
+        this.api = __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].apiUrl;
+    }
+    /**
+     * A default error handling method.
+     */
+    AbstractSimpleService.prototype.handleError = function (err) {
+    };
+    AbstractSimpleService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])()
+    ], AbstractSimpleService);
+    return AbstractSimpleService;
+}());
+
+/**
+ * Determinates the default methods for an abstract service.
+ *
+ * @param E An Entity type. Must be a serializable class.
+ * @param PK A primary key type. Must be a serializable class.
+ * @author rodrigo-novaes
+ */
+var AbstractCrudService = /** @class */ (function (_super) {
+    __extends(AbstractCrudService, _super);
+    /**
+     * Injects the default services.
+     *
+     * @param httpClient An HTTP client instance.
+     */
+    function AbstractCrudService(httpClient) {
+        var _this = _super.call(this) || this;
+        _this.httpClient = httpClient;
+        /**
+         * An API URL.
+         */
+        _this.api = __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].apiUrl;
+        return _this;
+    }
+    /**
+     * A default constrctor for HTTP headers.
+     */
+    AbstractCrudService.prototype.createHttpHeaders = function () {
+        return new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["c" /* HttpHeaders */]();
+    };
+    /**
+     * Returns a default set of Http Params.
+     *
+     * @param paramMap A param map to set.
+     */
+    AbstractCrudService.prototype.createHttpParams = function (paramMap) {
+        var httpParams = new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["d" /* HttpParams */]();
+        if (paramMap) {
+            for (var i = 0; i < paramMap.size; i++) {
+                httpParams = httpParams.set(paramMap[i][0], paramMap[i][1]);
+            }
+        }
+        return httpParams;
+    };
+    AbstractCrudService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
+    ], AbstractCrudService);
+    return AbstractCrudService;
+}(AbstractSimpleService));
+
+/**
+ * Determinates the default methods for an abstract secured service.
+ *
+ * This class defines the common headers for an HTTP request.
+ *
+ * @param E An entity type. Must be a serializable class.
+ * @param PK A primary key type. Must be a serializable class.
+ * @author rodrigo-novaes
+ */
+var AbstractSecureCrudService = /** @class */ (function (_super) {
+    __extends(AbstractSecureCrudService, _super);
+    /**
+     * Injects the HTTPClient service.
+     *
+     * @param httpClient HTTP Client.
+     */
+    function AbstractSecureCrudService(authService, httpClient) {
+        var _this = _super.call(this, httpClient) || this;
+        _this.authService = authService;
+        return _this;
+    }
+    /**
+     * A default constrctor for HTTP headers.
+     */
+    AbstractSecureCrudService.prototype.createHttpHeaders = function () {
+        return new __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["c" /* HttpHeaders */]({ 'Authentication': "Bearer " + this.authService.getManagementAPIToken });
+    };
+    AbstractSecureCrudService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__auth__["b" /* AuthService */], __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
+    ], AbstractSecureCrudService);
+    return AbstractSecureCrudService;
+}(AbstractCrudService));
+
+
+
+/***/ }),
+
 /***/ "./src/app/app.component.css":
 /***/ (function(module, exports) {
 
@@ -314,6 +459,17 @@ var AuthModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__progress_advisor_progress_advisor_service__ = __webpack_require__("./src/app/progress-advisor/progress-advisor.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -331,45 +487,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /**
  * An Auth0 service interface.
  *
  * @author rodrigo-novaes
  */
-var AuthService = /** @class */ (function () {
+var AuthService = /** @class */ (function (_super) {
+    __extends(AuthService, _super);
     /**
      * Builds the service based on the current session settings.
      *
      * @param router A router reference.
      */
     function AuthService(router, progressAdvisorService, httpClient) {
-        this.router = router;
-        this.progressAdvisorService = progressAdvisorService;
-        this.httpClient = httpClient;
+        var _this = _super.call(this) || this;
+        _this.router = router;
+        _this.progressAdvisorService = progressAdvisorService;
+        _this.httpClient = httpClient;
         /**
          * An auth parameters object that sets google login to be selectable.
          */
-        this.authParams = {
+        _this.authParams = {
             scope: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.scope,
             prompt: 'select_account'
         };
         /**
          * Constant reference to the auth0 lock instance.
          */
-        this.auth0Lock = new __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default.a(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID, __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain, {
+        _this.auth0Lock = new __WEBPACK_IMPORTED_MODULE_2_auth0_lock___default.a(__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID, __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain, {
             rememberLastLogin: false,
             auth: {
                 audience: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.audience,
                 redirect: true,
                 redirectUrl: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.redirect,
                 responseType: 'token',
-                params: this.authParams
+                params: _this.authParams
             }
         });
         /**
          * A private reference to the Auth0 web authority.
          */
-        this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
+        _this.auth0 = new __WEBPACK_IMPORTED_MODULE_1_auth0_js__["WebAuth"]({
             clientID: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.clientID,
             domain: __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].auth.domain,
             responseType: 'token',
@@ -380,12 +539,13 @@ var AuthService = /** @class */ (function () {
         /**
          * A behavior subject for the user profile.
          */
-        this._userProfile = new __WEBPACK_IMPORTED_MODULE_5_rxjs__["BehaviorSubject"](this.userProfile);
+        _this._userProfile = new __WEBPACK_IMPORTED_MODULE_5_rxjs__["BehaviorSubject"](_this.userProfile);
         /**
          * Creates a stream for observing into user profile's changes.
          */
-        this.userProfile$ = this._userProfile.asObservable();
-        this._getAccessToken();
+        _this.userProfile$ = _this._userProfile.asObservable();
+        _this._getAccessToken();
+        return _this;
     }
     AuthService_1 = AuthService;
     /**
@@ -510,7 +670,7 @@ var AuthService = /** @class */ (function () {
     ], AuthService);
     return AuthService;
     var AuthService_1;
-}());
+}(__WEBPACK_IMPORTED_MODULE_8__abstract_service_service_interface__["b" /* AbstractSimpleService */]));
 
 
 
@@ -540,6 +700,17 @@ var AuthService = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common_http__ = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__ = __webpack_require__("./src/app/abstract/service/service.interface.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -554,46 +725,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var UserService = /** @class */ (function () {
+
+var UserService = /** @class */ (function (_super) {
+    __extends(UserService, _super);
     /**
      * Constructor that injects other servces.
      */
     function UserService(httpClient, authService) {
-        this.httpClient = httpClient;
-        this.authService = authService;
-        this.api = "https://" + __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain + "/api/v2/users";
+        var _this = _super.call(this, authService, httpClient) || this;
+        _this.userApi = "https://" + __WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment */].auth.domain + "/api/v2/users";
+        return _this;
     }
-    /**
-     * Gets an user by id.
-     *
-     * @param user_id An user identifier.
-     */
-    UserService.prototype.getUser = function (user_id) {
-        return this.httpClient.get(this.api + "/" + user_id, {
-            headers: this._createHeaders(),
+    UserService.prototype.create = function (user) {
+        return null;
+    };
+    UserService.prototype.read = function (user_id) {
+        return this.httpClient.get(this.userApi + "/" + user_id, {
+            headers: this.createHttpHeaders(),
             params: { search_engine: 'v3' },
             observe: 'body'
         }).map(function (res) {
             return res;
         });
     };
-    /**
-     * Create Http Headers according to the access token.
-     */
-    UserService.prototype._createHeaders = function () {
-        return new __WEBPACK_IMPORTED_MODULE_3__angular_common_http__["c" /* HttpHeaders */]({
-            'authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJqazJSRU16TlVNME5EUTVNemsyTnpOQ05FSkZNVFV4TURWQk9FVTFORU5HTXpNNE5UZEZNQSJ9.eyJpc3MiOiJodHRwczovL3Jybm92YWVzanIuYXV0aDAuY29tLyIsInN1YiI6InFVMmxxVVRPaWoyVnNqN1RpbWlvbG42bnlLVHpmMklkQGNsaWVudHMiLCJhdWQiOiJodHRwczovL3Jybm92YWVzanIuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1Mjk4NzUxMjMsImV4cCI6MTAwMTUyOTg3NTEyMiwiYXpwIjoicVUybHFVVE9pajJWc2o3VGltaW9sbjZueUtUemYySWQiLCJzY29wZSI6InJlYWQ6Y2xpZW50X2dyYW50cyBjcmVhdGU6Y2xpZW50X2dyYW50cyBkZWxldGU6Y2xpZW50X2dyYW50cyB1cGRhdGU6Y2xpZW50X2dyYW50cyByZWFkOnVzZXJzIHVwZGF0ZTp1c2VycyBkZWxldGU6dXNlcnMgY3JlYXRlOnVzZXJzIHJlYWQ6dXNlcnNfYXBwX21ldGFkYXRhIHVwZGF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgZGVsZXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGNyZWF0ZTp1c2VyX3RpY2tldHMgcmVhZDpjbGllbnRzIHVwZGF0ZTpjbGllbnRzIGRlbGV0ZTpjbGllbnRzIGNyZWF0ZTpjbGllbnRzIHJlYWQ6Y2xpZW50X2tleXMgdXBkYXRlOmNsaWVudF9rZXlzIGRlbGV0ZTpjbGllbnRfa2V5cyBjcmVhdGU6Y2xpZW50X2tleXMgcmVhZDpjb25uZWN0aW9ucyB1cGRhdGU6Y29ubmVjdGlvbnMgZGVsZXRlOmNvbm5lY3Rpb25zIGNyZWF0ZTpjb25uZWN0aW9ucyByZWFkOnJlc291cmNlX3NlcnZlcnMgdXBkYXRlOnJlc291cmNlX3NlcnZlcnMgZGVsZXRlOnJlc291cmNlX3NlcnZlcnMgY3JlYXRlOnJlc291cmNlX3NlcnZlcnMgcmVhZDpkZXZpY2VfY3JlZGVudGlhbHMgdXBkYXRlOmRldmljZV9jcmVkZW50aWFscyBkZWxldGU6ZGV2aWNlX2NyZWRlbnRpYWxzIGNyZWF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgcmVhZDpydWxlcyB1cGRhdGU6cnVsZXMgZGVsZXRlOnJ1bGVzIGNyZWF0ZTpydWxlcyByZWFkOnJ1bGVzX2NvbmZpZ3MgdXBkYXRlOnJ1bGVzX2NvbmZpZ3MgZGVsZXRlOnJ1bGVzX2NvbmZpZ3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.Vhi_dVC0i0qUF_-W_PIafCUn0_jWKUu17PcZ64LqGuVO8uTMAsG0zrFnsMpQcd4Akomme5G-AWi79ixVNflSV2NVCNKoe3PMFvoiOjfsBeAhtGoqCzN8P97oTfGXp29ScL0qVHAX7GKQLvX7rXsijX2DbzpQJM_3TYZX97GPzfhjJmFvdSMPFMBUi1omYWjM6v7Wh-pDTZ_7IaNhYIbyEU1JlmhdEbsPf1sSr5Fkyis3vbd8xbRzvkhz5r4kjcZxgt47-5ggmKDu9vnUDTQytzX2lIupVh0xf1TQZS9jE1BKMSXQBJ_8a6-vJGDh8Njtg6HE09zaX0EbzMTTRjUjmg"
-        });
+    UserService.prototype.update = function (user) {
+        return null;
     };
-    UserService.prototype._createParams = function () {
-        return new __WEBPACK_IMPORTED_MODULE_3__angular_common_http__["d" /* HttpParams */]().set('search_engine', 'v3');
+    UserService.prototype.delete = function (key) {
+        return null;
     };
     UserService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_1__auth_service__["a" /* AuthService */]])
     ], UserService);
     return UserService;
-}());
+}(__WEBPACK_IMPORTED_MODULE_5__abstract_service_service_interface__["a" /* AbstractSecureCrudService */]));
 
 
 
@@ -802,7 +968,7 @@ module.exports = ":host div {\n    padding: 0;\n    margin: 0;\n}\n\n:host p {\n
 /***/ "./src/app/member/member.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div class=\"button-container\">\n        <button mat-icon-button (click)=\"toggle()\" *ngIf=\"!authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n        </button>\n        <button mat-button (click)=\"toggle()\" *ngIf=\"authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n            {{ user?.given_name }}\n        </button>\n    </div>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content>\n            <p>{{ 'member.user.email' | translate}}: {{user?.email}}</p>\n            <p>{{ 'member.user.locale' | translate}}: {{user?.locale}}</p>\n            <p></p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n</div>"
+module.exports = "<div (clickOutside)=\"onClickOutside($event)\">\n    <div class=\"button-container\">\n        <button mat-icon-button (click)=\"toggle()\" *ngIf=\"!authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n        </button>\n        <button mat-button (click)=\"toggle()\" *ngIf=\"authService.isAuthenticated\">\n            <mat-icon>account_circle</mat-icon>\n            {{ user?.given_name }}\n        </button>\n    </div>\n    <br>\n    <div class=\"login-card-container\">\n      <mat-card class=\"login-card\" *ngIf=\"showCard\" [@enterCard]>\n        <div *ngIf=\"!authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar src=\"assets/img/no-user.png\" />\n            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content class=\"login-content\">\n            <p>{{ 'member.loginHeader' | translate }}</p>\n            <p>{{ 'member.loginBody' | translate }}</p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.login()\">{{ 'global.login' | translate }}</button>\n          </mat-card-actions>\n        </div>\n        <div *ngIf=\"authService.isAuthenticated\">\n          <mat-card-header>\n            <img mat-card-avatar [src]=\"user?.picture\" />\n            <mat-card-title>{{user?.name}}</mat-card-title>\n          </mat-card-header>\n          <br>\n          <mat-card-content>\n            <p>{{ 'member.user.email' | translate}}: {{user?.email}}</p>\n            <p>{{ 'member.user.locale' | translate}}: {{user?.locale}}</p>\n            <p></p>\n          </mat-card-content>\n          <mat-card-actions>\n            <button mat-button (click)=\"authService.logout()\">{{ 'global.logout' | translate }}</button>\n            <button mat-button (click)=\"userService.getUser(member.user.sub)\">Test</button>\n          </mat-card-actions>\n        </div>\n      </mat-card>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -848,9 +1014,10 @@ var MemberComponent = /** @class */ (function () {
         this.authService.userProfile$.subscribe(function (res) {
             _this.user = res;
             if (_this.user) {
-                _this.userService.getUser(_this.user.sub).subscribe(function (res) {
-                    console.log(res);
-                });
+                /*
+                this.userService.getUser(this.user.sub).subscribe((res: Auth0UserProfile) => {
+                  console.log(res);
+                });*/
             }
         });
     }
