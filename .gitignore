@@ -5,6 +5,9 @@
 /dist-server
 /tmp
 /out-tsc
+**/desktop-app/dist/**
+**/desktop-app/dist/
+/desktop-app/dist/**
 
 # dependencies
 /node_modules
