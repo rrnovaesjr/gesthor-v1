@@ -33,6 +33,7 @@
     "@ngx-translate/http-loader": "^2.0.1",
     "@types/auth0-lock": "^11.4.4",
     "@types/mysql2": "github:types/mysql2",
+    "@types/winston": "^2.3.9",
     "angularfire2": "^5.0.0-rc.6",
     "auth0-lock": "^11.7.2",
     "bootstrap": "^4.0.0",
@@ -51,6 +52,7 @@
     "rxjs": "^5.5.6",
     "serve-static": "^1.13.2",
     "startbootstrap-sb-admin": "^4.0.0",
+    "winston": "^3.0.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
