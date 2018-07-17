@@ -78,7 +78,8 @@ export class GesthorLogger {
      */
     private _lazilyCreateLogInstance(): void {
         if (!this.winstonLogger) {
-            this.logPath = appService.getAppPath(`assets/logs/${this.filename}`);
+            this.logPath = appService.getAppPath(`../data/logs/${this.filename}`);
+            console.log(this.logPath);
             this.winstonLogger = createLogger({
                 format: format.combine(
                     format.label({ label: this.className }), format.timestamp(), format.splat(), this.printfFormat
