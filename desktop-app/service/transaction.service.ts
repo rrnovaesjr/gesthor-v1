@@ -1,5 +1,5 @@
-import { apiService } from './api.service';
 import { QueryError } from 'mysql';
+import { connectionService } from './connection.service';
 
 /**
  * A class that creates functions that controls all transactions between the system's
@@ -20,22 +20,22 @@ class TransactionService {
      * @param proc Function to be executed inside the void transactional body.
      */
     public doInTransactionWithoutResult(proc: () => void, excHandler?: (err?: any) => void): void {
-        apiService.connection.beginTransaction((transactionError: QueryError) => {
+        connectionService.connection.beginTransaction((transactionError: QueryError) => {
             if (transactionError) {
-                apiService.connection.rollback(() => {
+                connectionService.connection.rollback(() => {
                     this.excHandler(transactionError, excHandler);
                 });
             }
             try {
                 proc();
             } catch (err) {
-                apiService.connection.rollback(() => {
+                connectionService.connection.rollback(() => {
                     this.excHandler(err, excHandler);
                 });
             }
-            apiService.connection.commit((commitError: QueryError) => {
+            connectionService.connection.commit((commitError: QueryError) => {
                 if (commitError) {
-                    apiService.connection.rollback(() => {
+                    connectionService.connection.rollback(() => {
                         this.excHandler(commitError, excHandler);
                     });
                 }
