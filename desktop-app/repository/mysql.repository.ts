@@ -1,7 +1,7 @@
 import { QueryError, OkPacket } from 'mysql2';
 import { Entity, UserAuditedEntity } from '../model/abstract/entity';
-import { apiService } from '../service/api.service';
 import { Constants } from '../service/util/constants';
+import { connectionService } from '../service/connection.service';
 
 /**
  * A common abstract definition to MySQL repositories. This class contains the default methods
@@ -31,7 +31,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when create is done.
      */
     public create(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        apiService.connection.query(`insert into ${this.tableName} set ?`, entity, callback);
+        connectionService.connection.query(`insert into ${this.tableName} set ?`, entity, callback);
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the update is completed.
      */
     public update(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        apiService.connection.query(`replace into ${this.tableName} set ?`, entity, callback)
+        connectionService.connection.query(`replace into ${this.tableName} set ?`, entity, callback)
     }
 
     /**
@@ -53,7 +53,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the search is completed.
      */
     public findOne(id: PK, callback: (err: QueryError, result: OkPacket[]) => any): void {
-        apiService.connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
+        connectionService.connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * @param callback A function to be executed when the deletion is completed.
      */
     public delete(id: PK, callback: (err: QueryError, result: OkPacket[]) => void): void {
-        apiService.connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
+        connectionService.connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
     }
 
 
@@ -103,8 +103,8 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} order by 
-            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        apiService.connection.query(query, callback);
+            ${connectionService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+            connectionService.connection.query(query, callback);
     }
 
 }
@@ -150,8 +150,8 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
-            ${apiService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-        apiService.connection.query(query, callback);
+            ${connectionService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+            connectionService.connection.query(query, callback);
     }
 
 }

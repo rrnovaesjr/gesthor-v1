@@ -1,10 +1,11 @@
 export const environment = {
   production: true,
   databaseConfig: {
+    connectionLimit: 256,
     host: 'localhost',
     user: 'root',
     database: 'gesthor',
-    password: 'justicem3lonl13sonep1ece'
+    password: '123456'
   },
   auth: {
     apiManagementTokenRequestConfig: {

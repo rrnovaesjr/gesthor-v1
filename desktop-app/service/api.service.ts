@@ -7,7 +7,6 @@ import { RestAPIService } from './rest-service.interface';
 import { Request, Response } from 'express';
 import { clientService } from './client.service';
 import { userService } from './user.service';
-import { Connection, createConnection } from 'mysql2';
 
 /**
  * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -25,11 +24,6 @@ class ApiService {
         clientService,
         userService
     ];
-
-    /**
-     * A global reference to a `mysql.Connection` object.
-     */
-    public readonly connection: Connection = createConnection(environment.databaseConfig);
 
     /**
      * A private function that registers to the services and API methods for each entity.

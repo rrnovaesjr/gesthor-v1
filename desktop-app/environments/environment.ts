@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   databaseConfig: {
+    connectionLimit: 256,
     host: 'localhost',
     user: 'root',
     database: 'gesthor',
