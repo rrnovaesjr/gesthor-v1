@@ -1,7 +1,8 @@
 import * as electron from 'electron';
 import * as url from 'url';
+import { AbstractService } from './abstract.service';
 import { GesthorLogger } from './util/logger';
-import { appService } from './app.service';
+import { join } from 'path';
 
 /**
  * This class encapsulates the fundamental functions from Electron's API into a singleton reference.
@@ -10,12 +11,9 @@ import { appService } from './app.service';
  * 
  * @author rodrigo-novaes
  */
-class ElectronService {
+class ElectronService extends AbstractService {
 
-    /**
-     * A private static and constant reference to the logger object of this class.
-     */
-    private static readonly LOGGER: GesthorLogger = new GesthorLogger(ElectronService.name, `electron-service.log`);
+    private logger: GesthorLogger = new GesthorLogger(ElectronService.name, 'electron-service.log');
 
     /**
      * Default window's width.
@@ -46,7 +44,10 @@ class ElectronService {
     public rootWindow: electron.BrowserWindow;
 
     public constructor() {
+        super();
+    }
 
+    public postConstruct(): void {
     }
 
     /**
@@ -55,14 +56,13 @@ class ElectronService {
      * This sets the root window's reference, as well as sets its parameters.
      */
     public _onAppStart(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): void {
-        ElectronService.LOGGER.info("Initializing window application with initial URL: %s", initialURL);
+        this.logger.info("Hello world.");
         this.rootWindow = new electron.BrowserWindow(config ? config : ElectronService.BROWSER_WINDOW_DEFAULT_CONFIG);
         if(maximized || maximized == null || maximized == undefined) {
             this.rootWindow.maximize();
         }
         this.rootWindow.loadURL(url.format(initialURL));
         this.rootWindow.on('close', (event: electron.Event) => this.rootWindow = null);
-        ElectronService.LOGGER.info("Configuration terminated.");
     }
 
     /**

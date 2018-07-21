@@ -1,7 +1,9 @@
 import { Logger, createLogger, format, transports, loggers } from 'winston';
 import { environment } from '../../environments';
 import { TransformableInfo } from 'logform';
-import { appService } from '../app.service';
+import { electronService } from '../electron.service';
+import * as electron from 'electron';
+import { join } from 'path';
 
 /**
  * An implementation of a Logger using winston logger library.
@@ -37,7 +39,20 @@ export class GesthorLogger {
      * @param filename The destination filename for the log.
      */
     public constructor(private className: string = 'Generics', private filename: string = 'combined.log') {
-
+        this.logPath = join(electron.app.getAppPath(), '..', 'logs', this.filename);
+        this.winstonLogger = createLogger({
+            format: format.combine(
+                format.label({ label: this.className }), format.timestamp(), format.splat(), this.printfFormat
+            ),
+            transports: [
+                new transports.File({
+                    filename: this.logPath
+                })
+            ]
+        });
+        if (!environment.production) {
+            this.winstonLogger.add(new transports.Console);
+        }
     }
 
     /**
@@ -47,7 +62,6 @@ export class GesthorLogger {
      * @param params The message's params.
      */
     public debug(message: string, ...params: any[]): void {
-        this._lazilyCreateLogInstance();
         this.winstonLogger.log('debug', message, params);
     }
 
@@ -58,7 +72,6 @@ export class GesthorLogger {
      * @param params The message's params.
      */
     public info(message: string, ...params: any[]): void {
-        this._lazilyCreateLogInstance();
         this.winstonLogger.log('info', message, params);
     }
 
@@ -69,31 +82,7 @@ export class GesthorLogger {
      * @param params The message's params.
      */
     public error(message: string, ...params: any[]): void {
-        this._lazilyCreateLogInstance();
         this.winstonLogger.log('error', message, params);
-    }
-
-    /**
-     * Lazily creates a log instance.
-     */
-    private _lazilyCreateLogInstance(): void {
-        if (!this.winstonLogger) {
-            this.logPath = appService.getAppPath(`../data/logs/${this.filename}`);
-            console.log(this.logPath);
-            this.winstonLogger = createLogger({
-                format: format.combine(
-                    format.label({ label: this.className }), format.timestamp(), format.splat(), this.printfFormat
-                ),
-                transports: [
-                    new transports.File({
-                        filename: this.logPath
-                    })
-                ]
-            });
-            if (!environment.production) {
-                this.winstonLogger.add(new transports.Console);
-            }
-        }
     }
 
 }

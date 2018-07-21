@@ -6,7 +6,7 @@ import {
   Auth0Error,
 } from 'auth0-js';
 import Auth0Lock from 'auth0-lock';
-import { environment } from './../../environments/environment';
+import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';

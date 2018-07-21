@@ -1,5 +1,5 @@
 import { MySQLAuditedRepository } from './mysql.repository';
-import { _Client } from '../model/client/';
+import { _Client } from '../model/client';
 
 /**
  * A private class that defines a repository for the Client entity.

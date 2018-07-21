@@ -7,6 +7,7 @@ import { RestAPIService } from './rest-service.interface';
 import { Request, Response } from 'express';
 import { clientService } from './client.service';
 import { userService } from './user.service';
+import { AbstractService } from './abstract.service';
 
 /**
  * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -15,7 +16,7 @@ import { userService } from './user.service';
  * 
  * @author rodrigo-novaes
  */
-class ApiService {
+class ApiService extends AbstractService {
 
     /**
      * All implemented API interfaces.
@@ -24,6 +25,10 @@ class ApiService {
         clientService,
         userService
     ];
+
+    public postConstruct(): void {
+        
+    }
 
     /**
      * A private function that registers to the services and API methods for each entity.

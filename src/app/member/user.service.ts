@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { environment } from './../../environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import 'rxjs/Rx';
+import 'rxjs';
 import { AbstractSecureCrudService } from '../abstract/service/service.interface';
 import { Auth0UserProfile } from 'auth0-js';
 import { catchError } from 'rxjs/operators';
