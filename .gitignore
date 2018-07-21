@@ -50,5 +50,4 @@ Thumbs.db
 
 # Important env files
 desktop-app/environments/environment.prod.ts
-desktop-app/environments/environment.ts
 
