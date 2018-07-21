@@ -1,7 +1,6 @@
-import { QueryError, OkPacket } from 'mysql2';
+import { QueryError, OkPacket, Connection } from 'mysql2';
 import { Entity, UserAuditedEntity } from '../model/abstract/entity';
 import { Constants } from '../service/util/constants';
-import { connectionService } from '../service/connection.service';
 
 /**
  * A common abstract definition to MySQL repositories. This class contains the default methods
@@ -27,11 +26,12 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * 
      * Can throw exceptions based on multiple identifiers definitions.
      * 
+     * @param connection An active connection to the database.
      * @param entity Entity to be persisted.
      * @param callback A function to be executed when create is done.
      */
-    public create(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        connectionService.connection.query(`insert into ${this.tableName} set ?`, entity, callback);
+    public create(connection: Connection, entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
+        connection.query(`insert into ${this.tableName} set ?`, entity, callback);
     }
 
     /**
@@ -39,31 +39,34 @@ abstract class CommonMySQLRepository<_E extends Entity<PK>, PK> {
      * 
      * Can throw exceptions based on null identifiers.
      * 
+     * @param connection An active connection to the database.
      * @param entity Entity to be updated.
      * @param callback A function to be executed when the update is completed.
      */
-    public update(entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
-        connectionService.connection.query(`replace into ${this.tableName} set ?`, entity, callback)
+    public update(connection: Connection, entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
+        connection.query(`replace into ${this.tableName} set ?`, entity, callback)
     }
 
     /**
      * Reads an entity based on its primary key.
      * 
+     * @param connection An active connection to the database.
      * @param id A unique identifier.
      * @param callback A function to be executed when the search is completed.
      */
-    public findOne(id: PK, callback: (err: QueryError, result: OkPacket[]) => any): void {
-        connectionService.connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
+    public findOne(connection: Connection, id: PK, callback: (err: QueryError, result: OkPacket[]) => any): void {
+        connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
     }
 
     /**
      * Deletes an entity based on its primary key.
      * 
+     * @param connection An active connection to the database.
      * @param id A unique identifier.
      * @param callback A function to be executed when the deletion is completed.
      */
-    public delete(id: PK, callback: (err: QueryError, result: OkPacket[]) => void): void {
-        connectionService.connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
+    public delete(connection: Connection, id: PK, callback: (err: QueryError, result: OkPacket[]) => void): void {
+        connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
     }
 
 
@@ -81,6 +84,7 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
     /**
      * Receives the table name as a parameter.
      * 
+     * @param connection An active connection to the database.
      * @param tableName The entity's table name.
      */
     public constructor(tableName: string) {
@@ -92,10 +96,11 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
      * 
      * It's possible to insert query params to filter results as needed.
      * 
+     * @param connection An active connection to the database.
      * @param callback A function to be executed when the query is completed.
      * @param searchOptions The search options.
      */
-    public findAll(callback: (err: QueryError, result: OkPacket[]) => any, searchOptions?: any): void {
+    public findAll(connection: Connection, callback: (err: QueryError, result: OkPacket[]) => any, searchOptions?: any): void {
         const size: number = searchOptions.size ?
             searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
         const page: number = searchOptions.page ?
@@ -103,8 +108,8 @@ export abstract class MySQLRepository<_E extends Entity<PK>, PK> extends CommonM
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} order by 
-            ${connectionService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-            connectionService.connection.query(query, callback);
+            ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+            connection.query(query, callback);
     }
 
 }
@@ -123,6 +128,7 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
     /**
      * Receives the table name as a parameter.
      * 
+     * @param connection An active connection to the database.
      * @param tableName The entity's table name.
      */
     public constructor(tableName: string) {
@@ -134,11 +140,13 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
      * 
      * It's possible to insert query params to filter results as needed.
      * 
+     * @param connection An active connection to the database.
      * @param usuario_id The user's id.
      * @param callback A function to be executed when the query is completed.
      * @param searchOptions The search options.
      */
     public findAllByUsuarioId(
+        connection: Connection,
         usuario_id: FK,
         callback: (err: QueryError, result: OkPacket[]) => any,
         searchOptions?: any
@@ -150,8 +158,8 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
         let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
-            ${connectionService.connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
-            connectionService.connection.query(query, callback);
+            ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
+            connection.query(query, callback);
     }
 
 }

@@ -6,6 +6,7 @@ import { clientMapper } from './mapper/client.mapper';
 import { Request, Response } from 'express';
 import { transactionService } from './transaction.service';
 import { serverService } from './server.service';
+import { Connection } from 'mysql2';
 
 /**
  * A client service handler for API requests.
@@ -21,9 +22,9 @@ class ClientService implements RestAPIService {
         {
             url: '/api/client',
             callback: (req: Request, res: Response) => {
-                transactionService.doInTransactionWithoutResult(() => {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const clientBody: _Client = clientMapper.entityToSQL(req.body);
-                    clientRepository.create(clientBody, (err: QueryError, result: OkPacket) => {
+                    clientRepository.create(connection, clientBody, (err: QueryError, result: OkPacket) => {
                         if (err) {
                             throw err;
                         }
@@ -48,9 +49,9 @@ class ClientService implements RestAPIService {
         {
             url: '/api/client',
             callback: (req: Request, res: Response) => {
-                transactionService.doInTransactionWithoutResult(() => {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const clientBody: _Client = clientMapper.entityToSQL(req.body);
-                    clientRepository.update(clientBody, (err: QueryError, result: OkPacket) => {
+                    clientRepository.update(connection, clientBody, (err: QueryError, result: OkPacket) => {
                         if (err) {
                             throw err;
                         }
@@ -74,9 +75,9 @@ class ClientService implements RestAPIService {
         {
             url: '/api/client/:user_id',
             callback: (req: Request, res: Response) => {
-                transactionService.doInTransactionWithoutResult(() => {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const userId: string = req.params.user_id;
-                    clientRepository.findAllByUsuarioId(userId, (err: QueryError, result: OkPacket[]) => {
+                    clientRepository.findAllByUsuarioId(connection, userId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
                             throw err;
                         }
@@ -95,9 +96,9 @@ class ClientService implements RestAPIService {
         {
             url: '/api/client/:id',
             callback: (req: Request, res: Response) => {
-                transactionService.doInTransactionWithoutResult(() => {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const clienteId: number = req.params.id;
-                    clientRepository.findOne(clienteId, (err: QueryError, result: OkPacket[]) => {
+                    clientRepository.findOne(connection, clienteId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
                             throw err;
                         }
@@ -122,9 +123,9 @@ class ClientService implements RestAPIService {
         {
             url: '/api/client/:id',
             callback: (req: Request, res: Response) => {
-                transactionService.doInTransactionWithoutResult(() => {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const clienteId: number = req.params.id;
-                    clientRepository.delete(clienteId, (err: QueryError, result: OkPacket[]) => {
+                    clientRepository.delete(connection, clienteId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
                             throw err;
                         }
