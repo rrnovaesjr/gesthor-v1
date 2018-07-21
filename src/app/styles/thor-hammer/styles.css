@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "thor-hammer";
+  src:url("fonts/thor-hammer.eot");
+  src:url("fonts/thor-hammer.eot?#iefix") format("embedded-opentype"),
+    url("fonts/thor-hammer.woff") format("woff"),
+    url("fonts/thor-hammer.ttf") format("truetype"),
+    url("fonts/thor-hammer.svg#thor-hammer") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "thor-hammer" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="gesthor-"]:before,
+[class*=" gesthor-"]:before {
+  font-family: "thor-hammer" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gesthor-thor-hammer:before {
+  content: "\61";
+}

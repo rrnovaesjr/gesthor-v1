@@ -20,7 +20,7 @@ class UserService implements RestAPIService {
     /**
      * The reference to the user API for Token Management on Auth0.
      */
-    private readonly userApi: string = `${environment.auth.issuer}api/v2/users`;
+    private readonly userApi: string = `${environment.auth.apiUrl}/users`;
 
     /**
      * Initializes a new User Service. This function starts a new timer to get a new API
