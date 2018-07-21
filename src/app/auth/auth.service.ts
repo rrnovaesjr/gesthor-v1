@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { 
-  WebAuth, 
-  Auth0UserProfile, 
-  Auth0DecodedHash, 
-  Auth0Callback, 
-  Auth0Error 
+import {
+  WebAuth,
+  Auth0UserProfile,
+  Auth0DecodedHash,
+  Auth0Error,
 } from 'auth0-js';
+import Auth0Lock from 'auth0-lock';
 import { environment } from './../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * An Auth0 service interface.
@@ -18,6 +20,32 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable()
 export class AuthService {
 
+  /**
+   * Key that references the current session's expiration time on the local storage.
+   */
+  public static readonly EXPIRES_AT_STORAGE_KEY: string = 'expires_at';
+
+  /**
+   * An auth parameters object that sets google login to be selectable.
+   */
+  private readonly authParams: any = {
+    scope: environment.auth.scope,
+    prompt: 'select_account'
+  };
+
+  /**
+   * Constant reference to the auth0 lock instance.
+   */
+  private readonly auth0Lock = new Auth0Lock(environment.auth.clientID, environment.auth.domain, {
+    rememberLastLogin: false,
+    auth: {
+      audience: environment.auth.audience,
+      redirect: true,
+      redirectUrl: environment.auth.redirect,
+      responseType: 'token',
+      params: this.authParams
+    }
+  });
 
   /**
    * A private reference to the Auth0 web authority.
@@ -47,29 +75,33 @@ export class AuthService {
   public userProfile$: Observable<Auth0UserProfile> = this._userProfile.asObservable();
 
   /**
-   * A private reference to the access token.
-   */
-  private accessToken: string;
-
-  /**
    * A boolean flag that indicates if an user is authenticated.
    */
   private authenticated: boolean;
+
+  /**
+   * The user's decoded information.
+   */
+  private auth0DecodedHash: Auth0DecodedHash;
 
   /**
    * Builds the service based on the current session settings.
    * 
    * @param router A router reference.
    */
-  constructor(private router: Router) {
-    this.getAccessToken();
+  constructor(private router: Router,
+    private progressAdvisorService: ProgressAdvisorService,
+    private httpClient: HttpClient
+  ) {
+    this._checkSession();
   }
 
   /**
    * Open centralized login.
    */
   public login(): void {
-    this.auth0.authorize();
+    this.progressAdvisorService.announceConfig({ show: true });
+    this.auth0Lock.show();
   }
 
   /**
@@ -77,27 +109,28 @@ export class AuthService {
    */
   public handleLoginCallback(): void {
     this.auth0.parseHash((err: Auth0Error, authResult: Auth0DecodedHash) => {
-      if(authResult && authResult.accessToken) {
+      if (authResult && authResult.accessToken) {
         window.location.hash = '';
-        this.getUserInfo(authResult);
+        this._getUserInfo(authResult);
       }
       this.router.navigate(['/']);
+      this.progressAdvisorService.announceConfig({ show: false });
     });
   }
 
   /**
    * Gets an access token based on the session.
    */
-  public getAccessToken(): void {
+  private _checkSession(): void {
     this.auth0.checkSession({}, (err: Auth0Error, authResult: Auth0DecodedHash) => {
       if (authResult && authResult.accessToken) {
-        this.getUserInfo(authResult);
-      } 
-      else if(err) {
+        this._getUserInfo(authResult);
+      }
+      else if (err) {
         this.logout();
         this.authenticated = false;
       }
-    }); 
+    });
   }
 
   /**
@@ -105,9 +138,9 @@ export class AuthService {
    * 
    * @param authResult A reference to the authorization result.
    */
-  public getUserInfo(authResult: Auth0DecodedHash): void {
+  private _getUserInfo(authResult: Auth0DecodedHash): void {
     this.auth0.client.userInfo(authResult.accessToken, (err: Auth0Error, profile: Auth0UserProfile) => {
-      if(profile) {
+      if (profile) {
         this._setSession(authResult, profile);
       }
     });
@@ -121,23 +154,20 @@ export class AuthService {
    */
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
     const expTime: number = authResult.expiresIn * 1000 + Date.now();
-    localStorage.setItem('expires_at', JSON.stringify(expTime));
-    this.accessToken = authResult.accessToken;
+    localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
     this.userProfile = profile;
-    this._userProfile.next(this.userProfile);
     this.authenticated = true;
+    this.auth0DecodedHash = authResult;
+    this._userProfile.next(this.userProfile);
   }
 
   /**
    * Removes current session data.
    */
   public logout(): void {
-    localStorage.removeItem('expires_at');
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('nonce');
+    localStorage.removeItem(AuthService.EXPIRES_AT_STORAGE_KEY);
     this.userProfile = undefined;
     this._userProfile.next(this.userProfile);
-    this.accessToken = undefined;
     this.authenticated = false;
   }
 
@@ -145,8 +175,24 @@ export class AuthService {
    * Checks if current user is authenticated.
    */
   get isAuthenticated(): boolean {
-    const expiresAt: number = JSON.parse(localStorage.getItem('expires_at'));
+    const expiresAt: number = JSON.parse(localStorage.getItem(AuthService.EXPIRES_AT_STORAGE_KEY));
     return Date.now() < expiresAt && this.authenticated;
+  }
+
+  /**
+   * Gets the string corresponding to the access token.
+   */
+  get getManagementAPIToken(): string {
+    return this.auth0DecodedHash.accessToken;
+  }
+
+  /**
+   * Checks if current user has a matching `role` to access determinated route.
+   * 
+   * @param role Role to be checked.
+   */
+  public hasPermission(role: string): boolean {
+    return (this.userProfile.app_metadata.userRole == role);
   }
 
 }

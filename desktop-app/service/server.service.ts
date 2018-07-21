@@ -1,5 +1,8 @@
 import * as express from 'express';
 import { Server } from 'http';
+import * as jwt from 'express-jwt';
+import { environment } from '../environments';
+import * as jwks from 'jwks-rsa';
 
 /**
  * This class encapsulates the fundamental functions from Express' API into a singleton reference.
@@ -7,6 +10,16 @@ import { Server } from 'http';
  * @author rodrigo-novaes
  */
 class ServerService {
+
+    /**
+     * Creates a request handler for secure connections.
+     */
+    public readonly jwtCheck: jwt.RequestHandler = jwt({
+        secret: jwks.expressJwtSecret(environment.auth.secret),
+        audience: environment.auth.audience,
+        issuer: environment.auth.issuer,
+        algorithms: environment.auth.algorithms
+    });
 
     /**
      * Global reference to the application's servers.

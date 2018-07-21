@@ -9,7 +9,16 @@
     right: 0;
 }
 
-.main-is-mobile .main-toolbar 
+.main-container
+h1
+small
+{
+    font-size: 9pt;
+    color: #7986CB;
+}
+
+.main-is-mobile 
+.main-toolbar 
 {
     position: fixed;
     z-index: 2;
@@ -18,6 +27,7 @@
 h1.main-app-name 
 {
     margin-left: 8px;
+    vertical-align: text-bottom;
 }
 
 .main-sidenav-container 

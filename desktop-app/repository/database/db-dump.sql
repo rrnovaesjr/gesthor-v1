@@ -1,16 +1,15 @@
 /*
 * Initialization
 */
-DROP DATABASE IF EXISTS `gesthor_dev`;
 
-CREATE DATABASE `gesthor_dev`;
+create database if not exists `gesthor_dev`;
 
-USE `gesthor_dev`;
+use `gesthor_dev`;
 
 /*
 * Table definitions - version 1.0
 */
-create table `cliente` (
+create table if not exists `cliente` (
 	`id` int(9) auto_increment,
     `nome_razaosocial` varchar(256) not null,
     `cpf_cnpj` varchar(16),

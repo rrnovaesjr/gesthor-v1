@@ -5,12 +5,7 @@
 
 export const environment = {
   production: false,
-  databaseConfig: {
-    host: 'localhost',
-    user: 'root',
-    database: 'gesthor_dev',
-    password: '1234'
-  },  
+  apiUrl: 'http://localhost:8080',  
   auth:   {
     clientID: 'D0zEEiNCXv25UyNCfGJ1YlUohbp6XG1M',
     domain: 'rrnovaesjr.auth0.com',
