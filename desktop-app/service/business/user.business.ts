@@ -2,8 +2,7 @@ import { RestAPIBusiness } from './abstract.business';
 import { environment } from '../../environments';
 import { Request, Response } from 'express';
 import { serverService } from '../server.service';
-import { Observable } from 'rxjs';
-import { AbstractLoggerErrorHandlerService } from '../abstract.service';
+import { Observable, timer } from 'rxjs';
 import { GesthorLogger } from '../util/logger';
 import { AbstractLoggerErrorHandlingBusiness } from './abstract.business';
 import { Auth0UserProfile } from 'auth0-js';
@@ -47,7 +46,7 @@ class UserBusiness extends AbstractLoggerErrorHandlingBusiness implements RestAP
      */
     private _requestManagementAPIToken(): void {
         UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Subscribing to event for requesting new API tokens.");
-        Observable.timer(
+        timer(
             environment.auth.apiManagementTokenRequestConfig.initialDelay,
             environment.auth.apiManagementTokenRequestConfig.period
         ).subscribe((it: number) => {

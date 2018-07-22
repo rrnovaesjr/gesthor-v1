@@ -1,9 +1,8 @@
 import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, ObservableInput } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
-import { ObservableInput } from 'rxjs/Observable';
 
 /**
  * Defines an interface for CRUD Services.

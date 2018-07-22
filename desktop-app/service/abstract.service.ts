@@ -1,6 +1,4 @@
 import { GesthorLogger } from "./util/logger";
-import { config } from "winston";
-import { ArrayObservable } from "rxjs/observable/ArrayObservable";
 
 /**
  * An interface for handling errors thrown throughout the application. Any class instantiating
