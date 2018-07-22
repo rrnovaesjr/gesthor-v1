@@ -9,6 +9,8 @@ import {
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
+import { AbstractComponent } from '../abstract/component/component.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-member',
@@ -26,7 +28,12 @@ import { UserService } from './user.service';
     ])
   ]
 })
-export class MemberComponent implements OnInit {
+export class MemberComponent extends AbstractComponent {
+
+  /**
+   * A subscription reference to the user changes.
+   */
+  private userProfileSubscription: Subscription;
 
   /**
    * Maintain users information.
@@ -43,29 +50,34 @@ export class MemberComponent implements OnInit {
    * 
    * @param authService Authorization service.
    */
-  constructor(public authService: AuthService, private translateService: TranslateService, private userService: UserService) {
-    this.authService.userProfile$.subscribe((res: Auth0UserProfile) => {
-      this.user = res;   
-      if(this.user) {
-        this.userService.read(this.user.sub).subscribe((res: Auth0UserProfile) => {
-          console.log(res);
-        });
-      }
-    });
+  constructor(
+    public authService: AuthService, 
+    private translateService: TranslateService, 
+    private userService: UserService
+  ) {
+    super();
   }
 
   /** 
    * Initializes the data into the component.
   */
   public ngOnInit(): void {
-
+    this.userProfileSubscription = this.authService.userProfile$.subscribe((user: Auth0UserProfile) => {
+      if(user) {
+        this.userService.read(user.sub).subscribe((response: Auth0UserProfile) => {
+          this.user = response;
+        });
+      }
+    });
   }
 
   /** 
    * Called on component's destroy.
   */
   public ngOnDestroy(): void {
-
+    if(this.userProfileSubscription) {
+      this.userProfileSubscription.unsubscribe();
+    }
   }
 
   /** 

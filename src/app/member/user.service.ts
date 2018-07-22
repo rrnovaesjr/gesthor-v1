@@ -17,10 +17,13 @@ export class UserService extends AbstractSecureCrudService<Auth0UserProfile, str
     private readonly userApi: string = `${environment.apiUrl}/api/users`;
 
     /**
-     * Constructor that injects other servces.
+     * Creates a new User Service.
+     * 
+     * @param httpClient Injects an instance of the HTTP Client.
+     * @param authService Injects an instance of the Auth Service.
      */
     public constructor(httpClient: HttpClient, authService: AuthService) {
-        super(authService, httpClient);
+        super(httpClient, authService);
     }
 
     public create(user: Auth0UserProfile): Observable<Auth0UserProfile> {
