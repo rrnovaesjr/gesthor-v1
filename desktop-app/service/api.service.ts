@@ -3,11 +3,12 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import { Constants } from './util/constants';
 import { environment } from '../environments';
-import { RestAPIService } from './rest-service.interface';
 import { Request, Response } from 'express';
-import { clientService } from './client.service';
-import { userService } from './user.service';
 import { AbstractService } from './abstract.service';
+
+import { RestAPIBusiness } from './business/rest-api.business.interface';
+import { clientBusiness } from './business/client.business';
+import { userBusiness } from './business/user.business';
 
 /**
  * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -21,9 +22,9 @@ class ApiService extends AbstractService {
     /**
      * All implemented API interfaces.
      */
-    private restAPI: RestAPIService[] = [
-        clientService,
-        userService
+    private restAPI: RestAPIBusiness[] = [
+        clientBusiness,
+        userBusiness
     ];
 
     /**

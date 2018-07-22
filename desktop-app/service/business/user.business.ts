@@ -1,7 +1,7 @@
-import { RestAPIService } from './rest-service.interface';
-import { environment } from '../environments';
+import { RestAPIBusiness } from './rest-api.business.interface';
+import { environment } from '../../environments';
 import { Request, Response } from 'express';
-import { serverService } from './server.service';
+import { serverService } from '../server.service';
 import { Observable } from 'rxjs';
 const request = require("request");
 
@@ -10,7 +10,7 @@ const request = require("request");
  * 
  * @author rodrigo-novaes
  */
-class UserService implements RestAPIService {
+class UserBusiness implements RestAPIBusiness {
 
     /**
      * The reference to the API token.
@@ -82,4 +82,4 @@ class UserService implements RestAPIService {
  * 
  * @author rodrigo-novaes
  */
-export const userService: UserService = new UserService();
+export const userBusiness: UserBusiness = new UserBusiness();

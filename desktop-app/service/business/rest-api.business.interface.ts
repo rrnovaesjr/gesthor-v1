@@ -6,7 +6,7 @@ import * as jwt from 'express-jwt';
  * 
  * @author rodrigo-novaes
  */
-export interface RestAPIService {
+export interface RestAPIBusiness {
 
     /**
      * A set of tuples (`url`, `security`, `callback`) that maps a HTTP POST request urls to a specific URL.

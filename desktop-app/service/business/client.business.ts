@@ -1,11 +1,11 @@
-import { RestAPIService } from './rest-service.interface';
-import { clientRepository } from '../repository/client.repository';
-import { _Client, Client } from '../model/client';
+import { RestAPIBusiness } from './rest-api.business.interface';
+import { clientRepository } from '../../repository/client.repository';
+import { _Client, Client } from '../../model/client';
 import { QueryError, OkPacket } from 'mysql';
-import { clientMapper } from './mapper/client.mapper';
+import { clientMapper } from '../mapper/client.mapper';
 import { Request, Response } from 'express';
-import { transactionService } from './transaction.service';
-import { serverService } from './server.service';
+import { transactionService } from '../transaction.service';
+import { serverService } from '../server.service';
 import { Connection } from 'mysql2';
 
 /**
@@ -13,7 +13,7 @@ import { Connection } from 'mysql2';
  * 
  * @author rodrigo-novaes
  */
-class ClientService implements RestAPIService {
+class ClientBusiness implements RestAPIBusiness {
 
     /**
      * Maps all POST functions for clients;
@@ -147,4 +147,4 @@ class ClientService implements RestAPIService {
  * 
  * @author rodrigo-novaes
  */
-export const clientService: ClientService = new ClientService();
+export const clientBusiness: ClientBusiness = new ClientBusiness();
