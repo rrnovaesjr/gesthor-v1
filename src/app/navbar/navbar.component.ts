@@ -7,13 +7,14 @@ import {
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
+import { AbstractComponent } from '../abstract/component/component.interface';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent extends AbstractComponent {
 
   /**
    * A media query object to look if app is loaded on a mobile device.
@@ -39,6 +40,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     changeDetectorRef: ChangeDetectorRef, 
     media: MediaMatcher
   ) { 
+    super();
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);

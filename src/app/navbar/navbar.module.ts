@@ -3,6 +3,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NavbarRoutingModule } from './navbar-routing.module';
 import { NavbarComponent } from './navbar.component';
 import { SharedModule } from '../shared';
+import { NavbarService } from './navbar.service';
 
 @NgModule({
   imports: [
@@ -12,6 +13,9 @@ import { SharedModule } from '../shared';
   ],
   declarations: [
     NavbarComponent
+  ],
+  providers: [
+    NavbarService
   ],
   exports: [
     NavbarComponent
