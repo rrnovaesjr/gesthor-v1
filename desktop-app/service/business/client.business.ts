@@ -77,7 +77,7 @@ class ClientBusiness implements RestAPIBusiness {
             callback: (req: Request, res: Response) => {
                 transactionService.doInTransactionWithoutResult((connection: Connection) => {
                     const userId: string = req.params.user_id;
-                    clientRepository.findAllByUsuarioId(connection, userId, (err: QueryError, result: OkPacket[]) => {
+                    clientRepository.findAll(connection, userId, (err: QueryError, result: OkPacket[]) => {
                         if (err) {
                             throw err;
                         }

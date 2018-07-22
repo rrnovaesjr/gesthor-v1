@@ -1,6 +1,7 @@
 import { QueryError, OkPacket, Connection } from 'mysql2';
 import { Entity, UserAuditedEntity } from '../model/abstract/entity';
 import { Constants } from '../service/util/constants';
+import { transactionService } from '../service/transaction.service';
 
 /**
  * A common abstract definition to MySQL repositories. This class contains the default methods
@@ -145,7 +146,7 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
      * @param callback A function to be executed when the query is completed.
      * @param searchOptions The search options.
      */
-    public findAllByUsuarioId(
+    public findAll(
         connection: Connection,
         usuario_id: FK,
         callback: (err: QueryError, result: OkPacket[]) => any,
@@ -160,6 +161,96 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
         let query = `select * from ${this.tableName} where usuario_id like '${usuario_id}' order by 
             ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} limit ${(page * size)},${size}`;
             connection.query(query, callback);
+    }
+
+}
+
+/**
+ * A default interface for a role-based audited repository.
+ * 
+ * Every repository that inherits this class must join to a ROLE-based table.
+ * 
+ * @author rodrigo-novaes
+ */
+export abstract class MySQLRoleAuditedRepository<_E extends UserAuditedEntity<PK, FK>, PK, FK>
+    extends MySQLAuditedRepository<_E, PK, FK> {
+
+        /**
+         * An array in which each line represent a specific user role.
+         * 
+         * If an user has any role in this list, then the specified query can return
+         * its values.
+         */
+        private roles: string[];
+
+
+        /**
+         * Default constructor instatiates the table's name, as well as the
+         * MxN relation between the entity and the user's role.
+         * 
+         * @param tableName The entity table name.
+         * @param joinRoleTableName The MxN role table name.
+         */
+        public constructor(protected tableName: string, protected joinRoleTableName: string, protected roleTableName?: string) {
+            super(tableName);
+            if(this.roleTableName) {
+                transactionService.doInTransactionWithoutResult((connection: Connection) => {
+                    connection.query(`select * from ${this.roleTableName}`, (err: QueryError, result: OkPacket[]) => {
+                        this.roles = [];
+                        for(let packet of result) {
+                            this.roles.push(packet['role']);
+                        }
+                    });
+                });
+            }
+        }
+
+    /**
+     * Creates an entity.
+     * 
+     * Can throw exceptions based on multiple identifiers definitions.
+     * 
+     * @param connection An active connection to the database.
+     * @param entity Entity to be persisted.
+     * @param callback A function to be executed when create is done.
+     */
+    public create(connection: Connection, entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
+        connection.query(`insert into ${this.tableName} set ?`, entity, callback);
+    }
+
+    /**
+     * Updates an entity.
+     * 
+     * Can throw exceptions based on null identifiers.
+     * 
+     * @param connection An active connection to the database.
+     * @param entity Entity to be updated.
+     * @param callback A function to be executed when the update is completed.
+     */
+    public update(connection: Connection, entity: _E, callback: (err: QueryError, result: OkPacket) => any): void {
+        connection.query(`replace into ${this.tableName} set ?`, entity, callback)
+    }
+
+    /**
+     * Reads an entity based on its primary key.
+     * 
+     * @param connection An active connection to the database.
+     * @param id A unique identifier.
+     * @param callback A function to be executed when the search is completed.
+     */
+    public findOne(connection: Connection, id: PK, callback: (err: QueryError, result: OkPacket[]) => any): void {
+        connection.query(`select * from ${this.tableName} where id = ?`, id, callback);
+    }
+
+    /**
+     * Deletes an entity based on its primary key.
+     * 
+     * @param connection An active connection to the database.
+     * @param id A unique identifier.
+     * @param callback A function to be executed when the deletion is completed.
+     */
+    public delete(connection: Connection, id: PK, callback: (err: QueryError, result: OkPacket[]) => void): void {
+        connection.query(`delete from ${this.tableName} where id = ?`, id, callback);
     }
 
 }
