@@ -47,9 +47,6 @@ class ElectronService extends AbstractService {
         super();
     }
 
-    public postConstruct(): void {
-    }
-
     /**
      * Function executed on Electron application start.
      * 

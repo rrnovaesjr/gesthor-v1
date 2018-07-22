@@ -26,10 +26,6 @@ class ApiService extends AbstractService {
         userService
     ];
 
-    public postConstruct(): void {
-        
-    }
-
     /**
      * A private function that registers to the services and API methods for each entity.
      * 

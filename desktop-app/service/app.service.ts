@@ -38,10 +38,6 @@ class AppService extends AbstractService {
         super();
     }
 
-    public postConstruct(): void {
-        
-    }
-
     /**
      * Registers responses for a given port number.
      * 
