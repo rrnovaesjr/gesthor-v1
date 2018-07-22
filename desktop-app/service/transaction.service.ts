@@ -2,6 +2,7 @@ import { QueryError } from 'mysql';
 import { Pool, createPool, PoolConnection, Connection } from 'mysql2';
 import { environment } from '../environments';
 import { GesthorLogger } from './util/logger';
+import { AbstractService } from './abstract.service';
 
 /**
  * A class that creates functions that controls all transactions between the system's
@@ -9,7 +10,7 @@ import { GesthorLogger } from './util/logger';
  * 
  * @author rodrigo-novaes
  */
-class TransactionService {
+class TransactionService extends AbstractService {
 
     /**
      * A constant static reference to a logger object.
@@ -89,6 +90,14 @@ class TransactionService {
         }
         throw err;
     }
+
+    /**
+     * Returns the LOGGER instance of the Transaction Service.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return TransactionService.LOGGER;
+    }
+    
 }
 
 /**

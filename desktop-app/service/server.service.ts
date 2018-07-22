@@ -4,13 +4,14 @@ import * as jwt from 'express-jwt';
 import { environment } from '../environments';
 import * as jwks from 'jwks-rsa';
 import { GesthorLogger } from './util/logger';
+import { AbstractService } from './abstract.service';
 
 /**
  * This class encapsulates the fundamental functions from Express' API into a singleton reference.
  * 
  * @author rodrigo-novaes
  */
-class ServerService {
+class ServerService extends AbstractService {
 
     /**
      * A constant static reference to a logger object.
@@ -88,6 +89,13 @@ class ServerService {
     public getExpressByPort(port: number): express.Express {
         ServerService.LOGGER.info("[getExpressByPort()] Returning express() on port %d.", port);
         return this.serverApplication.get(port);
+    }
+
+    /**
+     * Returns the LOGGER instance of the Server Service.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return ServerService.LOGGER;
     }
 
 }

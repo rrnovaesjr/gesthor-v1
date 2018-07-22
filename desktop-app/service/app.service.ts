@@ -77,6 +77,13 @@ class AppService extends AbstractService {
         AppService.LOGGER.info("[config()] Configuration finished.");
     }
 
+    /**
+     * Returns the LOGGER instance of the APP Service.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return AppService.LOGGER;
+    }
+
 }
 
 /**

@@ -105,6 +105,13 @@ class ApiService extends AbstractService {
         serverService.listen(port);
         ApiService.LOGGER.info("[config()] API configuration terminated.");
     }
+
+    /**
+     * Returns the LOGGER instance of the API Service.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return ApiService.LOGGER;
+    }
     
 }
 

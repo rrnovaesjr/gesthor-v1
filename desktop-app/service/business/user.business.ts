@@ -3,6 +3,10 @@ import { environment } from '../../environments';
 import { Request, Response } from 'express';
 import { serverService } from '../server.service';
 import { Observable } from 'rxjs';
+import { AbstractService } from '../abstract.service';
+import { GesthorLogger } from '../util/logger';
+import { AbstractBusiness } from './abstract.business';
+import { Auth0UserProfile } from 'auth0-js';
 const request = require("request");
 
 /**
@@ -10,7 +14,12 @@ const request = require("request");
  * 
  * @author rodrigo-novaes
  */
-class UserBusiness implements RestAPIBusiness {
+class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
+
+    /**
+     * A private static and constant reference to a logger.
+     */
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(UserBusiness.name, 'user-business.log');
 
     /**
      * The reference to the API token.
@@ -23,29 +32,42 @@ class UserBusiness implements RestAPIBusiness {
     private readonly userApi: string = `${environment.auth.apiUrl}/users`;
 
     /**
-     * Initializes a new User Service. This function starts a new timer to get a new API
+     * Initializes a new User Service.
+     */
+    public constructor() {
+        super();
+        this._requestManagementAPIToken();
+    }
+
+    /**
+     * This function starts a new timer to get a new API
      * Management Token in a specific time period.
      * 
      * The initial delay and period is configured by the environment properties.
      */
-    public constructor() {
+    private _requestManagementAPIToken(): void {
+        UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Subscribing to event for requesting new API tokens.");
         Observable.timer(
             environment.auth.apiManagementTokenRequestConfig.initialDelay,
             environment.auth.apiManagementTokenRequestConfig.period
         ).subscribe((it: number) => {
+            UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Initializing %d Management API Token request.", it);
             request({
                 method: 'POST',
                 url: environment.auth.apiUrl,
                 headers: { 'content-type': 'application/json' },
                 body: environment.auth.optionsBody,
                 json: true
-            }, (err, response, body) => {
+            }, (err: Error, response: Response, body: any) => {
                 if (err) {
+                    UserBusiness.LOGGER.error("[_requestManagementAPIToken()] Could not get token. Error: %s. Message: %s.", );
                     throw err;
                 }
                 this.apiToken = body;
+                UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Token got successfully.");
             });
         });
+        UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Method scope finished.");
     }
 
     /**
@@ -55,6 +77,7 @@ class UserBusiness implements RestAPIBusiness {
         {
             url: '/api/users/:id',
             callback: (req: Request, res: Response) => {
+                UserBusiness.LOGGER.info("[get:/api/users:id] Request to get user with id %d.", req.params.id);
                 const userId: string = req.params.id;
                 request({
                     method: 'GET',
@@ -62,17 +85,25 @@ class UserBusiness implements RestAPIBusiness {
                     headers: {
                         authorization: `Bearer ${this.apiToken.access_token}`
                     }
-                }, (err, response, body) => {
+                }, (err: Error, response: Response, body: Auth0UserProfile) => {
                     if (err) {
+                        UserBusiness.LOGGER.error("[get:/api/users:id] Could not get user. Error: %s. Message: %s.", err.name, err.message);
                         throw err;
                     }
-                    console.log(body);
                     res.send(body);
+                    UserBusiness.LOGGER.info("[get:/api/users:id] User got successfully:\n" + body);
                 });
             },
             jwtCheck: serverService.jwtCheck
         }
     ];
+
+    /**
+     * Returns the LOGGER instance of the User Business layer.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return UserBusiness.LOGGER;
+    }
 
 
 }

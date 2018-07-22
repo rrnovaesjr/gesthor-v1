@@ -110,6 +110,13 @@ class ElectronService extends AbstractService {
         return this.application;
     }
 
+    /**
+     * Returns the LOGGER instance of the Electron Service.
+     */
+    public getLoggers(): GesthorLogger | GesthorLogger[] {
+        return ElectronService.LOGGER;
+    }
+
 }
 
 /**
