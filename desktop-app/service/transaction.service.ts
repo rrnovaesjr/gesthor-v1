@@ -2,7 +2,7 @@ import { QueryError } from 'mysql';
 import { Pool, createPool, PoolConnection, Connection } from 'mysql2';
 import { environment } from '../environments';
 import { GesthorLogger } from './util/logger';
-import { AbstractLoggerService } from './abstract.service';
+import { AbstractLoggerErrorHandlerService } from './abstract.service';
 
 /**
  * A class that creates functions that controls all transactions between the system's
@@ -10,7 +10,7 @@ import { AbstractLoggerService } from './abstract.service';
  * 
  * @author rodrigo-novaes
  */
-class TransactionService extends AbstractLoggerService {
+class TransactionService extends AbstractLoggerErrorHandlerService {
 
     /**
      * A constant static reference to a logger object.
@@ -39,7 +39,7 @@ class TransactionService extends AbstractLoggerService {
         this.pool.getConnection((err: NodeJS.ErrnoException, connection: PoolConnection) => {
             TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Attempt to get new connection.");
             if (err) {
-                this.excHandler(err, excHandler);
+                this.handleError(err, excHandler);
             }
             TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Connection opened with id = %d.", connection.threadId);
             connection.beginTransaction((transactionError: QueryError) => {
@@ -47,7 +47,7 @@ class TransactionService extends AbstractLoggerService {
                 if (transactionError) {
                     connection.rollback(() => {
                         connection.release();
-                        this.excHandler(transactionError, excHandler);
+                        this.handleError(transactionError, excHandler);
                     });
                 }
                 else {
@@ -56,14 +56,14 @@ class TransactionService extends AbstractLoggerService {
                     } catch (errorInTransaction) {
                         connection.rollback(() => {
                             connection.release();
-                            this.excHandler(errorInTransaction, excHandler);
+                            this.handleError(errorInTransaction, excHandler);
                         });
                     }
                     connection.commit((commitError: QueryError) => {
                         if (commitError) {
                             connection.rollback(() => {
                                 connection.release();
-                                this.excHandler(commitError, excHandler);
+                                this.handleError(commitError, excHandler);
                             });
                         }
                         connection.release();
@@ -79,17 +79,18 @@ class TransactionService extends AbstractLoggerService {
      * Handles exceptions ocurred during a void transaction. If a customized handler
      * is passed, then it is used. Otherwise, the exception is thrown.
      * 
+     * This method is overriden from the {@link AbstractLoggerErrorHandlerService}.
+     * 
      * @param err An exception instance.
      * @param excHandler An exception handler function. In this function's scope,
      * a transaction rollback has been already executed.
      */
-    private excHandler(err: Error, excHandler?: (err?: Error) => void): void {
-        TransactionService.LOGGER.error("[excHandler()] Error! Transaction is being rolled back and connection was released.\n%s: %s.", err.name, err.message);
+    public handleError(err: Error, excHandler?: (err?: Error) => void): void {
+        TransactionService.LOGGER.error("[excHandler()] Error! Transaction is being rolled back and connection was released.");
         if (excHandler) {
             excHandler(err);
-            return;
         }
-        throw err;
+        super.handleError(err);
     }
 
     /**

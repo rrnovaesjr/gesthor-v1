@@ -42,7 +42,7 @@ export class GesthorLogger {
     public constructor(
         public className: string = 'Generics', 
         public fileName: string = 'combined.log', 
-        private levels: AbstractConfigSetLevels = config.npm.levels
+        public levels: AbstractConfigSetLevels = config.npm.levels
     ) {
         this.logPath = join(electron.app.getAppPath(), 'desktop-app', 'data', 'logs', this.fileName);
         this.winstonLogger = createLogger({

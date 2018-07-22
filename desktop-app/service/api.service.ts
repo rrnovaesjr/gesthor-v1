@@ -4,12 +4,12 @@ import * as cors from 'cors';
 import { Constants } from './util/constants';
 import { environment } from '../environments';
 import { Request, Response } from 'express';
-import { AbstractLoggerService } from './abstract.service';
+import { AbstractLoggerErrorHandlerService } from './abstract.service';
 
-import { RestAPIBusiness } from './business/rest-api.business.interface';
 import { clientBusiness } from './business/client.business';
 import { userBusiness } from './business/user.business';
 import { GesthorLogger } from './util/logger';
+import { RestAPIBusiness } from './business/abstract.business';
 
 /**
  * Class that encapsulates the fundamental functions from Gesthor's API into a singleton reference.
@@ -18,7 +18,7 @@ import { GesthorLogger } from './util/logger';
  * 
  * @author rodrigo-novaes
  */
-class ApiService extends AbstractLoggerService {
+class ApiService extends AbstractLoggerErrorHandlerService {
 
     /**
      * A private static and constant reference to a logger object.
@@ -79,6 +79,30 @@ class ApiService extends AbstractLoggerService {
                     serverService.getExpressByPort(port).patch(pat.url, (req: Request, res: Response) => {
                         pat.callback(req, res);
                     }, pat.jwtCheck);
+                }
+            }
+            if(api.trace) {
+                for(let tra of api.trace) {
+                    ApiService.LOGGER.info("[register()] TRACE endpoint registered in the url %s.", tra.url);
+                    serverService.getExpressByPort(port).trace(tra.url, (req: Request, res: Response) => {
+                        tra.callback(req, res);
+                    }, tra.jwtCheck);
+                }
+            }
+            if(api.connect) {
+                for(let con of api.connect) {
+                    ApiService.LOGGER.info("[register()] CONNECT endpoint registered in the url %s.", con.url);
+                    serverService.getExpressByPort(port).connect(con.url, (req: Request, res: Response) => {
+                        con.callback(req, res);
+                    }, con.jwtCheck);
+                }
+            }
+            if(api.options) {
+                for(let opt of api.options) {
+                    ApiService.LOGGER.info("[register()] OPTIONS endpoint registered in the url %s.", opt.url);
+                    serverService.getExpressByPort(port).connect(opt.url, (req: Request, res: Response) => {
+                        opt.callback(req, res);
+                    }, opt.jwtCheck);
                 }
             }
         }

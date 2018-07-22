@@ -1,11 +1,11 @@
-import { RestAPIBusiness } from './rest-api.business.interface';
+import { RestAPIBusiness } from './abstract.business';
 import { environment } from '../../environments';
 import { Request, Response } from 'express';
 import { serverService } from '../server.service';
 import { Observable } from 'rxjs';
-import { AbstractService } from '../abstract.service';
+import { AbstractLoggerErrorHandlerService } from '../abstract.service';
 import { GesthorLogger } from '../util/logger';
-import { AbstractBusiness } from './abstract.business';
+import { AbstractLoggerErrorHandlingBusiness } from './abstract.business';
 import { Auth0UserProfile } from 'auth0-js';
 const request = require("request");
 
@@ -14,7 +14,7 @@ const request = require("request");
  * 
  * @author rodrigo-novaes
  */
-class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
+class UserBusiness extends AbstractLoggerErrorHandlingBusiness implements RestAPIBusiness {
 
     /**
      * A private static and constant reference to a logger.

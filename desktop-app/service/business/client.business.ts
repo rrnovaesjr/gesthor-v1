@@ -1,4 +1,4 @@
-import { RestAPIBusiness } from './rest-api.business.interface';
+import { RestAPIBusiness } from './abstract.business';
 import { clientRepository } from '../../repository/client.repository';
 import { _Client, Client } from '../../model/client';
 import { QueryError, OkPacket } from 'mysql';
