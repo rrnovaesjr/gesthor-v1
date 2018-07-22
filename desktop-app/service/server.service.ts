@@ -3,6 +3,7 @@ import { Server } from 'http';
 import * as jwt from 'express-jwt';
 import { environment } from '../environments';
 import * as jwks from 'jwks-rsa';
+import { GesthorLogger } from './util/logger';
 
 /**
  * This class encapsulates the fundamental functions from Express' API into a singleton reference.
@@ -10,6 +11,11 @@ import * as jwks from 'jwks-rsa';
  * @author rodrigo-novaes
  */
 class ServerService {
+
+    /**
+     * A constant static reference to a logger object.
+     */
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(ServerService.name, 'server-service.log');
 
     /**
      * Creates a request handler for secure connections.
@@ -32,7 +38,9 @@ class ServerService {
      * @param port A port number.
      */
     public build(port: number): express.Express {
-        this.serverApplication.set(port, express())
+        ServerService.LOGGER.info("[build()] Setting new server on port %d.", port);
+        this.serverApplication.set(port, express());
+        ServerService.LOGGER.info("[build()] Server started successfully.");
         return this.serverApplication.get(port);
     }
 
@@ -45,9 +53,12 @@ class ServerService {
      * @param handler Defines a request handler to be used on callbacks.
      */
     public use(port: number, handler: express.RequestHandler | express.RequestHandler[]): express.Express {
+        ServerService.LOGGER.info("[use()] Attempt to use new express handler on port %d.", port);
         if(!this.serverApplication.get(port)) {
+            ServerService.LOGGER.warn("[use()] Alert! No server has been started on port %d. What are you trying to do?", port);
             return null;
         }
+        ServerService.LOGGER.info("[use()] Handler is now being used by the server in port %d.", port);
         return this.serverApplication.get(port).use(handler);
     }
 
@@ -60,9 +71,12 @@ class ServerService {
      * @param callback A function to be executed as callback.
      */
     public listen(port: number, hostname?: string, callback?: Function): Server {
+        ServerService.LOGGER.info("[listen()] Attempt to use new express handler on address %s:%d. Note that null:number means localhost.", hostname, port);
         if(!this.serverApplication.get(port)) {
+            ServerService.LOGGER.warn("[listen()] Alert! No server has been started on port %d. What are you trying to do?", port);
             return null;
         }
+        ServerService.LOGGER.info("[listen()] New server created on address %s:%d.", hostname, port);
         return this.serverApplication.get(port).listen(port, hostname, callback);
     }
 
@@ -72,6 +86,7 @@ class ServerService {
      * @param port A port number.
      */
     public getExpressByPort(port: number): express.Express {
+        ServerService.LOGGER.info("[getExpressByPort()] Returning express() on port %d.", port);
         return this.serverApplication.get(port);
     }
 

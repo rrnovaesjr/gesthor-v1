@@ -13,7 +13,10 @@ import { join } from 'path';
  */
 class ElectronService extends AbstractService {
 
-    private logger: GesthorLogger = new GesthorLogger(ElectronService.name, 'electron-service.log');
+    /**
+     * A static constant reference to a Logger object.
+     */
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(ElectronService.name, 'electron-service.log');
 
     /**
      * Default window's width.
@@ -52,14 +55,19 @@ class ElectronService extends AbstractService {
      * 
      * This sets the root window's reference, as well as sets its parameters.
      */
-    public _onAppStart(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): void {
-        this.logger.info("Hello world.");
+    public onAppStart(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): void {
+        ElectronService.LOGGER.info("[onAppStart()] Starting application with the URL %s.", initialURL);
         this.rootWindow = new electron.BrowserWindow(config ? config : ElectronService.BROWSER_WINDOW_DEFAULT_CONFIG);
         if(maximized || maximized == null || maximized == undefined) {
+            ElectronService.LOGGER.warn("[onAppStart()] No maximization flag was passed as argument. Using default maximized = true.");
             this.rootWindow.maximize();
         }
         this.rootWindow.loadURL(url.format(initialURL));
-        this.rootWindow.on('close', (event: electron.Event) => this.rootWindow = null);
+        this.rootWindow.on('close', (event: electron.Event) => {
+            ElectronService.LOGGER.info("[onAppStart()] Closing root window.");
+            this.rootWindow = null
+        });
+        ElectronService.LOGGER.info("[onAppStart()] Finishing system initialization.");
     }
 
     /**
@@ -82,10 +90,15 @@ class ElectronService extends AbstractService {
      * @param menu Set application's menu.
      */
     public appInit(initialURL: string, config?: electron.BrowserWindowConstructorOptions, maximized?: boolean, menu?: electron.Menu): electron.App {
-        this.application = this.application.on('ready', () => this._onAppStart(initialURL, config, maximized, menu));
+        ElectronService.LOGGER.info("[appInit()] Starting application with the URL %s.", initialURL);
+        this.application = this.application.on('ready', () => {
+            ElectronService.LOGGER.info("[appInit()] All windows were loaded. Setting up configurations.");
+            this.onAppStart(initialURL, config, maximized, menu)
+        });
         this.application = this.application.on('activate', () => {
             if(this.rootWindow == null) {
-                this._onAppStart(initialURL, config, maximized, menu);
+                ElectronService.LOGGER.info("[appInit()] Application has been activated. Setting up configurations.");
+                this.onAppStart(initialURL, config, maximized, menu);
             }
         });
         this.application = this.application.on('window-all-closed', () => {
@@ -93,6 +106,7 @@ class ElectronService extends AbstractService {
                 this.application.quit();
             }
         });
+        ElectronService.LOGGER.info("[appInit()] Initialization terminated. Returning application instance.");
         return this.application;
     }
 

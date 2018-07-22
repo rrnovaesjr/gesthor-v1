@@ -17,7 +17,7 @@ import { GesthorLogger } from './util/logger';
  */
 class AppService extends AbstractService {
 
-    private logger: GesthorLogger = new GesthorLogger(AppService.name, 'app-service.log');
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(AppService.name, 'app-service.log');
 
     /**
      * A constant referene to a router object.
@@ -44,17 +44,17 @@ class AppService extends AbstractService {
      * @param port A port number.
      */
     private register(port: number): void {
-        this.logger.info("Registering application on port %d.", port);
+        AppService.LOGGER.info("[register()] Registering application on port %d.", port);
         serverService.getExpressByPort(port).get('*', (req: Request, res: Response) => {
-            this.logger.info("Registering GET request to return index page.");
+            AppService.LOGGER.info("[register()] Registering GET request to return index page.");
             res.sendFile(join(electron.app.getAppPath(), 'desktop-app', 'dist', 'index.html'));
         });
         serverService.getExpressByPort(port).set('port', port);
         this.server = http.createServer(serverService.getExpressByPort(port));
         this.server.listen(port, () => {
-            this.logger.info("Application set to listen on port %d.", port);
+            AppService.LOGGER.info("[register()] Application set to listen on port %d.", port);
         });
-        this.logger.info("Register terminated.");
+        AppService.LOGGER.info("[register()] Register terminated.");
     }
 
     /**
@@ -63,11 +63,18 @@ class AppService extends AbstractService {
      * @param port A port number.
      */
     public config(port: number = Constants.DEFAULT_APP_PORT): void {
+        AppService.LOGGER.info(`[config()] Preparing to configure the application on port %d:
+            1. Using server service to build application;
+            2. Using bodyParser();
+            3. Using urlencoded();
+            4. Using express.static to serve angular application as interface;
+            5. Registering the server and setting it to listen.`, port);
         serverService.build(port);
         serverService.use(port, bodyParser.json());
         serverService.use(port, bodyParser.urlencoded({extended: false}));
         serverService.use(port, express.static(join(electron.app.getAppPath(), 'desktop-app', 'dist')));
         this.register(port);
+        AppService.LOGGER.info("[config()] Configuration finished.");
     }
 
 }

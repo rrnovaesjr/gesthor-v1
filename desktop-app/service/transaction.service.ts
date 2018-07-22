@@ -1,6 +1,7 @@
 import { QueryError } from 'mysql';
 import { Pool, createPool, PoolConnection, Connection } from 'mysql2';
 import { environment } from '../environments';
+import { GesthorLogger } from './util/logger';
 
 /**
  * A class that creates functions that controls all transactions between the system's
@@ -9,6 +10,11 @@ import { environment } from '../environments';
  * @author rodrigo-novaes
  */
 class TransactionService {
+
+    /**
+     * A constant static reference to a logger object.
+     */
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(TransactionService.name, 'transaction-service.log');
 
     /**
      * A constant reference to the pool of connections to the database.
@@ -28,30 +34,41 @@ class TransactionService {
      * @param proc Function to be executed inside the void transactional body.
      */
     public doInTransactionWithoutResult(proc: (connection: Connection) => void, excHandler?: (err?: any) => void): void {
+        TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Opening new connection.");
         this.pool.getConnection((err: NodeJS.ErrnoException, connection: PoolConnection) => {
+            TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Attempt to get new connection.");
+            if (err) {
+                this.excHandler(err, excHandler);
+            }
             connection.beginTransaction((transactionError: QueryError) => {
+                TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction begin.");
                 if (transactionError) {
                     connection.rollback(() => {
                         connection.release();
                         this.excHandler(transactionError, excHandler);
                     });
                 }
-                try {
-                    proc(connection);
-                } catch (err) {
-                    connection.rollback(() => {
-                        connection.release();
-                        this.excHandler(err, excHandler);
-                    });
-                }
-                connection.commit((commitError: QueryError) => {
-                    if (commitError) {
+                else {
+                    try {
+                        proc(connection);
+                    } catch (errorInTransaction) {
                         connection.rollback(() => {
-                            this.excHandler(commitError, excHandler);
+                            connection.release();
+                            this.excHandler(errorInTransaction, excHandler);
                         });
                     }
-                });
-                connection.release();
+                    connection.commit((commitError: QueryError) => {
+                        if (commitError) {
+                            connection.rollback(() => {
+                                connection.release();
+                                this.excHandler(commitError, excHandler);
+                            });
+                        }
+                        connection.release();
+                        TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction committed.");
+                    });
+                    TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction finished.");
+                }
             });
         });
     }
@@ -65,6 +82,7 @@ class TransactionService {
      * a transaction rollback has been already executed.
      */
     private excHandler(err: Error, excHandler?: (err?: Error) => void): void {
+        TransactionService.LOGGER.error("[excHandler()] Error! Transaction is being rolled back and connection was released.\n%s: %s.", err.name, err.message);
         if (excHandler) {
             excHandler(err);
             return;
