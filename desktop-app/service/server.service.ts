@@ -4,14 +4,14 @@ import * as jwt from 'express-jwt';
 import { environment } from '../environments';
 import * as jwks from 'jwks-rsa';
 import { GesthorLogger } from './util/logger';
-import { AbstractService } from './abstract.service';
+import { AbstractLoggerService } from './abstract.service';
 
 /**
  * This class encapsulates the fundamental functions from Express' API into a singleton reference.
  * 
  * @author rodrigo-novaes
  */
-class ServerService extends AbstractService {
+class ServerService extends AbstractLoggerService {
 
     /**
      * A constant static reference to a logger object.

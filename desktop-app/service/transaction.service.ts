@@ -2,7 +2,7 @@ import { QueryError } from 'mysql';
 import { Pool, createPool, PoolConnection, Connection } from 'mysql2';
 import { environment } from '../environments';
 import { GesthorLogger } from './util/logger';
-import { AbstractService } from './abstract.service';
+import { AbstractLoggerService } from './abstract.service';
 
 /**
  * A class that creates functions that controls all transactions between the system's
@@ -10,7 +10,7 @@ import { AbstractService } from './abstract.service';
  * 
  * @author rodrigo-novaes
  */
-class TransactionService extends AbstractService {
+class TransactionService extends AbstractLoggerService {
 
     /**
      * A constant static reference to a logger object.
@@ -41,6 +41,7 @@ class TransactionService extends AbstractService {
             if (err) {
                 this.excHandler(err, excHandler);
             }
+            TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Connection opened with id = %d.", connection.threadId);
             connection.beginTransaction((transactionError: QueryError) => {
                 TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction begin.");
                 if (transactionError) {

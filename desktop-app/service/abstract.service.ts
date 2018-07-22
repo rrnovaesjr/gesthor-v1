@@ -7,12 +7,12 @@ import { GesthorLogger } from "./util/logger";
  * 
  * @author rodrigo-novaes
  */
-export abstract class AbstractService {
+export abstract class AbstractLoggerService {
 
     /**
      * An abstract logger that points to the combined.log file.
      */
-    protected static readonly ABSTRACT_LOGGER: GesthorLogger = new GesthorLogger(AbstractService.name);
+    protected static readonly ABSTRACT_LOGGER: GesthorLogger = new GesthorLogger(AbstractLoggerService.name);
 
     /**
      * A default constructor.

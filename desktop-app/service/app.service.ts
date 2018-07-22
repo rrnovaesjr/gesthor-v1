@@ -6,7 +6,7 @@ import * as electron from 'electron';
 import { Constants } from './util/constants';
 import { Request, Response } from 'express';
 import { electronService } from './electron.service';
-import { AbstractService } from './abstract.service';
+import { AbstractLoggerService } from './abstract.service';
 import { join } from 'path';
 import { GesthorLogger } from './util/logger';
 
@@ -15,7 +15,7 @@ import { GesthorLogger } from './util/logger';
  * 
  * @author rodrigo-novaes
  */
-class AppService extends AbstractService {
+class AppService extends AbstractLoggerService {
 
     private static readonly LOGGER: GesthorLogger = new GesthorLogger(AppService.name, 'app-service.log');
 

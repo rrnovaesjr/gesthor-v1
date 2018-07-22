@@ -4,7 +4,7 @@ import * as cors from 'cors';
 import { Constants } from './util/constants';
 import { environment } from '../environments';
 import { Request, Response } from 'express';
-import { AbstractService } from './abstract.service';
+import { AbstractLoggerService } from './abstract.service';
 
 import { RestAPIBusiness } from './business/rest-api.business.interface';
 import { clientBusiness } from './business/client.business';
@@ -18,7 +18,7 @@ import { GesthorLogger } from './util/logger';
  * 
  * @author rodrigo-novaes
  */
-class ApiService extends AbstractService {
+class ApiService extends AbstractLoggerService {
 
     /**
      * A private static and constant reference to a logger object.

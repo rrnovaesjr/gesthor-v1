@@ -1,6 +1,6 @@
 import * as electron from 'electron';
 import * as url from 'url';
-import { AbstractService } from './abstract.service';
+import { AbstractLoggerService } from './abstract.service';
 import { GesthorLogger } from './util/logger';
 import { join } from 'path';
 
@@ -11,7 +11,7 @@ import { join } from 'path';
  * 
  * @author rodrigo-novaes
  */
-class ElectronService extends AbstractService {
+class ElectronService extends AbstractLoggerService {
 
     /**
      * A static constant reference to a Logger object.
