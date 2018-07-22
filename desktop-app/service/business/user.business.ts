@@ -29,7 +29,7 @@ class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
     /**
      * The reference to the user API for Token Management on Auth0.
      */
-    private readonly userApi: string = `${environment.auth.apiUrl}/users`;
+    private readonly userApi: string = `${environment.auth.optionsBody.audience}users`;
 
     /**
      * Initializes a new User Service.
@@ -64,7 +64,7 @@ class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
                     throw err;
                 }
                 this.apiToken = body;
-                UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Token got successfully.");
+                UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Token got successfully: %s.", JSON.stringify(this.apiToken));
             });
         });
         UserBusiness.LOGGER.info("[_requestManagementAPIToken()] Method scope finished.");
@@ -77,13 +77,13 @@ class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
         {
             url: '/api/users/:id',
             callback: (req: Request, res: Response) => {
-                UserBusiness.LOGGER.info("[get:/api/users:id] Request to get user with id %d.", req.params.id);
+                UserBusiness.LOGGER.info("[get:/api/users:id] Request to get user with id %s.", req.params.id);
                 const userId: string = req.params.id;
                 request({
                     method: 'GET',
                     url: `${this.userApi}/${userId}`,
                     headers: {
-                        authorization: `Bearer ${this.apiToken.access_token}`
+                        authorization: `${this.apiToken.token_type} ${this.apiToken.access_token}`
                     }
                 }, (err: Error, response: Response, body: Auth0UserProfile) => {
                     if (err) {
@@ -91,7 +91,7 @@ class UserBusiness extends AbstractBusiness implements RestAPIBusiness {
                         throw err;
                     }
                     res.send(body);
-                    UserBusiness.LOGGER.info("[get:/api/users:id] User got successfully:\n" + body);
+                    UserBusiness.LOGGER.info("[get:/api/users:id] User got successfully: %s.", JSON.stringify(body));
                 });
             },
             jwtCheck: serverService.jwtCheck

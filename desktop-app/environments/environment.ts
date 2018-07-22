@@ -41,7 +41,7 @@ export const environment = {
         grant_type: 'client_credentials',
         audience: 'https://rrnovaesjr.auth0.com/api/v2/'
       },
-      apiUrl: 'https://rrnovaesjr.auth0.com/api/v2/',
+      apiUrl: 'https://rrnovaesjr.auth0.com/oauth/token',
       audience: 'http://localhost:8080',
       issuer: "https://rrnovaesjr.auth0.com/",
       algorithms: ['RS256']
