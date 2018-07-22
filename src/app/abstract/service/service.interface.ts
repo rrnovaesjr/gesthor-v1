@@ -6,18 +6,101 @@ import { AuthService } from '../../auth/auth.service';
 import { ObservableInput } from 'rxjs/Observable';
 
 /**
+ * Defines an interface for CRUD Services.
+ * 
+ * @author rodrigo-novaes
+ */
+export interface CrudService<E, PK> {
+
+    /**
+     * Creates a new entity.
+     * 
+     * @param entity Entity to be created.
+     */
+    create(entity: E): Observable<E>;
+
+    /**
+     * Reads an entity.
+     * 
+     * @param id Entity's primary key.
+     */
+    read(id: PK): Observable<E>;
+
+    /**
+     * Updates an entity.
+     * 
+     * @param entity Entity to be updated.
+     */
+    update(entity: E): Observable<E>;
+
+    /**
+     * Deletes an entity.
+     * 
+     * @param id Entity's primary key.
+     */
+    delete(id: PK): Observable<void>;
+}
+
+/**
  * Determinates simple abstract methods for all services.
  * 
  * @author rodrigo-novaes
  */
 @Injectable()
-export abstract class AbstractSimpleService {
+export abstract class AbstractService {
 
     /**
      * A protected reference to the API url.
      */
     protected readonly api: string = environment.apiUrl;
+
+    /**
+     * Creates a new abstract service.
+     * 
+     * @param httpClient Injects an instance of the HTTP Client.
+     */
+    public constructor(protected httpClient: HttpClient) {
+
+    }
+
+    /**
+     * Handles different kinds of erros from the application.
+     * 
+     * @param err Error to be handled.
+     */
+    protected handleError<E>(err: any, caughtError: Observable<E>): ObservableInput<E> {
+        console.log(err);
+        return null;
+    }
     
+}
+
+/**
+ * Determinates simple abstract methods for secured services.
+ * 
+ * @author rodrigo-novaes
+ */
+@Injectable()
+export abstract class AbstractSecuredService extends AbstractService {
+
+    /**
+     * Creates a new abstract secured service.
+     * 
+     * @param httpClient Injects an instance of the HTTP Client.
+     * @param authService Injects the authorization service.
+     */
+    public constructor(protected httpClient: HttpClient, protected authService: AuthService) {
+        super(httpClient);
+    }
+
+    /**
+     * A default constrctor for HTTP headers.
+     * 
+     * Inserts the access token, of determinated type, in the authorization header.
+     */
+    protected createHttpHeaders(): HttpHeaders {
+        return new HttpHeaders().set('authorization', `${this.authService.tokenType} ${this.authService.getAccessToken}`);
+    }
 }
 
 /**
@@ -28,7 +111,7 @@ export abstract class AbstractSimpleService {
  * @author rodrigo-novaes
  */
 @Injectable()
-export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
+export abstract class AbstractCrudService<E, PK> extends AbstractService implements CrudService<E, PK> {
 
     /**
      * An API URL.
@@ -41,7 +124,7 @@ export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
      * @param httpClient An HTTP client instance.
      */
     public constructor(protected httpClient: HttpClient) {
-        super();
+        super(httpClient);
     }
 
     /**
@@ -94,16 +177,6 @@ export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
         return httpParams;
     }
 
-    /**
-     * Handles different kinds of erros from the application.
-     * 
-     * @param err Error to be handled.
-     */
-    protected handleError(err: any, caughtError: Observable<E>): ObservableInput<E> {
-        console.log(err);
-        return null;
-    }
-
 }
 
 /**
@@ -116,25 +189,43 @@ export abstract class AbstractCrudService<E, PK> extends AbstractSimpleService {
  * @author rodrigo-novaes
  */
 @Injectable()
-export abstract class AbstractSecureCrudService<E, PK> extends AbstractCrudService<E, PK> {
+export abstract class AbstractSecureCrudService<E, PK> extends AbstractSecuredService implements CrudService<E, PK> {
 
     /**
      * Injects the HTTPClient service.
      * 
      * @param httpClient HTTP Client.
      */
-    public constructor(protected authService: AuthService, httpClient: HttpClient) {
-        super(httpClient);
+    public constructor(httpClient: HttpClient, authService: AuthService, ) {
+        super(httpClient, authService);
     }
 
     /**
-     * A default constrctor for HTTP headers.
+     * Creates a new entity.
+     * 
+     * @param entity Entity to be created.
      */
-    protected createHttpHeaders(): HttpHeaders {
-        return new HttpHeaders({ 
-            'content-type': 'application/json',
-            'Authorization': `Bearer ${this.authService.getManagementAPIToken}` 
-        });
-    }
+    public abstract create(entity: E): Observable<E>;
+
+    /**
+     * Reads an entity.
+     * 
+     * @param id Entity's primary key.
+     */
+    public abstract read(id: PK): Observable<E>;
+
+    /**
+     * Updates an entity.
+     * 
+     * @param entity Entity to be updated.
+     */
+    public abstract update(entity: E): Observable<E>;
+
+    /**
+     * Deletes an entity.
+     * 
+     * @param id Entity's primary key.
+     */
+    public abstract delete(id: PK): Observable<void>;
 
 }
