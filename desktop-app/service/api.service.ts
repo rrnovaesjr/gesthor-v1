@@ -23,7 +23,7 @@ class ApiService extends AbstractService {
     /**
      * A private static and constant reference to a logger object.
      */
-    private static readonly LOGGER: GesthorLogger = new GesthorLogger(ApiService.name, 'api-service');
+    private static readonly LOGGER: GesthorLogger = new GesthorLogger(ApiService.name, 'api-service.log');
 
     /**
      * All implemented API interfaces.
