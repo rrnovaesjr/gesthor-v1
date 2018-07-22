@@ -4,9 +4,11 @@ import { SharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
 import { MemberModule } from '../member';
 import { ProgressAdvisorModule } from '../progress-advisor';
+import { AuthModule } from '../auth/auth.module';
 
 @NgModule({
   imports: [
+    AuthModule,
     MemberModule,
     ProgressAdvisorModule,
     RouterModule,

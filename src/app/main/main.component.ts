@@ -8,13 +8,14 @@ import { AuthService } from '../auth/auth.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
 import { WebappConstants } from '../shared';
+import { AbstractComponent } from '../abstract/component/component.interface';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit, OnDestroy {
+export class MainComponent extends AbstractComponent {
 
   /**
    * A mobile query.
@@ -40,9 +41,11 @@ export class MainComponent implements OnInit, OnDestroy {
    */
   constructor(
     private translateService: TranslateService,
-    private changeDetectorRef: ChangeDetectorRef, 
+    private changeDetectorRef: ChangeDetectorRef,
+    private authService: AuthService,
     private media: MediaMatcher
   ) { 
+    super();
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
