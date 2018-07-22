@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
-import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * An Auth0 service interface.
@@ -36,7 +36,7 @@ export class AuthService {
   /**
    * Constant reference to the auth0 lock instance.
    */
-  private readonly auth0Lock = new Auth0Lock(environment.auth.clientID, environment.auth.domain, {
+  private readonly auth0Lock: Auth0LockStatic = new Auth0Lock(environment.auth.clientID, environment.auth.domain, {
     rememberLastLogin: false,
     auth: {
       audience: environment.auth.audience,
@@ -44,6 +44,11 @@ export class AuthService {
       redirectUrl: environment.auth.redirect,
       responseType: 'token',
       params: this.authParams
+    },
+    language: 'pt-br',
+    theme: {
+      logo: '',
+      primaryColor: '#7986CB'
     }
   });
 
@@ -58,6 +63,11 @@ export class AuthService {
     audience: environment.auth.audience,
     scope: environment.auth.scope
   });
+
+  /**
+   * A constant that assigns the token type for authorized requests.
+   */
+  public readonly tokenType: string = 'Bearer';
 
   /**
    * A private reference to the Auth0 user profile.
@@ -85,13 +95,17 @@ export class AuthService {
   private auth0DecodedHash: Auth0DecodedHash;
 
   /**
-   * Builds the service based on the current session settings.
+   * Creates a new instance of the Authorization Service.
    * 
-   * @param router A router reference.
+   * @param router Injects an instance of the Router.
+   * @param progressAdvisorService Injects an instance of the progress advisor service.
+   * @param userService Injects an instance of the User Service.
+   * @param httpClient Injects an instance of the HTTP Client.
    */
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private progressAdvisorService: ProgressAdvisorService,
-    private httpClient: HttpClient
+    private translateService: TranslateService
   ) {
     this._checkSession();
   }
@@ -155,10 +169,10 @@ export class AuthService {
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
     const expTime: number = authResult.expiresIn * 1000 + Date.now();
     localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
-    this.userProfile = profile;
-    this.authenticated = true;
     this.auth0DecodedHash = authResult;
+    this.userProfile = profile;
     this._userProfile.next(this.userProfile);
+    this.authenticated = true;
   }
 
   /**
@@ -182,7 +196,7 @@ export class AuthService {
   /**
    * Gets the string corresponding to the access token.
    */
-  get getManagementAPIToken(): string {
+  get getAccessToken(): string {
     return this.auth0DecodedHash.accessToken;
   }
 
@@ -192,7 +206,12 @@ export class AuthService {
    * @param role Role to be checked.
    */
   public hasPermission(role: string): boolean {
-    return (this.userProfile.app_metadata.userRole == role);
+    for(let userRole of this.userProfile.app_metadata.userRoles) {
+      if(userRole === role) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
