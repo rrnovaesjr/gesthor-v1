@@ -30,7 +30,8 @@ import {
   MatTooltipModule,
   MatPaginatorModule,
   MatSortModule,
-  MatTableModule
+  MatTableModule,
+  MatTreeModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -81,6 +82,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+    MatTreeModule,
 
     TranslateModule
   ],
@@ -117,6 +119,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+    MatTreeModule,
     TranslateModule
   ]
 })
