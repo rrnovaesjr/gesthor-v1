@@ -41,30 +41,40 @@ export abstract class UserAuditedEntity<PK, FK> extends Entity<PK> {
 }
 
 /**
- * An internationalizable entity can be identified by its primary key, also some
- * fields can be determinated by its language key. This language key must be a string
- * with the i18n language's key.
+ * An abstract class that encapsulates constant types.
  * 
- * @param PK A serializable primary key's type.
+ * This is useful when the interface or the services want to save some specific
+ * values for a model, but the database have constraints assigned to the very same
+ * column.
+ * 
  * @author rodrigo-novaes
+ * @param InterfaceType The interface the constant value-set must follow.
+ * @param PersistentValueType The type-value to be persisted in the database.
  */
-export abstract class I18nEntity<PK> extends Entity<PK> {
+export abstract class ConstantAttribute<InterfaceType, PersistentValueType> {
 
     /**
-     * The 118n language's key.
+     * A public list of constant-values.
      */
-    public lang: string;
+    public readonly values: ConstantAttribute<InterfaceType, PersistentValueType>[];
 
     /**
-     * Default constructor which assigns an entity's unique identifier with its i18n
-     * language's key.
+     * Creates a new Constant Attribute set.
      * 
-     * @param id A serializable primary key's instance.
-     * @param lang A string with the i18n language's key.
+     * @param values 
      */
-    public constructor(id: PK, lang: string) {
-        super(id);
-        this.lang = lang;
+    protected constructor() {
+        this.values = this.getValues();
     }
+
+    /**
+     * A call to instantiate the list of static values inside `values`.
+     */
+    public abstract getValues(): ConstantAttribute<InterfaceType, PersistentValueType>[];
+
+    /**
+     * Returns the value to be persisted in the database.
+     */
+    public abstract getPersistentValue(): PersistentValueType;
 
 }

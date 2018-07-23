@@ -1,11 +1,11 @@
-import { Entity } from "../abstract/entity";
+import { Entity, UserAuditedEntity } from "../abstract/entity";
 
 /**
  * A metamodel that represents a SQL row of a client's entity.
  * 
  * @author rodrigo-novaes
  */
-export class _Client extends Entity<number> {
+export class _Client extends UserAuditedEntity<number, string> {
 
     /**
      * A static reference to this table name.
@@ -48,7 +48,7 @@ export class _Client extends Entity<number> {
         public email?: string,
         public notes?: string
     ) {
-        super(id);
+        super(id, user_id);
     }
 
 }
