@@ -38,7 +38,7 @@ create table if not exists `component` (
     `parent_id` bigint default null,
     `leaf` char(1) default 'N',
     constraint pk_component primary key(`id`),
-    constraint ck_component_leaf check(`leaf` in ('S', 'N'))
+    constraint ck_component_leaf check(`leaf` in ('Y', 'N'))
 );
 
 create table if not exists `user_role` (
