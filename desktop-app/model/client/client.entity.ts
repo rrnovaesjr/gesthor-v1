@@ -8,11 +8,6 @@ import { Entity, UserAuditedEntity } from "../abstract/entity";
 export class _Client extends UserAuditedEntity<number, string> {
 
     /**
-     * A static reference to this table name.
-     */
-    public static readonly TABLE_NAME: string = `client`;
-
-    /**
      * A constructor that injects any of the client's attributes.
      * 
      * @param id 

@@ -11,11 +11,6 @@ import { Entity } from "../abstract/entity";
 export class _Component extends Entity<number> {
 
     /**
-     * A public static reference to the table name.
-     */
-    public static readonly TABLE_NAME: string = `component`;
-
-    /**
      * Creates a new Component.
      * 
      * @param id The component's unique id.

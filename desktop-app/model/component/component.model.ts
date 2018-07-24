@@ -6,7 +6,7 @@ import { Entity } from "../abstract/entity";
  * 
  * @author rodrigo-novaes
  */
-export class Component extends Entity<number> {
+export class Component {
 
     /**
      * Creates a new Component.
@@ -18,12 +18,12 @@ export class Component extends Entity<number> {
      * @param leaf Wether the component is a page ('S') or not ('N').
      */
     public constructor(
-        public id: number,
-        public label: string,
+        public id?: number,
+        public label?: string,
         public route?: string,
         public parentId?: number,
         public leaf?: YesNoIndicator
     ) {
-        super(id);
+
     }
 }

@@ -167,14 +167,34 @@ export abstract class MySQLAuditedRepository<_E extends UserAuditedEntity<PK, FK
 }
 
 /**
+ * An interface to specify how a role-audited table must be accessed by a repository.
+ * 
+ * @author rodrigo-novaes
+ */
+interface RoleAuditedDataTable {
+
+    /**
+     * The join table name.
+     */
+    joinRoleTableName: string;
+
+    /**
+     * The foreign key to the roles table.
+     */
+    joinRoleColumnName: string;
+}
+
+/**
  * A default interface for a role-based audited repository.
  * 
  * Every repository that inherits this class must join to a ROLE-based table.
  * 
+ * @param _E A serializable entity type.
+ * @param PK A serializable primary key type.
  * @author rodrigo-novaes
  */
-export abstract class MySQLRoleAuditedRepository<_E extends UserAuditedEntity<PK, FK>, PK, FK>
-    extends MySQLAuditedRepository<_E, PK, FK> {
+export abstract class MySQLRoleAuditedRepository<_E extends Entity<PK>, PK>
+    extends MySQLRepository<_E, PK> {
 
     /**
      * Default constructor instatiates the table's name, as well as the
@@ -185,8 +205,7 @@ export abstract class MySQLRoleAuditedRepository<_E extends UserAuditedEntity<PK
      */
     public constructor(
         protected tableName: string,
-        protected joinRoleTableName: string,
-        protected roleTableName?: string
+        protected roleData: RoleAuditedDataTable
     ) {
         super(tableName);
     }
@@ -203,7 +222,7 @@ export abstract class MySQLRoleAuditedRepository<_E extends UserAuditedEntity<PK
      */
     public findAllByRoles(
         connection: Connection,
-        roles: string[],
+        userRoles: string[],
         callback: (err: QueryError, result: OkPacket[]) => any,
         searchOptions?: any
     ): void {
@@ -213,8 +232,8 @@ export abstract class MySQLRoleAuditedRepository<_E extends UserAuditedEntity<PK
             searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
-        let query = `select distinct ${this.tableName}* from ${this.tableName} inner join ${this.joinRoleTableName} 
-            on ${this.joinRoleTableName}.role in (${roles}) ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} 
+        let query = `select distinct ${this.tableName}.* from ${this.tableName} inner join ${this.roleData.joinRoleTableName} 
+            on ${this.roleData.joinRoleColumnName}.role in (${userRoles}) ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} 
             limit ${(page * size)},${size}`;
         connection.query(query, callback);
     }
