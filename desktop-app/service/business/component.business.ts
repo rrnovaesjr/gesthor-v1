@@ -25,7 +25,7 @@ class ComponentBusiness extends AbstractLoggerErrorHandlingBusiness implements R
             jwtCheck: serverService.jwtCheck,
             callback: (req: Request, res: Response) => {
                 transactionService.doInTransactionWithoutResult((connection: Connection) => {
-                    
+
                 }, (err?: Error) => this.handleError(err));
             }
         }

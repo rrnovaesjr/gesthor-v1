@@ -17,7 +17,7 @@ class ComponentMapper implements SQLMapper<Component, _Component> {
      * @param model Model to be converted in SQL.
      */
     public entityToSQL(model: Component): _Component {
-        return new _Component(model.id, model.label, model.route, model.parentId, model.leaf.code);
+        return new _Component(model.id, model.label, model.route, model.parentId, model.leaf.persistentValue);
     }
 
     /**

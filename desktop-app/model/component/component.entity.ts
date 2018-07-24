@@ -22,7 +22,7 @@ export class _Component extends Entity<number> {
      * @param label The component's label.
      * @param route The component's Angular route.
      * @param parent_id The component's parent id.
-     * @param leaf Wether the component is a page ('S') or not ('N').
+     * @param leaf Wether the component is a page ('Y') or not ('N').
      */
     public constructor(
         public id: number,

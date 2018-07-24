@@ -1,4 +1,4 @@
-import { ConstantAttribute } from "../abstract/entity";
+import { ConstantPersistentAttribute } from "../abstract/entity";
 
 /**
  * A static representation of YES or NO.
@@ -8,7 +8,7 @@ import { ConstantAttribute } from "../abstract/entity";
  * 
  * @author rodrigo-novaes
  */
-export class YesNoIndicator extends ConstantAttribute<{ code: 'Y' | 'N', label: 'adm.ynIndicator.yes' | 'adm.ynIndicator.no' }, string> {
+export class YesNoIndicator implements ConstantPersistentAttribute<'Y' | 'N'> {
 
     /**
      * Constant-static reference to the value YES.
@@ -38,7 +38,6 @@ export class YesNoIndicator extends ConstantAttribute<{ code: 'Y' | 'N', label: 
      * @param label The label's value.
      */
     private constructor(code: 'Y' | 'N', label: 'adm.ynIndicator.yes' | 'adm.ynIndicator.no') {
-        super();
         this.code = code;
         this.label = label;
     }
@@ -46,14 +45,14 @@ export class YesNoIndicator extends ConstantAttribute<{ code: 'Y' | 'N', label: 
     /**
      * Allows to return the static values to the superclass.
      */
-    public getValues(): YesNoIndicator[] {
+    static get values(): YesNoIndicator[] {
         return new Array(YesNoIndicator.YES, YesNoIndicator.NO);
     }
 
     /**
      * Returns the value to be persisted in the database.
      */
-    public getPersistentValue(): string {
+    public get persistentValue(): 'Y' | 'N' {
         return this.code;
     }
 

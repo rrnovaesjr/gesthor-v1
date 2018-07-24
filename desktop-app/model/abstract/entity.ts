@@ -41,40 +41,20 @@ export abstract class UserAuditedEntity<PK, FK> extends Entity<PK> {
 }
 
 /**
- * An abstract class that encapsulates constant types.
+ * An interface that encapsulates constant types.
  * 
  * This is useful when the interface or the services want to save some specific
- * values for a model, but the database have constraints assigned to the very same
+ * value for a model, but the database has constraints assigned to the same
  * column.
  * 
  * @author rodrigo-novaes
- * @param InterfaceType The interface the constant value-set must follow.
  * @param PersistentValueType The type-value to be persisted in the database.
  */
-export abstract class ConstantAttribute<InterfaceType, PersistentValueType> {
-
-    /**
-     * A public list of constant-values.
-     */
-    public readonly values: ConstantAttribute<InterfaceType, PersistentValueType>[];
-
-    /**
-     * Creates a new Constant Attribute set.
-     * 
-     * @param values 
-     */
-    protected constructor() {
-        this.values = this.getValues();
-    }
-
-    /**
-     * A call to instantiate the list of static values inside `values`.
-     */
-    public abstract getValues(): ConstantAttribute<InterfaceType, PersistentValueType>[];
+export interface ConstantPersistentAttribute<PersistentValueType extends number | string | { param: number | string }> {
 
     /**
      * Returns the value to be persisted in the database.
      */
-    public abstract getPersistentValue(): PersistentValueType;
+    persistentValue: PersistentValueType;
 
 }
