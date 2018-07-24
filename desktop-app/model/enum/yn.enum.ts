@@ -13,12 +13,12 @@ export class YesNoIndicator implements ConstantPersistentAttribute<'Y' | 'N'> {
     /**
      * Constant-static reference to the value YES.
      */
-    public static readonly YES = new YesNoIndicator('Y', 'adm.ynIndicator.yes');
+    public static readonly YES = new YesNoIndicator('Y', 'adm.ynIndicator.yes', true);
 
     /**
      * Constant-static reference to the value NO.
      */
-    public static readonly NO = new YesNoIndicator('N', 'adm.ynIndicator.no');
+    public static readonly NO = new YesNoIndicator('N', 'adm.ynIndicator.no', false);
 
     /**
      * The code value.
@@ -31,15 +31,21 @@ export class YesNoIndicator implements ConstantPersistentAttribute<'Y' | 'N'> {
     public readonly label: 'adm.ynIndicator.yes' | 'adm.ynIndicator.no';
 
     /**
+     * A boolean value, where true == 'Y' and false == 'N'.
+     */
+    public readonly booleanValue: boolean;
+
+    /**
      * Creates a new YES or NO indicator instance. Assigns both constant values to the
      * type's attributes.
      * 
      * @param code The persistent value.
      * @param label The label's value.
      */
-    private constructor(code: 'Y' | 'N', label: 'adm.ynIndicator.yes' | 'adm.ynIndicator.no') {
+    private constructor(code: 'Y' | 'N', label: 'adm.ynIndicator.yes' | 'adm.ynIndicator.no', booleanValue: boolean) {
         this.code = code;
         this.label = label;
+        this.booleanValue = booleanValue;
     }
 
     /**
