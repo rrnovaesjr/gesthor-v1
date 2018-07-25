@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NavbarRoutingModule } from './navbar-routing.module';
-import { NavbarComponent } from './navbar.component';
+import { NavbarComponent, MenuItemComponent } from './navbar.component';
 import { SharedModule } from '../shared';
 import { NavbarService } from './navbar.service';
 
@@ -12,7 +12,8 @@ import { NavbarService } from './navbar.service';
     NavbarRoutingModule
   ],
   declarations: [
-    NavbarComponent
+    NavbarComponent,
+    MenuItemComponent
   ],
   providers: [
     NavbarService

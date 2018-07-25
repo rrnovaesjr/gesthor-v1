@@ -1,12 +1,11 @@
 import { YesNoIndicator } from "../enum/yn.enum";
-import { Entity } from "../abstract/entity";
 
 /**
  * A component model to be consumed by the front-end application.
  * 
  * @author rodrigo-novaes
  */
-export class Component {
+export class ComponentModel {
 
     /**
      * Creates a new Component.
@@ -22,8 +21,9 @@ export class Component {
         public label?: string,
         public route?: string,
         public parentId?: number,
-        public leaf?: YesNoIndicator
+        public leaf?: YesNoIndicator,
+        public children?: ComponentModel[]
     ) {
-
+        this.children = this.children ? this.children : [];
     }
 }

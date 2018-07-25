@@ -6,14 +6,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AbstractSecureCrudService } from '../abstract/service/service.interface';
 import { Auth0UserProfile } from 'auth0-js';
 import { catchError } from 'rxjs/operators';
+import { User } from '../../../desktop-app/model/user/user.model';
 
+/**
+ * A service that implements the CRUDs for Users.
+ * 
+ * @author rodrigo-novaes
+ */
 @Injectable()
-export class UserService extends AbstractSecureCrudService<Auth0UserProfile, string> {
+export class UserService extends AbstractSecureCrudService<User, string> {
 
-    /**
-     * A constant reference to the API URL.
-     */
-    private readonly userApi: string = `${environment.apiUrl}/api/users`;
 
     /**
      * Creates a new User Service.
@@ -25,7 +27,7 @@ export class UserService extends AbstractSecureCrudService<Auth0UserProfile, str
         super(httpClient, authService);
     }
 
-    public create(user: Auth0UserProfile): Observable<Auth0UserProfile> {
+    public create(user: Auth0UserProfile): Observable<User> {
         return null;
     }
 
@@ -34,13 +36,13 @@ export class UserService extends AbstractSecureCrudService<Auth0UserProfile, str
      * 
      * @param user_id An user's identifier.
      */
-    public read(user_id: string): Observable<Auth0UserProfile> {
-        return this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${user_id}`, {
+    public read(user_id: string): Observable<User> {
+        return this.httpClient.get<User>(`${this.userApi}/${user_id}`, {
             headers: this.createHttpHeaders()
         }).pipe(catchError(this.handleError));
     }
 
-    public update(user: Auth0UserProfile): Observable<Auth0UserProfile> {
+    public update(user: Auth0UserProfile): Observable<User> {
         return null;
     }
 

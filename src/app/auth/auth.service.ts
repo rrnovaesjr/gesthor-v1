@@ -11,6 +11,9 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
 import { TranslateService } from '@ngx-translate/core';
+import { User } from '../../../desktop-app/model/user/user.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 
 /**
  * An Auth0 service interface.
@@ -19,6 +22,11 @@ import { TranslateService } from '@ngx-translate/core';
  */
 @Injectable()
 export class AuthService {
+
+  /**
+   * A constant reference to the API URL.
+   */
+  protected readonly userApi: string = `${environment.apiUrl}/api/users`;
 
   /**
    * Key that references the current session's expiration time on the local storage.
@@ -72,17 +80,17 @@ export class AuthService {
   /**
    * A private reference to the Auth0 user profile.
    */
-  private userProfile: Auth0UserProfile;
+  private userInstance: User;
 
   /**
    * A behavior subject for the user profile.
    */
-  private _userProfile: BehaviorSubject<Auth0UserProfile> = new BehaviorSubject(this.userProfile);
+  private _userInstanceSubject: BehaviorSubject<User> = new BehaviorSubject(this.userInstance);
 
   /**
    * Creates a stream for observing into user profile's changes.
    */
-  public userProfile$: Observable<Auth0UserProfile> = this._userProfile.asObservable();
+  public userInstance$: Observable<User> = this._userInstanceSubject.asObservable();
 
   /**
    * A boolean flag that indicates if an user is authenticated.
@@ -103,6 +111,7 @@ export class AuthService {
    * @param httpClient Injects an instance of the HTTP Client.
    */
   constructor(
+    private httpClient: HttpClient,
     private router: Router,
     private progressAdvisorService: ProgressAdvisorService,
     private translateService: TranslateService
@@ -167,12 +176,16 @@ export class AuthService {
    * @param profile User's profile.
    */
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
-    const expTime: number = authResult.expiresIn * 1000 + Date.now();
-    localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
-    this.auth0DecodedHash = authResult;
-    this.userProfile = profile;
-    this._userProfile.next(this.userProfile);
-    this.authenticated = true;
+    this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${profile.sub}`, {
+      headers: new HttpHeaders().set('authorization', `${this.tokenType} ${authResult.accessToken}`)
+    }).subscribe((userInstance: User) => {
+      const expTime: number = authResult.expiresIn * 1000 + Date.now();
+      localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
+      this.auth0DecodedHash = authResult;
+      this.userInstance = userInstance;
+      this._userInstanceSubject.next(this.userInstance);
+      this.authenticated = true;
+    });
   }
 
   /**
@@ -180,8 +193,8 @@ export class AuthService {
    */
   public logout(): void {
     localStorage.removeItem(AuthService.EXPIRES_AT_STORAGE_KEY);
-    this.userProfile = undefined;
-    this._userProfile.next(this.userProfile);
+    this.userInstance = undefined;
+    this._userInstanceSubject.next(this.userInstance);
     this.authenticated = false;
   }
 
@@ -206,8 +219,8 @@ export class AuthService {
    * @param role Role to be checked.
    */
   public hasPermission(role: string): boolean {
-    for(let userRole of this.userProfile.app_metadata.userRoles) {
-      if(userRole === role) {
+    for (let userRole of this.userInstance.app_metadata.userRoles) {
+      if (userRole === role) {
         return true;
       }
     }

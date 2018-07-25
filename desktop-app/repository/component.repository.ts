@@ -1,12 +1,12 @@
 import { MySQLRoleAuditedRepository } from "./mysql.repository";
-import { _Component } from "../model/component/component.entity";
+import { _ComponentModel } from "../model/component/component.entity";
 
 /**
  * A component repository. Returns menu information for all interested users;
  * 
  * @author rodrigo-novaes
  */
-class ComponentRepository extends MySQLRoleAuditedRepository<_Component, number> {
+class ComponentRepository extends MySQLRoleAuditedRepository<_ComponentModel, number> {
 
     /**
      * A constant static reference to the table's name.

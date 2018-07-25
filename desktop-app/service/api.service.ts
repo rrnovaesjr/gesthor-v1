@@ -8,6 +8,8 @@ import { AbstractLoggerErrorHandlerService } from './abstract.service';
 
 import { clientBusiness } from './business/client.business';
 import { userBusiness } from './business/user.business';
+import { componentBusiness } from './business/component.business';
+
 import { GesthorLogger } from './util/logger';
 import { RestAPIBusiness } from './business/abstract.business';
 
@@ -30,7 +32,8 @@ class ApiService extends AbstractLoggerErrorHandlerService {
      */
     private restAPI: RestAPIBusiness[] = [
         clientBusiness,
-        userBusiness
+        userBusiness,
+        componentBusiness
     ];
 
     /**

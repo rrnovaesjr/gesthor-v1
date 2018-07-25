@@ -1,21 +1,18 @@
 import { 
   Component, 
-  OnInit, 
-  OnDestroy, 
   ChangeDetectorRef 
 } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
 import { WebappConstants } from '../shared';
-import { AbstractComponent } from '../abstract/component/component.interface';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent extends AbstractComponent {
+export class MainComponent {
 
   /**
    * A mobile query.
@@ -42,10 +39,9 @@ export class MainComponent extends AbstractComponent {
   constructor(
     private translateService: TranslateService,
     private changeDetectorRef: ChangeDetectorRef,
-    private authService: AuthService,
-    private media: MediaMatcher
+    private media: MediaMatcher,
+    private authService: AuthService
   ) { 
-    super();
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);

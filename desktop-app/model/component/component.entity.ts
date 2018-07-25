@@ -8,7 +8,7 @@ import { Entity } from "../abstract/entity";
  * 
  * @author rodrigo-novaes
  */
-export class _Component extends Entity<number> {
+export class _ComponentModel extends Entity<number> {
 
     /**
      * Creates a new Component.

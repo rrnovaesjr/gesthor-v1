@@ -2,10 +2,10 @@ import { RestAPIBusiness } from './abstract.business';
 import { environment } from '../../environments';
 import { Request, Response } from 'express';
 import { serverService } from '../server.service';
-import { Observable, timer } from 'rxjs';
+import { timer } from 'rxjs';
 import { GesthorLogger } from '../util/logger';
 import { AbstractLoggerErrorHandlingBusiness } from './abstract.business';
-import { Auth0UserProfile } from 'auth0-js';
+import { User } from '../../model/user/user.model';
 const request = require("request");
 
 /**
@@ -84,7 +84,7 @@ class UserBusiness extends AbstractLoggerErrorHandlingBusiness implements RestAP
                     headers: {
                         authorization: `${this.apiToken.token_type} ${this.apiToken.access_token}`
                     }
-                }, (err: Error, response: Response, body: Auth0UserProfile) => {
+                }, (err: Error, response: Response, body: User) => {
                     if (err) {
                         UserBusiness.LOGGER.error("[get:/api/users:id] Could not get user. Error: %s. Message: %s.", err.name, err.message);
                         throw err;

@@ -1,7 +1,26 @@
-import { OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy, SimpleChanges, Component, RenderComponentType } from "@angular/core";
+import { OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy, SimpleChanges, Component, RenderComponentType, ComponentRef } from "@angular/core";
 import { MatDialogRef, MatDialog } from "@angular/material";
+import { AbstractService, AbstractSecuredService } from "../service/service.interface";
+import { Auth0UserProfile } from "auth0-js";
+import { Subscription } from "rxjs";
+import { User } from "../../../../desktop-app/model/user/user.model";
 
-export abstract class AbstractComponent implements OnChanges, OnInit, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
+/**
+ * An abstract definition of a component.
+ * 
+ * @author rodrigo-novaes
+ */
+@Component({})
+export abstract class AbstractComponent<ServiceInstance extends AbstractService> implements OnChanges, OnInit, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
+
+    /**
+     * Creates a new default component.
+     * 
+     * @param defaultService Injects a default service.
+     */
+    public constructor(private defaultService: AbstractService) {
+
+    }
 
     /**
      * Respond when Angular (re)sets data-bound input properties.
@@ -68,6 +87,13 @@ export abstract class AbstractComponent implements OnChanges, OnInit, DoCheck, A
 
     }
 
+    /**
+     * Returns the default service instance, as declared by the extending components.
+     */
+    public get serviceInstance(): ServiceInstance {
+        return <ServiceInstance> this.defaultService;
+    }
+
 }
 
 /**
@@ -76,12 +102,13 @@ export abstract class AbstractComponent implements OnChanges, OnInit, DoCheck, A
  * @author rodrigo-novaes
  * @param ComponentClass A component instance to be shown in the dialog.
  */
-export abstract class AbstractDialogComponent<ComponentClass extends AbstractComponent> extends AbstractComponent {
+@Component({})
+export abstract class AbstractDialogComponent<ServiceInstance extends AbstractService> extends AbstractComponent<ServiceInstance> {
 
     /**
      * The dialog reference.
      */
-    protected dialogRef: MatDialogRef<ComponentClass>;
+    protected dialogRef: MatDialogRef<AbstractComponent<ServiceInstance>>;
 
     /**
      * Constructor that instantiates a new dialog component. Receives the MatDialog
@@ -89,8 +116,8 @@ export abstract class AbstractDialogComponent<ComponentClass extends AbstractCom
      * 
      * @param matDialog A Material Dialog service.
      */
-    public constructor(private matDialog: MatDialog) {
-        super();
+    public constructor(private matDialog: MatDialog, defaultService: AbstractService) {
+        super(defaultService);
     }
 
     /**
@@ -114,11 +141,62 @@ export abstract class AbstractDialogComponent<ComponentClass extends AbstractCom
     /**
      * Hook to be implemented for opening the dialog.
      */
-    protected abstract openDialog(): void;
+    protected abstract openDialog();
 
     /**
      * Hook to be implemented for closing the dialog.
      */
-    protected abstract closeDialog(): void;
+    protected abstract closeDialog();
+
+}
+
+/**
+ * A secured implementation of an abstract component.
+ * 
+ * @author rodrigo-novaes
+ */
+@Component({})
+export abstract class AbstractSecuredComponent<ServiceInstance extends AbstractSecuredService> extends AbstractComponent<ServiceInstance> {
+
+    /**
+     * The current user instance.
+     */
+    protected user: User;
+
+    /**
+     * The current user subscription.
+     */
+    protected userSubcription: Subscription;
+
+    /**
+     * Creates a new secured service.
+     * 
+     * @param defaultSecuredService Injects a secured service instance. 
+     */
+    public constructor(defaultSecuredService: AbstractSecuredService) {
+        super(defaultSecuredService);
+    }
+
+    /**
+     * The default initialization of a secured component.
+     * 
+     * This method must subscribe to the user notification service, meaning that every
+     * abstract secured component has its own user instance.
+     */
+    public ngOnInit(): void {
+        super.ngOnInit();
+        this.userSubcription = this.serviceInstance.userInstanceNotifier$.subscribe((user: User) => {
+            if(user) {
+                this.user = user;
+            } else {
+                this.user = null;
+            }
+        });
+    }
+
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.userSubcription.unsubscribe();
+    }
 
 }

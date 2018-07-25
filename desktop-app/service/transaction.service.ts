@@ -53,23 +53,24 @@ class TransactionService extends AbstractLoggerErrorHandlerService {
                 else {
                     try {
                         proc(connection);
+                        connection.commit((commitError: QueryError) => {
+                            if (commitError) {
+                                connection.rollback(() => {
+                                    connection.release();
+                                    this.handleError(commitError, excHandler);
+                                });
+                            }
+                            else {
+                                connection.release();
+                                TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction committed.");
+                            }
+                        });
                     } catch (errorInTransaction) {
                         connection.rollback(() => {
                             connection.release();
                             this.handleError(errorInTransaction, excHandler);
                         });
                     }
-                    connection.commit((commitError: QueryError) => {
-                        if (commitError) {
-                            connection.rollback(() => {
-                                connection.release();
-                                this.handleError(commitError, excHandler);
-                            });
-                        }
-                        connection.release();
-                        TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction committed.");
-                    });
-                    TransactionService.LOGGER.info("[doInTransactionWithoutResult()] Transaction finished.");
                 }
             });
         });
@@ -86,7 +87,7 @@ class TransactionService extends AbstractLoggerErrorHandlerService {
      * a transaction rollback has been already executed.
      */
     public handleError(err: Error, excHandler?: (err?: Error) => void): void {
-        TransactionService.LOGGER.error("[excHandler()] Error! Transaction is being rolled back and connection was released.");
+        TransactionService.LOGGER.error("[excHandler()] Error! Transaction is being rolled back and connection was released. Error: name = %s. message =  %s.", err.name, err.message);
         if (excHandler) {
             excHandler(err);
         }
@@ -99,7 +100,7 @@ class TransactionService extends AbstractLoggerErrorHandlerService {
     public getLoggers(): GesthorLogger | GesthorLogger[] {
         return TransactionService.LOGGER;
     }
-    
+
 }
 
 /**

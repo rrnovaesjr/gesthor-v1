@@ -1,8 +1,7 @@
 import { QueryError, OkPacket, Connection } from 'mysql2';
 import { Entity, UserAuditedEntity } from '../model/abstract/entity';
 import { Constants } from '../service/util/constants';
-import { transactionService } from '../service/transaction.service';
-import { Auth0UserProfile } from 'auth0-js';
+import { HttpParams } from '@angular/common/http';
 
 /**
  * A common abstract definition to MySQL repositories. This class contains the default methods
@@ -223,8 +222,8 @@ export abstract class MySQLRoleAuditedRepository<_E extends Entity<PK>, PK>
     public findAllByRoles(
         connection: Connection,
         userRoles: string[],
+        searchOptions: any = {},
         callback: (err: QueryError, result: OkPacket[]) => any,
-        searchOptions?: any
     ): void {
         const size: number = searchOptions.size ?
             searchOptions.size : Constants.DEFAULT_QUERY_PARAMS.size;
@@ -232,8 +231,9 @@ export abstract class MySQLRoleAuditedRepository<_E extends Entity<PK>, PK>
             searchOptions.page : Constants.DEFAULT_QUERY_PARAMS.page;
         const sort: string = searchOptions.sort ?
             searchOptions.sort.split(',', 2) : Constants.DEFAULT_QUERY_PARAMS.sort.split(',', 2);
-        let query = `select distinct ${this.tableName}.* from ${this.tableName} inner join ${this.roleData.joinRoleTableName} 
-            on ${this.roleData.joinRoleColumnName}.role in (${userRoles}) ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} 
+        let query = `select distinct ${this.tableName}.* from ${this.tableName} inner join 
+            ${this.roleData.joinRoleTableName} on ${this.roleData.joinRoleTableName}.${this.roleData.joinRoleColumnName} 
+            in (${connection.escape(userRoles)}) order by ${connection.escapeId(sort[0])} ${sort[1].toUpperCase()} 
             limit ${(page * size)},${size}`;
         connection.query(query, callback);
     }

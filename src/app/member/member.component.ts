@@ -9,8 +9,7 @@ import {
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
-import { AbstractComponent } from '../abstract/component/component.interface';
-import { Subscription } from 'rxjs';
+import { AbstractSecuredComponent } from '../abstract/component/component.interface';
 
 @Component({
   selector: 'app-member',
@@ -28,17 +27,7 @@ import { Subscription } from 'rxjs';
     ])
   ]
 })
-export class MemberComponent extends AbstractComponent {
-
-  /**
-   * A subscription reference to the user changes.
-   */
-  private userProfileSubscription: Subscription;
-
-  /**
-   * Maintain users information.
-   */
-  public user: Auth0UserProfile;
+export class MemberComponent extends AbstractSecuredComponent<UserService> {
 
   /**
    * Controls view of login card.
@@ -53,31 +42,9 @@ export class MemberComponent extends AbstractComponent {
   constructor(
     public authService: AuthService, 
     private translateService: TranslateService, 
-    private userService: UserService
+    userService: UserService
   ) {
-    super();
-  }
-
-  /** 
-   * Initializes the data into the component.
-  */
-  public ngOnInit(): void {
-    this.userProfileSubscription = this.authService.userProfile$.subscribe((user: Auth0UserProfile) => {
-      if(user) {
-        this.userService.read(user.sub).subscribe((response: Auth0UserProfile) => {
-          this.user = response;
-        });
-      }
-    });
-  }
-
-  /** 
-   * Called on component's destroy.
-  */
-  public ngOnDestroy(): void {
-    if(this.userProfileSubscription) {
-      this.userProfileSubscription.unsubscribe();
-    }
+    super(userService);
   }
 
   /** 

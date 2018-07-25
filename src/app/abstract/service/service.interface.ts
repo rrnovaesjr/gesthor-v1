@@ -1,8 +1,11 @@
 import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, ObservableInput } from 'rxjs';
+import { Observable, ObservableInput, BehaviorSubject } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { Auth0UserProfile } from 'auth0-js';
+import { User } from '../../../../desktop-app/model/user/user.model';
+import { catchError } from 'rxjs/operators';
 
 /**
  * Defines an interface for CRUD Services.
@@ -71,7 +74,21 @@ export abstract class AbstractService {
         console.log(err);
         return null;
     }
-    
+
+    /**
+     * Creates a default handler for http params.
+     */
+    protected createSearchParams(): HttpParams {
+        return new HttpParams();
+    }
+
+    /**
+     * Creates a default handler for http headers.
+     */
+    protected createHttpHeaders(): HttpHeaders {
+        return new HttpHeaders();
+    }
+
 }
 
 /**
@@ -83,13 +100,41 @@ export abstract class AbstractService {
 export abstract class AbstractSecuredService extends AbstractService {
 
     /**
+     * A constant reference to the API URL.
+     */
+    protected readonly userApi: string = `${environment.apiUrl}/api/users`;
+
+    /**
+     * A private abstract instance of the current active user.
+     */
+    protected userInstance: User;
+
+    /**
+     * A behavior subject for the user profile.
+     */
+    private _userInstanceSubject: BehaviorSubject<User> = new BehaviorSubject(this.userInstance);
+
+    /**
+     * Creates a stream for observing into user profile's changes.
+     */
+    public userInstanceNotifier$: Observable<User> = this._userInstanceSubject.asObservable();
+
+    /**
      * Creates a new abstract secured service.
      * 
      * @param httpClient Injects an instance of the HTTP Client.
      * @param authService Injects the authorization service.
      */
-    public constructor(protected httpClient: HttpClient, protected authService: AuthService) {
+    public constructor(httpClient: HttpClient, protected authService: AuthService) {
         super(httpClient);
+        this.authService.userInstance$.subscribe((user: User) => {
+            if(user) {
+                this.userInstance = user;
+            } else {
+                this.userInstance = null;
+            }
+            this._userInstanceSubject.next(this.userInstance);
+        });
     }
 
     /**
@@ -122,7 +167,7 @@ export abstract class AbstractCrudService<E, PK> extends AbstractService impleme
      * 
      * @param httpClient An HTTP client instance.
      */
-    public constructor(protected httpClient: HttpClient) {
+    public constructor(httpClient: HttpClient) {
         super(httpClient);
     }
 
