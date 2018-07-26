@@ -178,11 +178,16 @@ export class AuthService {
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
     this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${profile.sub}`, {
       headers: new HttpHeaders().set('authorization', `${this.tokenType} ${authResult.accessToken}`)
-    }).subscribe((userInstance: User) => {
+    }).subscribe((userInstance: Auth0UserProfile) => {
       const expTime: number = authResult.expiresIn * 1000 + Date.now();
       localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
       this.auth0DecodedHash = authResult;
-      this.userInstance = userInstance;
+      this.userInstance = new User(userInstance.sub, userInstance.name, userInstance.nickname, userInstance.picture,
+        userInstance.user_id, userInstance.identities, userInstance.clientID, userInstance.created_at,
+        userInstance.updated_at, userInstance.locale, userInstance.app_metadata, userInstance.user_metadata,
+        userInstance.username, userInstance.given_name, userInstance.family_name, userInstance.email, userInstance.email_verified,
+        userInstance.gender
+      );
       this._userInstanceSubject.next(this.userInstance);
       this.authenticated = true;
     });

@@ -70,10 +70,7 @@ export class User implements Auth0UserProfile {
         public created_at: string,
         public updated_at: string,
         public locale: string,
-        public app_metadata: AppMetadata = {
-            userRoles: Role.default,
-            language: locale
-        },
+        public app_metadata?: AppMetadata,
         public user_metadata?: UserMetadata,
         public username?: string,
         public given_name?: string,
@@ -81,8 +78,11 @@ export class User implements Auth0UserProfile {
         public email?: string,
         public email_verified?: boolean,
         public gender?: string
-    ) {
-
+    ) { 
+        this.app_metadata = app_metadata ? app_metadata : {
+            userRoles: Role.default,
+            language: locale
+        };
     }
 
 }

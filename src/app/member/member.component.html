@@ -14,7 +14,7 @@
         <div *ngIf="!authService.isAuthenticated">
           <mat-card-header>
             <img mat-card-avatar src="assets/img/no-user.png" />
-            <mat-card-title>{{ 'member.bemVindo' | translate }}</mat-card-title>
+            <mat-card-title>{{ 'member.welcome' | translate }}</mat-card-title>
           </mat-card-header>
           <br>
           <mat-card-content class="login-content">
@@ -22,13 +22,17 @@
             <p>{{ 'member.loginBody' | translate }}</p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-button (click)="authService.login()">{{ 'global.login' | translate }}</button>
+            <button mat-button (click)="authService.login()">
+              <i class="fa fa-sign-in" aria-hidden="true"></i>            
+              {{ 'global.login' | translate }}
+            </button>
           </mat-card-actions>
         </div>
         <div *ngIf="authService.isAuthenticated">
           <mat-card-header>
             <img mat-card-avatar [src]="user?.picture" />
             <mat-card-title>{{user?.name}}</mat-card-title>
+            <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
           </mat-card-header>
           <br>
           <mat-card-content>
@@ -37,7 +41,10 @@
             <p></p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-button (click)="authService.logout()">{{ 'global.logout' | translate }}</button>
+            <button mat-button (click)="authService.logout()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>          
+              {{ 'global.logout' | translate }}
+            </button>
           </mat-card-actions>
         </div>
       </mat-card>

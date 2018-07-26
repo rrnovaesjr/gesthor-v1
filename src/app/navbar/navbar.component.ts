@@ -101,7 +101,7 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
 @Component({
   selector: 'app-menu-item',
   template: `
-  <mat-menu #childMenu="matMenu" [overlapTrigger]="false">
+  <mat-menu #childMenu="matMenu" [overlapTrigger]="false" xPosition="after">
     <span *ngFor="let child of items">
       <span *ngIf="!child.leaf.booleanValue">
         <button mat-menu-item color="primary" [matMenuTriggerFor]="menu.childMenu">

@@ -3,9 +3,8 @@
     <mat-list-item *ngFor="let component of components">
         <a matLine *ngIf="!component.leaf.booleanValue" [matMenuTriggerFor]="menu.childMenu">
             {{ component.label | translate}}
-            <mat-icon>expand_more</mat-icon>
             <app-menu-item #menu [items]="component.children"></app-menu-item>
-        </a>
+        </a> 
         <a matLine *ngIf="component.leaf.booleanValue" [routerLink]="component.route">
             {{ component.label | translate}}
         </a>

@@ -1,6 +1,6 @@
 {
     "entities": {
-        "cliente": {
+        "client": {
 
         }
     },
@@ -12,8 +12,8 @@
         "appName": "Gesthor"
     },
     "member": {
-        "perfil": "Perfil",
-        "bemVindo": "Bem-vindo",
+        "profile": "Perfil",
+        "welcome": "Bem-vindo",
         "loginHeader": "Você não está autenticado.",
         "loginBody": "Favor entrar com seu usuário do Google para ter acesso aos recursos da aplicação.",
         "user": {

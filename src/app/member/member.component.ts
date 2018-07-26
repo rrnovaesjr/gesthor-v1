@@ -10,6 +10,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
 import { AbstractSecuredComponent } from '../abstract/component/component.interface';
+import { MatIconRegistry } from '@angular/material';
 
 @Component({
   selector: 'app-member',
@@ -42,7 +43,7 @@ export class MemberComponent extends AbstractSecuredComponent<UserService> {
   constructor(
     public authService: AuthService, 
     private translateService: TranslateService, 
-    userService: UserService
+    userService: UserService,
   ) {
     super(userService);
   }
