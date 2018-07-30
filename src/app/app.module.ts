@@ -3,13 +3,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MainModule } from './main';
-import { NavbarModule} from './navbar';
+import { NavbarModule } from './navbar';
 import { EntitiesModule } from './entities';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 /**
  * Creates an instance for a HTTP loader for translations.
@@ -26,6 +27,7 @@ export function httpLoaderFactory(httpClient: HttpClient): TranslateHttpLoader {
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    NgHttpLoaderModule,
     MainModule,
     NavbarModule,
     EntitiesModule,
@@ -43,11 +45,11 @@ export function httpLoaderFactory(httpClient: HttpClient): TranslateHttpLoader {
   declarations: [
     AppComponent
   ],
-  providers: [
-
-  ],
   bootstrap: [
     AppComponent
+  ],
+  providers: [
+
   ]
 })
 export class AppModule { }
