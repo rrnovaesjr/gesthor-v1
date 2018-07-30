@@ -6,6 +6,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
 import { WebappConstants } from '../shared';
 import { AuthService } from '../auth/auth.service';
+import { Spinkit } from 'ng-http-loader';
 
 @Component({
   selector: 'app-main',
@@ -13,6 +14,11 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent {
+
+  /**
+   * A reference to the spinkit loader.
+   */
+  public spinkit = Spinkit;
 
   /**
    * A mobile query.

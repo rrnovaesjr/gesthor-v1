@@ -11,6 +11,8 @@ import { AbstractSecuredComponent, AbstractComponent } from '../abstract/compone
 import { NavbarService } from './navbar.service';
 import { ComponentModel } from '../../../desktop-app/model/component/component.model';
 import { User } from '../../../desktop-app/model/user/user.model';
+import { Router } from '@angular/router';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 @Component({
   selector: 'app-navbar',
@@ -52,26 +54,21 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
     private translateService: TranslateService,
     changeDetectorRef: ChangeDetectorRef,
     navbarService: NavbarService,
-    media: MediaMatcher
+    media: MediaMatcher,
+    ngSpinnerService: SpinnerVisibilityService,
+    router: Router
   ) {
-    super(navbarService);
+    super(navbarService, ngSpinnerService, router);
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
-  public ngOnInit(): void {
-    this.userSubcription = this.serviceInstance.userInstanceNotifier$.subscribe((user: User) => {
-      if (user) {
-        this.user = user;
-        this.serviceInstance.loadMenu().subscribe((components: ComponentModel[]) => {
-          this.components = components;
-          for (let component of this.components) {
-            this._explore(component);
-          }
-        });
-      } else {
-        this.user = null;
+  protected onUserReceived(user: User): void {
+    this.serviceInstance.loadMenu().subscribe((components: ComponentModel[]) => {
+      this.components = components;
+      for (let component of this.components) {
+        this._explore(component);
       }
     });
   }

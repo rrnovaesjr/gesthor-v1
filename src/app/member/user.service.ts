@@ -7,6 +7,8 @@ import { AbstractSecureCrudService } from '../abstract/service/service.interface
 import { Auth0UserProfile } from 'auth0-js';
 import { catchError } from 'rxjs/operators';
 import { User } from '../../../desktop-app/model/user/user.model';
+import { ProgressAdvisorService } from '../progress-advisor';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**
  * A service that implements the CRUDs for Users.
@@ -23,8 +25,11 @@ export class UserService extends AbstractSecureCrudService<User, string> {
      * @param httpClient Injects an instance of the HTTP Client.
      * @param authService Injects an instance of the Auth Service.
      */
-    public constructor(httpClient: HttpClient, authService: AuthService) {
-        super(httpClient, authService);
+    public constructor(httpClient: HttpClient, 
+        ngSpinnerService: SpinnerVisibilityService, 
+        authService: AuthService
+    ) {
+        super(httpClient, ngSpinnerService, authService);
     }
 
     public create(user: Auth0UserProfile): Observable<User> {

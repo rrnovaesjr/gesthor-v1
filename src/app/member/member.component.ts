@@ -10,7 +10,10 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
 import { AbstractSecuredComponent } from '../abstract/component/component.interface';
-import { MatIconRegistry } from '@angular/material';
+import { User } from '../../../desktop-app/model/user/user.model';
+import { Router } from '@angular/router';
+import { ProgressAdvisorService } from '../progress-advisor';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 @Component({
   selector: 'app-member',
@@ -44,8 +47,19 @@ export class MemberComponent extends AbstractSecuredComponent<UserService> {
     public authService: AuthService, 
     private translateService: TranslateService, 
     userService: UserService,
+    ngSpinnerService: SpinnerVisibilityService,
+    router: Router
   ) {
-    super(userService);
+    super(userService, ngSpinnerService, router);
+  }
+
+  /**
+   * Callback executed when an user instance is received.
+   * 
+   * @param user An user's instance.
+   */
+  protected onUserReceived(user: User): void {
+
   }
 
   /** 

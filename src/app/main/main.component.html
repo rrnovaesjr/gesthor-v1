@@ -10,7 +10,7 @@
       <router-outlet name="navbar"></router-outlet>
     </mat-sidenav>
     <mat-sidenav-content>
-      <app-progress-advisor></app-progress-advisor>
+      <ng-http-loader [spinner]="spinkit.skChasingDots"></ng-http-loader>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

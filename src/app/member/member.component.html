@@ -32,13 +32,10 @@
           <mat-card-header>
             <img mat-card-avatar [src]="user?.picture" />
             <mat-card-title>{{user?.name}}</mat-card-title>
-            <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
           </mat-card-header>
           <br>
           <mat-card-content>
-            <p>{{ 'member.user.email' | translate}}: {{user?.email}}</p>
-            <p>{{ 'member.user.locale' | translate}}: {{user?.locale}}</p>
-            <p></p>
+            
           </mat-card-content>
           <mat-card-actions>
             <button mat-button (click)="authService.logout()">

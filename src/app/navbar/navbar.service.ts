@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { ComponentModel } from '../../../desktop-app/model/component/component.model';
 import { catchError } from 'rxjs/operators';
 import { Role } from '../../../desktop-app/model/role/role.model';
+import { ProgressAdvisorService } from '../progress-advisor';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**
  * A service to control the navbar.
@@ -24,10 +26,15 @@ export class NavbarService extends AbstractSecuredService {
    * Creates a new navbar service.
    * 
    * @param httpClient Injects the http client.
+   * @param ngSpinnerService Injects the spinner service.
    * @param authService Injects an instance of the authorization service.
    */
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService);
+  constructor(
+    httpClient: HttpClient,
+    ngSpinnerService: SpinnerVisibilityService,
+    authService: AuthService
+  ) {
+    super(httpClient, ngSpinnerService, authService);
   }
 
   /**
