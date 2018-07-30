@@ -8,8 +8,7 @@ import {
 import Auth0Lock from 'auth0-lock';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ProgressAdvisorService } from '../progress-advisor/progress-advisor.service';
+import { BehaviorSubject, Observable, ObservableInput } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { User } from '../../../desktop-app/model/user/user.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -45,7 +44,8 @@ export class AuthService {
    * Constant reference to the auth0 lock instance.
    */
   private readonly auth0Lock: Auth0LockStatic = new Auth0Lock(environment.auth.clientID, environment.auth.domain, {
-    rememberLastLogin: false,
+    rememberLastLogin: true,
+    allowedConnections: ['google-oauth2', 'facebook', 'twitter'],
     auth: {
       audience: environment.auth.audience,
       redirect: true,
@@ -54,6 +54,9 @@ export class AuthService {
       params: this.authParams
     },
     language: 'pt-br',
+    languageDictionary: {
+      title: 'Gesthor'
+    },
     theme: {
       logo: '',
       primaryColor: '#7986CB'
@@ -113,8 +116,7 @@ export class AuthService {
   constructor(
     private httpClient: HttpClient,
     private router: Router,
-    private progressAdvisorService: ProgressAdvisorService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {
     this._checkSession();
   }
@@ -123,35 +125,43 @@ export class AuthService {
    * Open centralized login.
    */
   public login(): void {
-    this.progressAdvisorService.announceConfig({ show: true });
     this.auth0Lock.show();
   }
 
   /**
    * Handles the login callback.
+   * 
+   * This will set the current session.
    */
   public handleLoginCallback(): void {
     this.auth0.parseHash((err: Auth0Error, authResult: Auth0DecodedHash) => {
+      if(err) {
+        this._handleError(err);
+      }
       if (authResult && authResult.accessToken) {
         window.location.hash = '';
         this._getUserInfo(authResult);
       }
       this.router.navigate(['/']);
-      this.progressAdvisorService.announceConfig({ show: false });
     });
   }
 
   /**
    * Gets an access token based on the session.
+   * 
+   * If the user's session is still active, then the token is received once again.
    */
   private _checkSession(): void {
-    this.auth0.checkSession({}, (err: Auth0Error, authResult: Auth0DecodedHash) => {
+    this.auth0.checkSession({
+      audience: environment.auth.audience,
+      clientID: environment.auth.clientID,
+      domain: environment.auth.domain
+    }, (err: Auth0Error, authResult: Auth0DecodedHash) => {
       if (authResult && authResult.accessToken) {
         this._getUserInfo(authResult);
       }
-      else if (err) {
-        this.logout();
-        this.authenticated = false;
+      if (err) {
+        this._handleError(err);
       }
     });
   }
@@ -178,7 +188,7 @@ export class AuthService {
   private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
     this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${profile.sub}`, {
       headers: new HttpHeaders().set('authorization', `${this.tokenType} ${authResult.accessToken}`)
-    }).subscribe((userInstance: Auth0UserProfile) => {
+    }).pipe(catchError(this._handleError)).subscribe((userInstance: Auth0UserProfile) => {
       const expTime: number = authResult.expiresIn * 1000 + Date.now();
       localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
       this.auth0DecodedHash = authResult;
@@ -188,6 +198,9 @@ export class AuthService {
         userInstance.username, userInstance.given_name, userInstance.family_name, userInstance.email, userInstance.email_verified,
         userInstance.gender
       );
+      if(this.userInstance.app_metadata.language) {
+        this.translateService.setDefaultLang(this.userInstance.app_metadata.language);
+      }
       this._userInstanceSubject.next(this.userInstance);
       this.authenticated = true;
     });
@@ -199,8 +212,9 @@ export class AuthService {
   public logout(): void {
     localStorage.removeItem(AuthService.EXPIRES_AT_STORAGE_KEY);
     this.userInstance = undefined;
-    this._userInstanceSubject.next(this.userInstance);
     this.authenticated = false;
+    this._userInstanceSubject.next(this.userInstance);
+    this.router.navigate(['/']);
   }
 
   /**
@@ -230,6 +244,17 @@ export class AuthService {
       }
     }
     return false;
+  }
+
+  /**
+   * Handles generic errors throughout the authorization service.
+   * 
+   * @param err An error instance.
+   */
+  private _handleError(err: Error | Auth0Error, caught?: Observable<Auth0UserProfile>): ObservableInput<{}> {
+    this.logout();
+    this.authenticated = false;
+    return caught;
   }
 
 }
