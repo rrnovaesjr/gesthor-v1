@@ -1,9 +1,10 @@
 import { OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy, SimpleChanges, Component, RenderComponentType, ComponentRef } from "@angular/core";
 import { MatDialogRef, MatDialog } from "@angular/material";
 import { AbstractService, AbstractSecuredService } from "../service/service.interface";
-import { Auth0UserProfile } from "auth0-js";
 import { Subscription } from "rxjs";
 import { User } from "../../../../desktop-app/model/user/user.model";
+import { Router, RouterEvent, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from "@angular/router";
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**
  * An abstract definition of a component.
@@ -17,9 +18,15 @@ export abstract class AbstractComponent<ServiceInstance extends AbstractService>
      * Creates a new default component.
      * 
      * @param defaultService Injects a default service.
+     * @param ngSpinnerService Injects the spinner visibility service.
+     * @param router Injects the Router singleton instance.
      */
-    public constructor(private defaultService: AbstractService) {
-
+    public constructor(
+        private defaultService: AbstractService, 
+        protected ngSpinnerService: SpinnerVisibilityService,
+        protected router: Router
+    ) {
+        
     }
 
     /**
@@ -97,57 +104,15 @@ export abstract class AbstractComponent<ServiceInstance extends AbstractService>
 }
 
 /**
- * Defines a generic type of a component to be instantiated inside a dialog.
+ * An interface for dialog base components.
  * 
  * @author rodrigo-novaes
- * @param ComponentClass A component instance to be shown in the dialog.
  */
-@Component({})
-export abstract class AbstractDialogComponent<ServiceInstance extends AbstractService> extends AbstractComponent<ServiceInstance> {
+interface DialogComponent<ServiceType extends AbstractService> {
 
-    /**
-     * The dialog reference.
-     */
-    protected dialogRef: MatDialogRef<AbstractComponent<ServiceInstance>>;
+    openDialog();
 
-    /**
-     * Constructor that instantiates a new dialog component. Receives the MatDialog
-     * Service.
-     * 
-     * @param matDialog A Material Dialog service.
-     */
-    public constructor(private matDialog: MatDialog, defaultService: AbstractService) {
-        super(defaultService);
-    }
-
-    /**
-     * Overrides ngOnInit lifecycle hook. Starts a new dialog.
-     */
-    public ngOnInit(): void {
-        setTimeout(() => {
-            this.openDialog();
-        });
-    }
-
-    /**
-     * Overrides ngOnDestroy lifecycle hook. Closes the dialog.
-     */
-    public ngOnDestroy(): void {
-        setTimeout(() => {
-            this.closeDialog();
-        });
-    }
-
-    /**
-     * Hook to be implemented for opening the dialog.
-     */
-    protected abstract openDialog();
-
-    /**
-     * Hook to be implemented for closing the dialog.
-     */
-    protected abstract closeDialog();
-
+    closeDialog();
 }
 
 /**
@@ -172,9 +137,15 @@ export abstract class AbstractSecuredComponent<ServiceInstance extends AbstractS
      * Creates a new secured service.
      * 
      * @param defaultSecuredService Injects a secured service instance. 
+     * @param ngSpinnerService Injects the spinner visibility service.
+     * @param router Injects the Router singleton instance.
      */
-    public constructor(defaultSecuredService: AbstractSecuredService) {
-        super(defaultSecuredService);
+    public constructor(
+        defaultSecuredService: AbstractSecuredService, 
+        ngSpinnerService: SpinnerVisibilityService,
+        router: Router
+    ) {
+        super(defaultSecuredService, ngSpinnerService, router);
     }
 
     /**
@@ -186,14 +157,29 @@ export abstract class AbstractSecuredComponent<ServiceInstance extends AbstractS
     public ngOnInit(): void {
         super.ngOnInit();
         this.userSubcription = this.serviceInstance.userInstanceNotifier$.subscribe((user: User) => {
-            if(user) {
-                this.user = user;
-            } else {
-                this.user = null;
+            if((this.user && !user) || (!this.user && user)) {
+                if(user) {
+                    this.user = user;
+                    this.onUserReceived(this.user);
+                } else {
+                    this.user = null;
+                }
             }
         });
     }
 
+    /**
+     * A method executed when an User is assigned to the component.
+     * 
+     * This procedure can trigger different events on extended components.
+     * 
+     * @param user An user's instance.
+     */
+    protected abstract onUserReceived(user?: User): void;
+
+    /**
+     * Hook executed when the component is destroyed. Unsubscribes to User change events.
+     */
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.userSubcription.unsubscribe();

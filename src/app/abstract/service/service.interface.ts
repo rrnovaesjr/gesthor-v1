@@ -6,6 +6,9 @@ import { AuthService } from '../../auth/auth.service';
 import { Auth0UserProfile } from 'auth0-js';
 import { User } from '../../../../desktop-app/model/user/user.model';
 import { catchError } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { ProgressAdvisorService } from '../../progress-advisor';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**
  * Defines an interface for CRUD Services.
@@ -61,7 +64,9 @@ export abstract class AbstractService {
      * 
      * @param httpClient Injects an instance of the HTTP Client.
      */
-    public constructor(protected httpClient: HttpClient) {
+    public constructor(protected httpClient: HttpClient, 
+        protected ngSpinnerService: SpinnerVisibilityService
+    ) {
 
     }
 
@@ -125,8 +130,12 @@ export abstract class AbstractSecuredService extends AbstractService {
      * @param httpClient Injects an instance of the HTTP Client.
      * @param authService Injects the authorization service.
      */
-    public constructor(httpClient: HttpClient, protected authService: AuthService) {
-        super(httpClient);
+    public constructor(
+        httpClient: HttpClient,
+        ngSpinnerService: SpinnerVisibilityService,
+        protected authService: AuthService
+    ) {
+        super(httpClient, ngSpinnerService);
         this.authService.userInstance$.subscribe((user: User) => {
             if(user) {
                 this.userInstance = user;
@@ -167,8 +176,10 @@ export abstract class AbstractCrudService<E, PK> extends AbstractService impleme
      * 
      * @param httpClient An HTTP client instance.
      */
-    public constructor(httpClient: HttpClient) {
-        super(httpClient);
+    public constructor(httpClient: HttpClient, 
+        ngSpinnerService: SpinnerVisibilityService
+    ) {
+        super(httpClient, ngSpinnerService);
     }
 
     /**
@@ -239,9 +250,14 @@ export abstract class AbstractSecureCrudService<E, PK> extends AbstractSecuredSe
      * Injects the HTTPClient service.
      * 
      * @param httpClient HTTP Client.
+     * @param progressAdvisorService Injects the progress advisor's service.
+     * @param authService Injects the Authorization Servic
      */
-    public constructor(httpClient: HttpClient, authService: AuthService, ) {
-        super(httpClient, authService);
+    public constructor(httpClient: HttpClient, 
+        ngSpinnerService: SpinnerVisibilityService, 
+        authService: AuthService
+    ) {
+        super(httpClient, ngSpinnerService, authService);
     }
 
     /**
