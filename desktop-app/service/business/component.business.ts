@@ -7,6 +7,7 @@ import { Connection, QueryError, OkPacket } from "mysql2";
 import { componentRepository } from "../../repository/component.repository";
 import { componentMapper } from "../mapper/component.mapper";
 import { ComponentModel } from "../../model/component/component.model";
+import { TreeNode } from "../../model/abstract/tree";
 
 class ComponentBusiness extends AbstractLoggerErrorHandlingBusiness implements RestAPIBusiness {
 
@@ -36,7 +37,7 @@ class ComponentBusiness extends AbstractLoggerErrorHandlingBusiness implements R
                             ComponentBusiness.LOGGER.error("Error detected: %s, %s", err.name, err.message);
                             throw err;
                         }
-                        components = this._buildComponentTreeFromComponentList(componentMapper.manySQLToEntities(result));
+                        components = TreeNode.fromArray<number>(componentMapper.manySQLToEntities(result));
                         ComponentBusiness.LOGGER.info("Components returned: %s.", JSON.stringify(components));
                         res.send(components);
                     });
@@ -51,36 +52,6 @@ class ComponentBusiness extends AbstractLoggerErrorHandlingBusiness implements R
      */
     public getLoggers(): GesthorLogger {
         return ComponentBusiness.LOGGER;
-    }
-
-    private _buildComponentTreeFromComponentList(components: ComponentModel[]): ComponentModel[] {
-        const componentGraph: Map<number, ComponentModel[]> = new Map();
-        let result: ComponentModel[] = [];
-        for(let component of components) {
-            if(!component.parentId) {
-                result.push(component);
-            } else {
-                if(!componentGraph.has(component.parentId)) {
-                    componentGraph.set(component.parentId, []);
-                }
-                componentGraph.get(component.parentId).push(component);
-            }
-        }
-        for(let preReslt of result) {
-            preReslt = ComponentBusiness._explore(preReslt, componentGraph);
-        }
-        return result;
-    }
-
-    private static _explore(root: ComponentModel, componentGraph: Map<number, ComponentModel[]>): ComponentModel {
-        root.children = [];
-        if(componentGraph.has(root.id)) {
-            for(let adj of componentGraph.get(root.id)) {
-                adj = this._explore(adj, componentGraph);
-                root.children.push(adj);
-            }    
-        }
-        return root;
     }
 
 }

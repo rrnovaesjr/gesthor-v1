@@ -22,9 +22,11 @@ export class _ComponentModel extends Entity<number> {
     public constructor(
         public id: number,
         public label: string,
+        public leaf: 'Y' | 'N',
+        public active: 'Y' | 'N',
+        public order: number = 0,
         public route?: string,
-        public parent_id?: number,
-        public leaf?: 'Y' | 'N'
+        public parent_id?: number
     ) {
         super(id);
     }

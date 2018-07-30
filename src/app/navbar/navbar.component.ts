@@ -108,7 +108,7 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
       </span>
       <span *ngIf="child.leaf.booleanValue">
         <button mat-menu-item [routerLink]="child.route">
-          <span>{{child.label | translate}}</span>
+          <span>{{ child.label | translate }}</span>
         </button>
       </span>
     </span>

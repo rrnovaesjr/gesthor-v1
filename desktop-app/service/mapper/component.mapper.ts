@@ -17,7 +17,8 @@ class ComponentMapper implements SQLMapper<ComponentModel, _ComponentModel> {
      * @param model Model to be converted in SQL.
      */
     public entityToSQL(model: ComponentModel): _ComponentModel {
-        return new _ComponentModel(model.id, model.label, model.route, model.parentId, model.leaf.persistentValue);
+        return new _ComponentModel(model.id, model.label, model.leaf.persistentValue, model.active.persistentValue, 
+            model.order, model.route, model.parentId);
     }
 
     /**
@@ -27,7 +28,9 @@ class ComponentMapper implements SQLMapper<ComponentModel, _ComponentModel> {
      */
     public sQLToEntity(entity: any): ComponentModel {
         const metamodelEntity: _ComponentModel = Object.assign({}, entity);
-        return new ComponentModel(metamodelEntity.id, metamodelEntity.label, metamodelEntity.route, metamodelEntity.parent_id, YesNoIndicator.getByCode(metamodelEntity.leaf));
+        return new ComponentModel(metamodelEntity.id, metamodelEntity.label, YesNoIndicator.getByCode(metamodelEntity.leaf),
+            YesNoIndicator.getByCode(metamodelEntity.active), metamodelEntity.order, metamodelEntity.route, 
+            metamodelEntity.parent_id);
     }
 
     /**

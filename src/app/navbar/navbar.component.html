@@ -5,7 +5,7 @@
             {{ component.label | translate}}
             <app-menu-item #menu [items]="component.children"></app-menu-item>
         </a> 
-        <a matLine *ngIf="component.leaf.booleanValue" [routerLink]="component.route">
+        <a matLine *ngIf="component.leaf.booleanValue" [routerLink]="component.route"> 
             {{ component.label | translate}}
         </a>
     </mat-list-item>

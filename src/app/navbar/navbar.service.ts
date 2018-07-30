@@ -44,7 +44,7 @@ export class NavbarService extends AbstractSecuredService {
     return this.httpClient.post<ComponentModel[]>(
       this.apiUrl,
       this.userInstance ? this.userInstance.app_metadata.userRoles : [Role.ROLE_VISITOR.persistentValue],
-      { headers: this.createHttpHeaders(), params: this.createSearchParams() }
+      { headers: this.createHttpHeaders().set('sort', ['order','asc']), params: this.createSearchParams() }
     ).pipe(catchError(super.handleError));
   }
 
