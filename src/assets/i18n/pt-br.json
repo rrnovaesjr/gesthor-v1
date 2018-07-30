@@ -6,7 +6,9 @@
     },
     "global": {
         "login": "Entrar",
-        "logout": "Sair"
+        "logout": "Sair",
+        "processing": "Processando",
+        "pageNotFound": "Página não Encontrada"
     },
     "main": {
         "appName": "Gesthor"
