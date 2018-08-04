@@ -4,9 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
 import { ComponentModel } from '../../../desktop-app/model/component/component.model';
-import { catchError } from 'rxjs/operators';
-import { Role } from '../../../desktop-app/model/role/role.model';
-import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ComponentModelService } from '../entities/adm/component-model/component-model.service';
 
