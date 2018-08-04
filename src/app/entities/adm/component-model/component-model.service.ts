@@ -3,9 +3,11 @@ import { AbstractSecureCrudService } from '../../../abstract/service/service.int
 import { ComponentModel } from '../../../../../desktop-app/model/component/component.model';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { AuthService } from '../../../auth/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Role } from '../../../../../desktop-app/model/role/role.model';
+import { Constants } from '../../../../../desktop-app/service/util/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +45,22 @@ export class ComponentModelService extends AbstractSecureCrudService<ComponentMo
   public delete(id: number): Observable<void> {
     return this.httpClient.delete<void>(`${this.apiUrl}/${id}`, { headers: super.createHttpHeaders() })
       .pipe(catchError(super.handleError));
+  }
+
+  /**
+   * Returns all components given current user's roles.
+   * 
+   * @param params An optional set of HTTP parameters.
+   */
+  public findAll(params?: HttpParams): Observable<ComponentModel[]> {
+    return this.httpClient.post<ComponentModel[]>(
+      this.apiUrl,
+      this.authService.userRoles,
+      { 
+        headers: this.createHttpHeaders(), 
+        params: Constants.defaultIfBlank<HttpParams>(params, this.createSearchParams().set('sort', 'order,ASC'))
+      }
+    ).pipe(catchError(super.handleError));
   }
 
 }

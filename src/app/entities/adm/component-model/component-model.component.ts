@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractSecuredComponent } from '../../../abstract/component/component.interface';
 import { ComponentModelService } from './component-model.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
-import { Router } from '@angular/router';
+import { Router, Resolve, ActivatedRoute } from '@angular/router';
 import { NavbarService } from '../../../navbar/navbar.service';
 import { ComponentModel } from '../../../../../desktop-app/model/component/component.model';
 import { Subscription } from 'rxjs';
@@ -26,19 +26,27 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
   private components: ComponentModel[];
 
   /**
-   * The navbar subscrpition.
+   * The routes subscrpition.
    */
-  private navbarSubscription: Subscription;
+  private routesSubscription: Subscription;
 
   /**
-   * Creates a new component instance.
+   * Creates a new instance of a component.
+   * 
+   * @param componentModelService Injects the component service.
+   * @param ngSpinnerService Injects the spinner visibility service.
+   * @param router Injects the router.
+   * @param resolve Injects a param resolver.
+   * @param navbarService Injects the navbar service.
+   * @param translateService Injects the i18n service.
    */
   constructor(
     componentModelService: ComponentModelService,
     ngSpinnerService: SpinnerVisibilityService,
     router: Router,
     private navbarService: NavbarService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private activatedRoute: ActivatedRoute
   ) { 
     super(componentModelService, ngSpinnerService, router);
   }
@@ -47,8 +55,8 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
    * Callback executed when user instance is received.
    */
   protected onUserReceived(): void {
-    this.navbarSubscription = this.navbarService.loadMenu().subscribe((components: ComponentModel[]) => {
-      this.components = components;
+    this.routesSubscription = this.activatedRoute.params.subscribe((data: { components: ComponentModel[] }) => {
+      this.components = data.components;
     });
   }
 
@@ -59,7 +67,7 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
    */
   public ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.navbarSubscription.unsubscribe();
+    this.routesSubscription.unsubscribe();
   }
 
 }

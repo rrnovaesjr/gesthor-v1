@@ -3,12 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { ComponentModelComponent } from './component-model.component';
 import { AuthGuard } from '../../../auth/auth.guard';
+import { ComponentModelResolverService } from './component-model-resolver.service';
 
 const componentModelRoutes: Routes = [
   {
     path: 'adm/components',
     component: ComponentModelComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    resolve: {
+      data: ComponentModelResolverService
+    }
   }
 ];
 
@@ -19,6 +23,9 @@ const componentModelRoutes: Routes = [
   ],
   exports: [
     RouterModule
+  ],
+  providers: [
+    ComponentModelResolverService
   ]
 })
 export class ComponentModelRoutingModule { }
