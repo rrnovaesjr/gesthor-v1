@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body {
+    overflow: hidden;
+    height: 100%;
+    font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    font-size: 12pt;
+}
+
+h1, h2, h3, h4, h5, h6, div, p, ul, li, span, section {
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: .5em;
+    font-size: 10pt;
+}
+
+    .main-content h1, h2, h3 {
+        font-family: "Noto Sans CJK JP", sans-serif;
+        font-weight: normal;
+        padding-bottom: .5em;
+    }
+
+    .main-content h1 {
+        font-size: 16pt;
+    }
+
+    .main-content h2 {
+        font-size: 14pt;
+    }
+
+    .main-content h3 {
+        font-size: 12pt;
+    }
