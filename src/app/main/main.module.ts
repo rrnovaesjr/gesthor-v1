@@ -8,6 +8,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { MainRoutingModule } from './main-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { EntitiesModule } from '../entities';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
     AuthModule,
     MemberModule,
     ProgressAdvisorModule,
+    EntitiesModule,
     MainRoutingModule,
     SharedModule
   ],

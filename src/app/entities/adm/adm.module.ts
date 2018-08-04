@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdmModule } from './adm/adm.module';
+import { ComponentModelModule } from './component-model/component-model.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    AdmModule
+    ComponentModelModule
   ],
   exports: [
-    AdmModule
+    ComponentModelModule
   ]
 })
-export class EntitiesModule { }
+export class AdmModule { }
