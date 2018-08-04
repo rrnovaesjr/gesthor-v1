@@ -34,6 +34,16 @@ export class AuthService {
   public static readonly EXPIRES_AT_STORAGE_KEY: string = 'expires_at';
 
   /**
+   * Key that references the current session's hash.
+   */
+  private static readonly AUTH0_DECODED_HASH_STORAGE_KEY: string = 'hash';
+
+  /**
+   * Key that references the current user's id.
+   */
+  private static readonly AUTH0_USER_PROFILE_SUB: string = 'profile';
+
+  /**
    * An auth parameters object that sets google login to be selectable.
    */
   private readonly authParams: any = {
@@ -153,18 +163,12 @@ export class AuthService {
    * If the user's session is still active, then the token is received once again.
    */
   private _checkSession(): void {
-    this.auth0.checkSession({
-      audience: environment.auth.audience,
-      clientID: environment.auth.clientID,
-      domain: environment.auth.domain
-    }, (err: Auth0Error, authResult: Auth0DecodedHash) => {
-      if (authResult && authResult.accessToken) {
-        this._getUserInfo(authResult);
-      }
-      if (err) {
-        this._handleError(err);
-      }
-    });
+    const hash: Auth0DecodedHash = JSON.parse(localStorage.getItem(AuthService.AUTH0_DECODED_HASH_STORAGE_KEY));
+    const userId: string = JSON.parse(localStorage.getItem(AuthService.AUTH0_USER_PROFILE_SUB));
+    const expiresAt: Date = JSON.parse(localStorage.getItem(AuthService.EXPIRES_AT_STORAGE_KEY));
+    if (hash && userId && expiresAt) {
+      this._setSession(hash, userId);
+    }
   }
 
   /**
@@ -174,8 +178,11 @@ export class AuthService {
    */
   private _getUserInfo(authResult: Auth0DecodedHash): void {
     this.auth0.client.userInfo(authResult.accessToken, (err: Auth0Error, profile: Auth0UserProfile) => {
+      if (err) {
+        this._handleError(err);
+      }
       if (profile) {
-        this._setSession(authResult, profile);
+        this._setSession(authResult, profile.sub);
       }
     });
   }
@@ -184,14 +191,16 @@ export class AuthService {
    * Sets the current session based on the Auth0Profile and the decoded hash.
    * 
    * @param authResult Decoded hash.
-   * @param profile User's profile.
+   * @param profileId User's profile id.
    */
-  private _setSession(authResult: Auth0DecodedHash, profile: Auth0UserProfile): void {
-    this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${profile.sub}`, {
+  private _setSession(authResult: Auth0DecodedHash, profileId: string): void {
+    this.httpClient.get<Auth0UserProfile>(`${this.userApi}/${profileId}`, {
       headers: new HttpHeaders().set('authorization', `${this.tokenType} ${authResult.accessToken}`)
     }).pipe(catchError(this._handleError)).subscribe((userInstance: Auth0UserProfile) => {
       const expTime: number = authResult.expiresIn * 1000 + Date.now();
       localStorage.setItem(AuthService.EXPIRES_AT_STORAGE_KEY, JSON.stringify(expTime));
+      localStorage.setItem(AuthService.AUTH0_DECODED_HASH_STORAGE_KEY, JSON.stringify(authResult));
+      localStorage.setItem(AuthService.AUTH0_USER_PROFILE_SUB, JSON.stringify(profileId));
       this.auth0DecodedHash = authResult;
       this.userInstance = new User(userInstance.sub, userInstance.name, userInstance.nickname, userInstance.picture,
         userInstance.user_id, userInstance.identities, userInstance.clientID, userInstance.created_at,
@@ -212,6 +221,8 @@ export class AuthService {
    */
   public logout(): void {
     localStorage.removeItem(AuthService.EXPIRES_AT_STORAGE_KEY);
+    localStorage.removeItem(AuthService.AUTH0_DECODED_HASH_STORAGE_KEY);
+    localStorage.removeItem(AuthService.AUTH0_USER_PROFILE_SUB);
     this.userInstance = undefined;
     this.authenticated = false;
     this._userInstanceSubject.next(this.userInstance);
