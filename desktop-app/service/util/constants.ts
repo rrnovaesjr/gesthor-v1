@@ -1,4 +1,3 @@
-import { join } from "path";
 
 /**
  * A global reference to the application's constants.
@@ -44,6 +43,20 @@ export namespace Constants {
         sort: 'id,ASC',
         size: 20,
         page: 0
+    }
+
+    /**
+     * Checks if `object` is `null` or `undefined`. If it is, returns `valueIfBlank`;
+     * otherwise, returns `object`.
+     * 
+     * @param object Object instance.
+     * @param valueIfBlank Default value, if `object` is `null` or `undefined`.
+     */
+    export function defaultIfBlank<O>(object: O, valueIfBlank: O): O {
+        if(object === null || object === undefined) {
+            return valueIfBlank;
+        }
+        return object;
     }
 
 }
