@@ -154,6 +154,15 @@ export abstract class AbstractSecuredService extends AbstractService {
     protected createHttpHeaders(): HttpHeaders {
         return new HttpHeaders().set('authorization', `${this.authService.tokenType} ${this.authService.getAccessToken}`);
     }
+
+    /**
+     * Returns a default set of Http Params.
+     * 
+     * @param paramMap A param map to set.
+     */
+    protected createHttpParams(): HttpParams {
+        return new HttpParams();
+    }
 }
 
 /**
@@ -215,21 +224,6 @@ export abstract class AbstractCrudService<E, PK> extends AbstractService impleme
      */
     protected createHttpHeaders(): HttpHeaders {
         return new HttpHeaders();
-    }
-
-    /**
-     * Returns a default set of Http Params.
-     * 
-     * @param paramMap A param map to set.
-     */
-    protected createHttpParams(paramMap: Map<string, string>): HttpParams {
-        let httpParams: HttpParams = new HttpParams();
-        if (paramMap) {
-            for (let i: number = 0; i < paramMap.size; i++) {
-                httpParams = httpParams.set(paramMap[i][0], paramMap[i][1]);
-            }
-        }
-        return httpParams;
     }
 
 }
