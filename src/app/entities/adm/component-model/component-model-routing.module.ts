@@ -11,7 +11,7 @@ const componentModelRoutes: Routes = [
     component: ComponentModelComponent,
     canActivate: [AuthGuard],
     resolve: {
-      data: ComponentModelResolverService
+      components: ComponentModelResolverService
     }
   }
 ];
