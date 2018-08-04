@@ -8,6 +8,7 @@ import { catchError } from 'rxjs/operators';
 import { Role } from '../../../desktop-app/model/role/role.model';
 import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { ComponentModelService } from '../entities/adm/component-model/component-model.service';
 
 /**
  * A service to control the navbar.
@@ -32,7 +33,8 @@ export class NavbarService extends AbstractSecuredService {
   constructor(
     httpClient: HttpClient,
     ngSpinnerService: SpinnerVisibilityService,
-    authService: AuthService
+    authService: AuthService,
+    private componentModelService: ComponentModelService
   ) {
     super(httpClient, ngSpinnerService, authService);
   }
@@ -41,11 +43,7 @@ export class NavbarService extends AbstractSecuredService {
    * Loads the application menu as a tree-model.
    */
   public loadMenu(): Observable<ComponentModel[]> {
-    return this.httpClient.post<ComponentModel[]>(
-      this.apiUrl,
-      this.userInstance ? this.userInstance.app_metadata.userRoles : [Role.ROLE_VISITOR.persistentValue],
-      { headers: this.createHttpHeaders().set('sort', ['order','asc']), params: this.createSearchParams() }
-    ).pipe(catchError(super.handleError));
+    return this.componentModelService.findAll();
   }
 
 }
