@@ -58,7 +58,7 @@ export class AuthService {
       title: 'Gesthor'
     },
     theme: {
-      logo: '',
+      logo: '../../assets/img/logo.png',
       primaryColor: '#7986CB'
     }
   });
