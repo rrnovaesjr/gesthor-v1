@@ -11,6 +11,6 @@ export const environment = {
     domain: 'rrnovaesjr.auth0.com',
     audience: 'http://localhost:8080',
     redirect: 'http://localhost:9000/callback',
-    scope: 'openid profile email'
+    scope: 'openid'
   },
 };
