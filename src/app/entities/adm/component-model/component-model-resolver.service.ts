@@ -55,8 +55,7 @@ export class ComponentModelResolverService extends AbstractSecuredService
       .set('size', pageSize.toString()).set('page', pageIndex.toString()).set('sort', sort))
       .pipe(
         map((components: ComponentModel[]) => {
-          console.log(components);
-          if (components && components.length > 0) {
+          if (components) {
             return components;
           }
           return [];
