@@ -25,7 +25,8 @@ export class ComponentModel extends TreeNode<number> {
         public order?: number,
         public route?: string,
         public parentId?: number,
-        public children?: ComponentModel[]
+        public children?: ComponentModel[],
+        public level?: number
     ) {
         super(id, parentId, leaf, children);
         this.children = this.children ? this.children : [];
