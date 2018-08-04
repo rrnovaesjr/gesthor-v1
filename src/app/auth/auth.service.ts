@@ -13,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { User } from '../../../desktop-app/model/user/user.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { Role } from '../../../desktop-app/model/role/role.model';
 
 /**
  * An Auth0 service interface.
@@ -135,7 +136,7 @@ export class AuthService {
    */
   public handleLoginCallback(): void {
     this.auth0.parseHash((err: Auth0Error, authResult: Auth0DecodedHash) => {
-      if(err) {
+      if (err) {
         this._handleError(err);
       }
       if (authResult && authResult.accessToken) {
@@ -198,7 +199,7 @@ export class AuthService {
         userInstance.username, userInstance.given_name, userInstance.family_name, userInstance.email, userInstance.email_verified,
         userInstance.gender
       );
-      if(this.userInstance.app_metadata.language) {
+      if (this.userInstance.app_metadata.language) {
         this.translateService.setDefaultLang(this.userInstance.app_metadata.language);
       }
       this._userInstanceSubject.next(this.userInstance);
@@ -233,17 +234,24 @@ export class AuthService {
   }
 
   /**
-   * Checks if current user has a matching `role` to access determinated route.
+   * Gets an array of strings corresponded to the user current roles.
    * 
-   * @param role Role to be checked.
+   * If there is no active user, then returns ROLE_VISITOR as default.
    */
-  public hasPermission(role: string): boolean {
-    for (let userRole of this.userInstance.app_metadata.userRoles) {
-      if (userRole === role) {
-        return true;
-      }
-    }
-    return false;
+  get userRoles(): string[] {
+    return this.userInstance ? this.userInstance.app_metadata.userRoles : [Role.ROLE_VISITOR.persistentValue];
+  }
+
+  /**
+   * Checks if current user has a matching role in `roles` to access `route`.
+   * 
+   * @param roles Roles to be checked.
+   * @param route Desired route.
+   */
+  public hasPermission(roles: string[], route: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(`${environment.apiUrl}/api/components/permission`, {
+      roles: roles, route: route
+    }, { headers: new HttpHeaders().set('authorization', `${this.tokenType} ${this.getAccessToken}`) });
   }
 
   /**
