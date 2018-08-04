@@ -37,8 +37,11 @@ create table if not exists `component` (
     `route` varchar(512),
     `parent_id` bigint default null,
     `leaf` char(1) default 'N',
+    `active` char(1) default 'Y',
+    `order` int(4) default 0,
     constraint pk_component primary key(`id`),
-    constraint ck_component_leaf check(`leaf` in ('Y', 'N'))
+    constraint ck_component_leaf check(`leaf` in ('Y', 'N')),
+    constraint ck_component_active check(`active` in ('Y', 'N'))
 );
 
 create table if not exists `user_role` (

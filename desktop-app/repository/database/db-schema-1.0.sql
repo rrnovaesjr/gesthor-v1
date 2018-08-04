@@ -67,6 +67,10 @@ CREATE TABLE `component` (
   `route` varchar(512) DEFAULT NULL,
   `parent_id` bigint(20) DEFAULT NULL,
   `leaf` char(1) DEFAULT 'N',
+  `active` char(1) default 'Y',
+  `order` int(4) default 0,
+  constraint ck_component_leaf check(`leaf` in ('Y', 'N')),
+  constraint ck_component_active check(`active` in ('Y', 'N')),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -77,7 +81,7 @@ CREATE TABLE `component` (
 
 LOCK TABLES `component` WRITE;
 /*!40000 ALTER TABLE `component` DISABLE KEYS */;
-INSERT INTO `component` VALUES (1,'navbar.administration.label','',NULL,'N'),(2,'navbar.administration.children.components','/adm/components',1,'S');
+INSERT INTO `component` VALUES (1,'navbar.administration.label','',NULL,'N','Y',1),(2,'navbar.administration.children.components','/adm/components',1,'S','Y',2);
 /*!40000 ALTER TABLE `component` ENABLE KEYS */;
 UNLOCK TABLES;
 
