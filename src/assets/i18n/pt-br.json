@@ -34,6 +34,10 @@
             }
         }
 
+    },
+    "adm": {
+        "components": {
+            "title": "Administração de Componentes"
+        }
     }
-
 }
