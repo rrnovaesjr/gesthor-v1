@@ -9,6 +9,7 @@ import { electronService } from './electron.service';
 import { AbstractLoggerErrorHandlerService } from './abstract.service';
 import { join } from 'path';
 import { GesthorLogger } from './util/logger';
+import { environment } from '../environments';
 
 /**
  * A class that serves the Gesthor's Application functions.
@@ -72,11 +73,16 @@ class AppService extends AbstractLoggerErrorHandlerService {
             3. Using urlencoded();
             4. Using express.static to serve angular application as interface;
             5. Registering the server and setting it to listen.`, port);
-        serverService.build(port);
-        serverService.use(port, bodyParser.json());
-        serverService.use(port, bodyParser.urlencoded({extended: false}));
-        serverService.use(port, express.static(join(electron.app.getAppPath(), 'desktop-app', 'dist')));
-        this.register(port);
+        if(!environment.production) {
+            AppService.LOGGER.info(`[config()] Development environment.`);
+        }
+        else {
+            serverService.build(port);
+            serverService.use(port, bodyParser.json());
+            serverService.use(port, bodyParser.urlencoded({extended: false}));
+            serverService.use(port, express.static(join(electron.app.getAppPath(), 'desktop-app', 'dist')));
+            this.register(port);    
+        }
         AppService.LOGGER.info("[config()] Configuration finished.");
     }
 
