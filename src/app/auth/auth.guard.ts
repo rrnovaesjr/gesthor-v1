@@ -3,8 +3,6 @@ import { CanActivate, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { catchError, tap } from 'rxjs/operators';
-import { User } from '../../../desktop-app/model/user/user.model';
-import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /** 
  * A Guard for managing authorized routes.
