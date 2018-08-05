@@ -35,6 +35,7 @@ import {
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 /**
  * A common module to be imported by all modules of Gesthor's app.
@@ -50,7 +51,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   imports: [
     CommonModule,
-
+    FormsModule,
     MatAutocompleteModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -83,11 +84,11 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSortModule,
     MatTableModule,
     MatTreeModule,
-
     TranslateModule
   ],
   exports: [
     CommonModule,
+    FormsModule,
     MatAutocompleteModule,
     MatCheckboxModule,
     MatDatepickerModule,
