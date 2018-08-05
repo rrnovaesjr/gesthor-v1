@@ -2,24 +2,19 @@
 
 <mat-divider></mat-divider>
 
-<mat-grid-list cols="2">
-    <mat-grid-tile>
-        <mat-tree [dataSource]="dataSource" [treeControl]="flatTreeControl">
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-                <button mat-icon-button disabled></button>
-                {{ node.label | translate }}
-            </mat-tree-node>
-            <mat-tree-node *matTreeNodeDef="let node;when: hasChildren" matTreeNodePadding>
-                <button mat-icon-button matTreeNodeToggle>
-                    <mat-icon class="mat-icon-rtl-mirror">
-                        {{ flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                    </mat-icon>
-                </button>
-                {{ node.label | translate }}
-            </mat-tree-node>
-        </mat-tree>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <h2>Componente</h2>
-    </mat-grid-tile>
-</mat-grid-list>
+<h2>{{ 'adm.components.componentTree' | translate }}</h2>
+
+<mat-tree [dataSource]="dataSource" [treeControl]="flatTreeControl">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        {{ node.label | translate }}
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChildren" matTreeNodePadding>
+        <button mat-icon-button matTreeNodeToggle>
+            <mat-icon class="mat-icon-rtl-mirror">
+                {{ flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+            </mat-icon>
+        </button>
+        {{ node.label | translate }}
+    </mat-tree-node>
+</mat-tree>

@@ -37,7 +37,8 @@
     },
     "adm": {
         "components": {
-            "title": "Administração de Componentes"
+            "title": "Administração de Componentes",
+            "componentTree": "Árvore"
         }
     }
 }
