@@ -1,12 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@include mat-core();
 
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+$config: mat-typography-config();
+
+$gesthor-light-primary: mat-palette($mat-indigo);
+$gesthor-light-accent:  mat-palette($mat-pink);
+$gesthor-light-warn:    mat-palette($mat-deep-orange);
+$gesthor-light-theme: mat-light-theme($gesthor-light-primary, $gesthor-light-accent, $gesthor-light-warn);
+
+@include angular-material-theme($gesthor-light-theme);
 
 body {
     overflow: hidden;
     height: 100%;
-    font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
-    font-size: 12pt;
+    font-family: mat-font-family($config);
+    font: mat-typography-level-to-styles($config, body-1);
 }
 
 h1, h2, h3, h4, h5, h6, div, p, ul, li, span, section {
@@ -17,24 +25,30 @@ h1, h2, h3, h4, h5, h6, div, p, ul, li, span, section {
 .main-content {
     width: 90%;
     margin-left: 5%;
-    margin-top: .5em;
-    font-size: 10pt;
+    padding: .5em;
+    background-color: #fff;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.main-content.is-mobile {
+    margin: 0;
+    width: auto;
 }
 
     .main-content h1, h2, h3 {
-        font-family: "Noto Sans CJK JP", sans-serif;
-        font-weight: normal;
         padding-bottom: .5em;
+        margin-top: .5em;
     }
 
     .main-content h1 {
-        font-size: 16pt;
+        font: mat-typography-level-to-styles($config, headline);
     }
 
     .main-content h2 {
-        font-size: 14pt;
+        font: mat-typography-level-to-styles($config, title);
     }
 
     .main-content h3 {
-        font-size: 12pt;
+        font: mat-typography-level-to-styles($config, subheading-2);
     }

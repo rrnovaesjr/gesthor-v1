@@ -14,6 +14,7 @@ import { User } from '../../../desktop-app/model/user/user.model';
 import { Router } from '@angular/router';
 import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { MatIconRegistry } from '@angular/material';
 
 @Component({
   selector: 'app-member',
@@ -48,9 +49,11 @@ export class MemberComponent extends AbstractSecuredComponent<UserService> {
     private translateService: TranslateService, 
     userService: UserService,
     ngSpinnerService: SpinnerVisibilityService,
-    router: Router
+    router: Router,
+    private matIconRegistry: MatIconRegistry
   ) {
     super(userService, ngSpinnerService, router);
+    this.matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
 
   /**
