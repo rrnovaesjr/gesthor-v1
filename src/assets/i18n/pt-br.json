@@ -38,7 +38,14 @@
     "adm": {
         "components": {
             "title": "Administração de Componentes",
-            "componentTree": "Árvore"
+            "componentTree": "Árvore",
+            "selectedComponent": "Gerenciamento de Componente",
+            "entity": {
+                "label": {
+                    "name": "Rótulo",
+                    "hint": "Rótulo internacionalizável para o componente."
+                }
+            }
         }
     }
 }

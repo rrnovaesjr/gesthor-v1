@@ -1,20 +1,43 @@
-<h1>{{ 'adm.components.title' | translate }}</h1>
+<h2>{{ 'adm.components.title' | translate }}</h2>
 
-<mat-divider></mat-divider>
+<mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{ 'adm.components.componentTree' | translate }}
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-tree [dataSource]="dataSource" [treeControl]="flatTreeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+            <button mat-icon-button disabled></button>
+            <mat-checkbox [checked]="node.id === selectedComponent?.id" (change)="toggleItemSelection(node)">
+                {{ node.label | translate }}
+            </mat-checkbox>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChildren" matTreeNodePadding>
+            <button mat-icon-button matTreeNodeToggle>
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{ flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+            </button>
+            <mat-checkbox [checked]="node.id === selectedComponent?.id" (change)="toggleItemSelection(node)">
+                {{ node.label | translate }}
+            </mat-checkbox>
+        </mat-tree-node>
+    </mat-tree>
+</mat-expansion-panel>
 
-<h2>{{ 'adm.components.componentTree' | translate }}</h2>
+<mat-expansion-panel [expanded]="true" *ngIf="selectedComponent">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{ 'adm.components.selectedComponent' | translate }}
+        </mat-panel-title>
+    </mat-expansion-panel-header>
 
-<mat-tree [dataSource]="dataSource" [treeControl]="flatTreeControl">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-        <button mat-icon-button disabled></button>
-        {{ node.label | translate }}
-    </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChildren" matTreeNodePadding>
-        <button mat-icon-button matTreeNodeToggle>
-            <mat-icon class="mat-icon-rtl-mirror">
-                {{ flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-            </mat-icon>
-        </button>
-        {{ node.label | translate }}
-    </mat-tree-node>
-</mat-tree>
+    <form #editForm>
+        <mat-form-field appearance="legacy">
+            <mat-label>{{ 'adm.components.entity.label.name' | translate }}</mat-label>
+            <input matInput [(ngModel)]="selectedComponent.label" name="componentLabel">
+            <mat-hint>{{ 'adm.components.entity.label.hint' | translate }}</mat-hint>
+        </mat-form-field>
+    </form>
+</mat-expansion-panel>

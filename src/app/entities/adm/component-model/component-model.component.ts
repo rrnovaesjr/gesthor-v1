@@ -19,7 +19,7 @@ import { Constants } from '../../../../../desktop-app/service/util/constants';
 @Component({
   selector: 'app-component-model',
   templateUrl: './component-model.component.html',
-  styleUrls: ['./component-model.component.css']
+  styleUrls: ['./component-model.component.scss']
 })
 export class ComponentModelComponent extends AbstractSecuredComponent<ComponentModelService> {
 
@@ -32,6 +32,11 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
    * The list of comonents.
    */
   private components: ComponentModel[];
+
+  /**
+   * The current selected component.
+   */
+  public selectedComponent: ComponentModel;
 
   /**
    * The routes subscrpition.
@@ -140,5 +145,20 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
    * A public method to return wether a node has children or not.
    */
   public hasChildren: (_: number, _nodeData: ComponentModel) => boolean = (_, _nodeData) => !_nodeData.leaf.booleanValue;
+
+  /**
+   * Toggles the selection to this current node. If it's already selected,
+   * then set `selectedComponent` as `null`.
+   * 
+   * @param node The selected node.
+   */
+  public toggleItemSelection(node: ComponentModel): void {
+    if(this.selectedComponent) {
+      this.selectedComponent = (this.selectedComponent.id === node.id) ? null : node;
+    }
+    else {
+      this.selectedComponent = node;
+    }
+  }
 
 }
