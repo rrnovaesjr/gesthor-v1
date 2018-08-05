@@ -7,13 +7,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { WebappConstants } from '../shared';
 import { AuthService } from '../auth/auth.service';
 import { Spinkit } from 'ng-http-loader';
+import { BaseComponent } from '../abstract/component/component.interface';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent {
+export class MainComponent extends BaseComponent {
 
   /**
    * A reference to the spinkit loader.
@@ -31,11 +32,6 @@ export class MainComponent {
   public version: string = WebappConstants.APP_VERSION;
 
   /**
-   * A mobile query listener.
-   */
-  private _mobileQueryListener: () => void;
-
-  /**
    * Injects the necessary services into this component.
    * 
    * @param translateService Service of translations. 
@@ -44,21 +40,11 @@ export class MainComponent {
    */
   constructor(
     private translateService: TranslateService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private media: MediaMatcher,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
     private authService: AuthService
   ) { 
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
-  }
-
-  ngOnInit() {
-
-  }
-
-  ngOnDestroy() {
-    this.mobileQuery.removeListener(this._mobileQueryListener);
+    super(changeDetectorRef, media);
   }
 
 }

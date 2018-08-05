@@ -37,11 +37,6 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
   protected subComponents: Map<number, ComponentModel[]> = new Map();
 
   /**
-   * A listener to media query events.
-   */
-  private _mobileQueryListener: () => void;
-
-  /**
    * A constructor that injects many services.
    * 
    * @param authService Authorization service. 
@@ -58,10 +53,7 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
     ngSpinnerService: SpinnerVisibilityService,
     router: Router
   ) {
-    super(navbarService, ngSpinnerService, router);
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
+    super(navbarService, ngSpinnerService, router, changeDetectorRef, media);
   }
 
   protected onUserReceived(user: User): void {
@@ -85,13 +77,6 @@ export class NavbarComponent extends AbstractSecuredComponent<NavbarService> {
     }
   }
 
-  /**
-   * Method executed when the component is destroyed.
-   */
-  ngOnDestroy() {
-    super.ngOnDestroy();
-    this.mobileQuery.removeListener(this._mobileQueryListener);
-  }
 }
 
 

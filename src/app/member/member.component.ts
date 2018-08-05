@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Auth0UserProfile } from 'auth0-js';
 import {
@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MatIconRegistry } from '@angular/material';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-member',
@@ -50,9 +51,11 @@ export class MemberComponent extends AbstractSecuredComponent<UserService> {
     userService: UserService,
     ngSpinnerService: SpinnerVisibilityService,
     router: Router,
-    private matIconRegistry: MatIconRegistry
+    private matIconRegistry: MatIconRegistry,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher
   ) {
-    super(userService, ngSpinnerService, router);
+    super(userService, ngSpinnerService, router, changeDetectorRef, media);
     this.matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
 

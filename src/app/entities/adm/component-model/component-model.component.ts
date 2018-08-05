@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AbstractSecuredComponent } from '../../../abstract/component/component.interface';
 import { ComponentModelService } from './component-model.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { Constants } from '../../../../../desktop-app/service/util/constants';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 /**
  * A component for controlling components.
@@ -70,9 +71,11 @@ export class ComponentModelComponent extends AbstractSecuredComponent<ComponentM
     router: Router,
     private navbarService: NavbarService,
     private translateService: TranslateService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
   ) {
-    super(componentModelService, ngSpinnerService, router);
+    super(componentModelService, ngSpinnerService, router, changeDetectorRef, media);
     this.matTreeFlattener = new MatTreeFlattener(this._transformer, this._getLevel, this._isExpandable, this._getChildren);
     this.flatTreeControl = new FlatTreeControl<ComponentModel>(this._getLevel, this._isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.flatTreeControl, this.matTreeFlattener);

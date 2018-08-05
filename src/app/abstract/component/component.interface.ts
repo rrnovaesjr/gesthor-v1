@@ -1,48 +1,53 @@
-import { OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy, SimpleChanges, Component, RenderComponentType, ComponentRef } from "@angular/core";
+import { OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy, SimpleChanges, Component, RenderComponentType, ComponentRef, ChangeDetectorRef } from "@angular/core";
 import { MatDialogRef, MatDialog } from "@angular/material";
 import { AbstractService, AbstractSecuredService } from "../service/service.interface";
 import { Subscription } from "rxjs";
 import { User } from "../../../../desktop-app/model/user/user.model";
 import { Router, RouterEvent, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from "@angular/router";
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { MediaMatcher } from "@angular/cdk/layout";
 
 /**
- * An abstract definition of a component.
+ * A base component with mobile query interfaces.
  * 
  * @author rodrigo-novaes
  */
 @Component({})
-export abstract class AbstractComponent<ServiceInstance extends AbstractService> implements OnChanges, OnInit, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
+export abstract class BaseComponent implements OnChanges, OnInit, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
 
     /**
-     * Creates a new default component.
-     * 
-     * @param defaultService Injects a default service.
-     * @param ngSpinnerService Injects the spinner visibility service.
-     * @param router Injects the Router singleton instance.
+     * A mobile query.
      */
+    public mobileQuery: MediaQueryList;
+
+    /**
+     * A mobile query listener.
+     */
+    private _mobileQueryListener: () => void;
+
     public constructor(
-        private defaultService: AbstractService, 
-        protected ngSpinnerService: SpinnerVisibilityService,
-        protected router: Router
+        protected changeDetectorRef: ChangeDetectorRef,
+        protected media: MediaMatcher,
     ) {
-        
-    }
-
-    /**
-     * Respond when Angular (re)sets data-bound input properties.
-     * 
-     * @param changes object of current and previous property values.
-     */
-    public ngOnChanges(changes: SimpleChanges): void {
-
+        this.mobileQuery = media.matchMedia('(max-width: 600px)');
+        this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+        this.mobileQuery.addListener(this._mobileQueryListener);
     }
 
     /**
      * Initialize the directive/component after Angular first displays 
      * the data-bound properties and sets the directive/component's input properties.
      */
-    public ngOnInit(): void {
+    ngOnInit() {
+
+    }
+
+        /**
+     * Respond when Angular (re)sets data-bound input properties.
+     * 
+     * @param changes object of current and previous property values.
+     */
+    public ngOnChanges(changes: SimpleChanges): void {
 
     }
 
@@ -90,15 +95,41 @@ export abstract class AbstractComponent<ServiceInstance extends AbstractService>
      * Cleanup just before Angular destroys the directive/component. Unsubscribe 
      * Observables and detach event handlers to avoid memory leaks.
      */
-    public ngOnDestroy(): void {
+    ngOnDestroy() {
+      this.mobileQuery.removeListener(this._mobileQueryListener);
+    }
+}
 
+/**
+ * An abstract definition of a component.
+ * 
+ * @author rodrigo-novaes
+ */
+@Component({})
+export abstract class AbstractComponent<ServiceInstance extends AbstractService> extends BaseComponent  {
+
+    /**
+     * Creates a new default component.
+     * 
+     * @param defaultService Injects a default service.
+     * @param ngSpinnerService Injects the spinner visibility service.
+     * @param router Injects the Router singleton instance.
+     */
+    public constructor(
+        private defaultService: AbstractService,
+        protected ngSpinnerService: SpinnerVisibilityService,
+        protected router: Router,
+        changeDetectorRef: ChangeDetectorRef,
+        media: MediaMatcher,
+    ) {
+        super(changeDetectorRef, media);
     }
 
     /**
      * Returns the default service instance, as declared by the extending components.
      */
     public get serviceInstance(): ServiceInstance {
-        return <ServiceInstance> this.defaultService;
+        return <ServiceInstance>this.defaultService;
     }
 
 }
@@ -141,11 +172,13 @@ export abstract class AbstractSecuredComponent<ServiceInstance extends AbstractS
      * @param router Injects the Router singleton instance.
      */
     public constructor(
-        defaultSecuredService: AbstractSecuredService, 
+        defaultSecuredService: AbstractSecuredService,
         ngSpinnerService: SpinnerVisibilityService,
-        router: Router
+        router: Router,
+        changeDetectorRef: ChangeDetectorRef,
+        media: MediaMatcher
     ) {
-        super(defaultSecuredService, ngSpinnerService, router);
+        super(defaultSecuredService, ngSpinnerService, router, changeDetectorRef, media);
     }
 
     /**
@@ -157,8 +190,8 @@ export abstract class AbstractSecuredComponent<ServiceInstance extends AbstractS
     public ngOnInit(): void {
         super.ngOnInit();
         this.userSubcription = this.serviceInstance.userInstanceNotifier$.subscribe((user: User) => {
-            if((this.user && !user) || (!this.user && user)) {
-                if(user) {
+            if ((this.user && !user) || (!this.user && user)) {
+                if (user) {
                     this.user = user;
                     this.onUserReceived(this.user);
                 } else {
