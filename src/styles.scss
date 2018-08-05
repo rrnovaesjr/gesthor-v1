@@ -12,9 +12,10 @@ $gesthor-light-theme: mat-light-theme($gesthor-light-primary, $gesthor-light-acc
 
 body {
     overflow: hidden;
-    height: 100%;
     font-family: mat-font-family($config);
     font: mat-typography-level-to-styles($config, body-1);
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 h1, h2, h3, h4, h5, h6, div, p, ul, li, span, section {
@@ -23,32 +24,31 @@ h1, h2, h3, h4, h5, h6, div, p, ul, li, span, section {
 }
 
 .main-content {
-    width: 90%;
-    margin-left: 5%;
+    margin: 0 2em 0 2em;
     padding: .5em;
-    background-color: #fff;
-    overflow-x: auto;
     overflow-y: auto;
 }
 
 .main-content.is-mobile {
     margin: 0;
-    width: auto;
 }
 
-    .main-content h1, h2, h3 {
-        padding-bottom: .5em;
-        margin-top: .5em;
-    }
+.main-content h1, h2, h3 {
+    padding-bottom: .5em;
+    margin-top: .5em;
+}
 
-    .main-content h1 {
-        font: mat-typography-level-to-styles($config, headline);
-    }
+.main-content h1 {
+    font: mat-typography-level-to-styles($config, headline);
+    font-weight: mat-font-weight($config, headline);
+}
 
-    .main-content h2 {
-        font: mat-typography-level-to-styles($config, title);
-    }
+.main-content h2 {
+    font: mat-typography-level-to-styles($config, title);
+    font-weight: mat-font-weight($config, title);
+}
 
-    .main-content h3 {
-        font: mat-typography-level-to-styles($config, subheading-2);
-    }
+.main-content h3 {
+    font: mat-typography-level-to-styles($config, subheading-2);
+    font-weight: mat-font-weight($config, subheading-2);
+}

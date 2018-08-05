@@ -1,0 +1,8 @@
+:host form {
+    display: flex;
+    flex-direction: column;
+}
+  
+:host form > * {
+    width: 100%;
+}
