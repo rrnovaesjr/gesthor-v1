@@ -1,6 +1,8 @@
+@import '~@angular/material/theming';
+@import '../../styles.scss';
+@include mat-core();
 
-.main-container 
-{
+.main-container  {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -10,39 +12,29 @@
     right: 0;
 }
 
-.main-container
-h1
-small
-{
-    font-size: 9pt;
-    color: mat-palette();
+.main-container h1 small {
+    font-size: mat-font-size(mat-typography-config(), caption);
+    color: mat-color($gesthor-light-primary, '50-contrast');
 }
 
-.main-is-mobile 
-.main-toolbar 
-{
+.main-is-mobile .main-toolbar {
     position: fixed;
     z-index: 2;
 }
 
-h1.main-app-name 
-{
+h1.main-app-name {
     margin-left: 8px;
     vertical-align: text-bottom;
 }
 
-.main-sidenav-container 
-{
+.main-sidenav-container {
     flex: 1;
 }
 
-.main-is-mobile 
-.main-sidenav-container 
-{
+.main-is-mobile .main-sidenav-container {
     flex: 1 0 auto;
 }
 
-.main-spacer
-{
+.main-spacer{
     flex: 1 1 auto;
 }

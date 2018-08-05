@@ -19,7 +19,7 @@ import { MatIconRegistry } from '@angular/material';
 @Component({
   selector: 'app-member',
   templateUrl: './member.component.html',
-  styleUrls: ['./member.component.css'],
+  styleUrls: ['./member.component.scss'],
   animations: [
     trigger('enterCard', [
       transition('void => *', [
