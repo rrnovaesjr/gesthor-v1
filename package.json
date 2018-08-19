@@ -46,7 +46,6 @@
     "mysql2": "^1.5.3",
     "ng-click-outside": "^4.0.0",
     "ng-http-loader": "^3.0.0",
-    "rxjs": "^6.2.2",
     "serve-static": "^1.13.2",
     "startbootstrap-sb-admin": "^4.0.0",
     "winston": "^3.0.0",
@@ -72,6 +71,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-jasmine-html-reporter": "^1.2.0",
     "protractor": "^5.4.0",
+    "rxjs": "^6.2.2",
     "ts-node": "^7.0.0",
     "tslint": "^5.11.0",
     "typescript": "^2.7.2"
