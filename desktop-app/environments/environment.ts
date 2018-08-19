@@ -14,9 +14,9 @@ export const environment = {
     databaseConfig: {
       connectionLimit: 0,
       host: 'localhost',
-      user: 'root',
-      database: 'gesthor_dev',
-      password: '123456'
+      user: 'gesthor',
+      database: 'gesthor',
+      password: '12345678'
     },
     /**
      * Insert your Auth0 auth configurations.
@@ -27,7 +27,7 @@ export const environment = {
     auth: {
       apiManagementTokenRequestConfig: {
         initialDelay: 0,
-        period: 84400000
+        period: 5184000
       },
       secret: {
         cache: true,
