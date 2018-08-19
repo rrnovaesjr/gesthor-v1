@@ -7,7 +7,6 @@ import { AbstractSecureCrudService } from '../abstract/service/service.interface
 import { Auth0UserProfile } from 'auth0-js';
 import { catchError } from 'rxjs/operators';
 import { User } from '../../../desktop-app/model/user/user.model';
-import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**

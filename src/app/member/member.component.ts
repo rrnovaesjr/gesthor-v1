@@ -12,7 +12,6 @@ import { UserService } from './user.service';
 import { AbstractSecuredComponent } from '../abstract/component/component.interface';
 import { User } from '../../../desktop-app/model/user/user.model';
 import { Router } from '@angular/router';
-import { ProgressAdvisorService } from '../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MatIconRegistry } from '@angular/material';
 import { MediaMatcher } from '@angular/cdk/layout';

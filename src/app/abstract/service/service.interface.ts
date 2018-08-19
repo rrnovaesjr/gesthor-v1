@@ -7,7 +7,6 @@ import { Auth0UserProfile } from 'auth0-js';
 import { User } from '../../../../desktop-app/model/user/user.model';
 import { catchError } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgressAdvisorService } from '../../progress-advisor';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 
 /**
